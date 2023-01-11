@@ -1,0 +1,80 @@
+.marksheetUploadPageContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.marksheetUploadPageBodyContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.issueMarksheetHeader{
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: rgb(48, 48, 48);
+    margin-bottom: 1rem;
+}
+
+.issueMarksheetContainer{
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.bulkUploadSection{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.verticalDivider{
+    height: 300px;
+    width: 1px;
+    background-color: rgb(190, 190, 190);
+}
+
+.singleUploadSection{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.singleUploadForm{
+    display: flex;
+    flex-direction: column;
+}
+
+.inputLabel{
+    margin-bottom: 0.2rem;
+}
+
+.regNumInput{
+    padding: 0.8rem 0.6rem;
+    background-color: #EEEEEE;
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.issueBtn{
+    padding: 0.8rem 0.6rem;
+    border-radius: 0.5rem;
+    background-color: #1363FD;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}

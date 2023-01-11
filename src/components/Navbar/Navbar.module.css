@@ -1,0 +1,23 @@
+.navbar{
+    width: 100%;
+    background-image: linear-gradient(#bcc9ff, #ffffff00);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logoContainer{
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1363FD;
+    cursor: pointer;
+}
+
+.accountIcon{
+    width: 2.2rem;
+    height: 2.2rem;
+    background-color: #1363FD;
+    border-radius: 50%;
+}
