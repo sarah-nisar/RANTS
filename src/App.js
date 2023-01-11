@@ -1,50 +1,29 @@
-import logo from "./logo.svg";
-import "./App.css";
-import SocialLogin from "@biconomy/web3-auth";
-import { useCVPContext } from "./Context/CVPContext";
+import React, {useState, useEffect} from "react";
+import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage/HomePage";
+import './App.css';
+import Navbar from "./components/Navbar/Navbar";
+import MarkSheetUploadPage from "./pages/MarkSheetUploadPage/MarkSheetUploadPage";
 
-function App() {
-	const {
-		connect,
-		disconnect,
-		address,
-		loading: eoaWalletLoading,
-		registerStudent,
-	} = useCVPContext();
-	return (
-		<div className="App">
-			<header className="App-header">
-				{address ? (
-					<>
-						<button className="border px-4 py-2 text-sm bg-white rounded-md">
-							{address}
-						</button>
+const App = () => {
 
-						<button
-							className="border px-4 py-2 text-sm bg-white rounded-md"
-							onClick={disconnect}
-						>
-							Logout
-						</button>
-						<button onClick={registerStudent}>
-							Register registerStudent
-						</button>
-					</>
-				) : (
-					<>
-						<button
-							color="dark"
-							radius="md"
-							onClick={connect}
-							disabled={eoaWalletLoading}
-						>
-							Login
-						</button>
-					</>
-				)}
-			</header>
-		</div>
-	);
+  const router = createBrowserRouter([
+		{
+			path: "/",
+			element: <HomePage />,
+		},
+		{
+			path: "/issueMarksheet",
+			element: <MarkSheetUploadPage />,
+		},
+	]);
+
+  return (
+	<>
+		<Navbar />
+		<RouterProvider router={router}></RouterProvider>
+	</>
+  );
 }
 
 export default App;

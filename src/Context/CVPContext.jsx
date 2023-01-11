@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import Wenb3Model from "web3modal";
-import SocialLogin from "@biconomy/web3-auth";
 import { activeChainId, CvpABI, CVPAddress } from "./constants";
-import { useCallback } from "react";
 import SmartAccount from "@biconomy/smart-account";
 import { ChainId } from "@biconomy/core-types";
+import { useAuth } from "./AuthContext";
 
 const fetchContract = (signerOrProvider) =>
 	new ethers.Contract(CVPAddress, CvpABI, signerOrProvider);
 
-let options = {
+const options = {
 	activeNetworkId: ChainId.POLYGON_MUMBAI,
 	supportedNetworksIds: [
 		ChainId.GOERLI,
@@ -25,240 +24,187 @@ let options = {
 	],
 };
 
-// this provider is from the social login which we created in last setup
-
 export const CVPContext = React.createContext();
 
 export const useCVPContext = () => useContext(CVPContext);
 
 export const CVPProvider = ({ children }) => {
-	const [socialLoginSDK, setSocialLoginSDK] = useState(null);
-	const [smartAccount, setSmartAcount] = useState(null);
-	const [web3State, setWeb3State] = useState({
-		provider: null,
-		web3Provider: null,
-		ethersProvider: null,
-		address: "",
-		chainId: activeChainId,
-	});
-
-	const [accountDetails, setAccountDetails] = useState({});
-
-	const [loading, setLoading] = useState(false);
-
-	const { provider, web3Provider, ethersProvider, address, chainId } =
-		web3State;
-
-	console.log("Hello");
+	const { provider, signerAddress, signer } = useAuth();
 
 	const connectingWithSmartContract = async () => {
-		try {
-			const web3Provider = new ethers.providers.Web3Provider(
-				socialLoginSDK.provider
-			);
-			const signer = web3Provider.getSigner();
-			const contract = fetchContract(signer);
-			return contract;
-		} catch (error) {
-			console.log("Something went wrong while connecting with contract!");
-		}
+		fetchContract(signer);
 	};
 
-	// Create socialloginsdk and call the init
-	useEffect(() => {
-		const initWallet = async () => {
-			const sdk = new SocialLogin();
-			await sdk.init();
-			sdk.showWallet();
-			setSocialLoginSDK(sdk);
+	const registerStudent = async (
+		name,
+		emailId,
+		address,
+		mobileNo,
+		studentId
+	) => {
+		const contract = fetchContract(signer);
+
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("registerStudent", [
+			name,
+			studentId,
+			emailId,
+			mobileNo,
+		]);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
 		};
-		if (!socialLoginSDK) initWallet();
-	}, [socialLoginSDK]);
 
-	// if wallet connected close widget
-	useEffect(() => {
-		console.log("hidelwallet");
-		if (socialLoginSDK && address) {
-			socialLoginSDK.hideWallet();
-		}
-	}, [address, socialLoginSDK]);
-
-	const connect = useCallback(async () => {
-		if (address) return;
-		if (socialLoginSDK?.provider) {
-			setLoading(true);
-
-			const web3Provider = new ethers.providers.Web3Provider(
-				socialLoginSDK.provider
-			);
-			const signer = web3Provider.getSigner();
-			const gotAccount = await signer.getAddress();
-			const network = await web3Provider.getNetwork();
-
-			let newSmartAccount = new SmartAccount(web3Provider, options);
-			newSmartAccount = await newSmartAccount.init();
-
-			setWeb3State({
-				provider: socialLoginSDK.provider,
-				web3Provider: web3Provider,
-				ethersProvider: web3Provider,
-				address: gotAccount,
-				chainId: Number(network.chainId),
-			});
-
-			setSmartAcount(newSmartAccount);
-
-			setLoading(false);
-			return;
-		}
-		if (socialLoginSDK) {
-			socialLoginSDK.showWallet();
-			return socialLoginSDK;
-		}
-
-		setLoading(true);
-		const sdk = new SocialLogin();
-		await sdk.init();
-		sdk.showWallet();
-		setSocialLoginSDK(sdk);
-		setAccountDetails(await sdk.getUserInfo());
-
-		// TODO: register user if new or fetch user details from contract
-		let newSmartAccount = new SmartAccount(provider, options);
-		newSmartAccount = await newSmartAccount.init();
-		setSmartAcount(newSmartAccount);
-
-		setLoading(false);
-		return socialLoginSDK;
-	}, [address, socialLoginSDK, provider]);
-
-	useEffect(() => {
-		(async () => {
-			if (socialLoginSDK?.provider && !address) {
-				connect();
-			}
-		})();
-	}, [address, connect, socialLoginSDK, socialLoginSDK?.provider]);
-
-	useEffect(() => {
-		const interval = setInterval(async () => {
-			if (address) {
-				clearInterval(interval);
-			}
-			if (socialLoginSDK?.provider && !address) {
-				connect();
-			}
-		}, 1000);
-		return () => {
-			clearInterval(interval);
-		};
-	}, [address, connect, socialLoginSDK]);
-
-	const disconnect = useCallback(async () => {
-		if (!socialLoginSDK || !socialLoginSDK.web3auth) {
-			console.error("Web3Modal not initialized.");
-			return;
-		}
-		await socialLoginSDK.logout();
-		setSmartAcount(null);
-		setWeb3State({
-			provider: null,
-			web3Provider: null,
-			ethersProvider: null,
-			address: "",
-			chainId: activeChainId,
+		const txResponse = await smartAccount.sendGasLessTransaction({
+			transaction: tx1,
 		});
-		socialLoginSDK.hideWallet();
-	}, [socialLoginSDK]);
-
-	const registerStudent = async () => {
-		const contract = await connectingWithSmartContract();
-		try {
-			console.log("Hello");
-			// One needs to prepare the transaction data
-			// Here we will be transferring ERC 20 tokens from the Smart Contract Wallet to an address
-			const registerInterface = new ethers.utils.Interface([
-				"function registerStudent(string memory name, string memory studentId, string memory emailId, string memory mobileNo)",
-			]);
-
-			console.log(web3State);
-			// Encode an ERC-20 token transfer to recipientAddress of the specified amount
-			const encodedData = registerInterface.encodeFunctionData(
-				"registerStudent",
-				["Ankit", "191070081", "jankitbb@gmail.com", "7977005251"]
-			);
-
-			let newSmartAccount = new SmartAccount(web3Provider, options);
-
-			console.log(newSmartAccount);
-			newSmartAccount = await newSmartAccount.init();
-
-			const tx = {
-				to: CVPAddress, // destination smart contract address
-				data: encodedData,
-			};
-
-			newSmartAccount.on("txHashGenerated", (response) => {
-				console.log(
-					"txHashGenerated event received via emitter",
-					response
-				);
-			});
-			newSmartAccount.on("onHashChanged", (response) => {
-				console.log(
-					"onHashChanged event received via emitter",
-					response
-				);
-			});
-			// Event listener that gets triggered once a transaction is mined
-			newSmartAccount.on("txMined", (response) => {
-				console.log("txMined event received via emitter", response);
-			});
-			newSmartAccount.on("error", (response) => {
-				console.log("error event received via emitter", response);
-			});
-
-			// Sending gasless transaction
-			const txResponse = await newSmartAccount.sendGaslessTransaction({
-				transaction: tx,
-			});
-			console.log("tx hash generated", txResponse.hash);
-
-			const receipt = await txResponse.wait();
-			console.log("tx receipt", receipt);
-		} catch (err) {
-			console.log(err);
-		}
+		console.log(txResponse);
 	};
 
-	const registerStudent1 = async () => {
-		const contract = await connectingWithSmartContract();
-		try {
-			console.log("ehlo");
-			const res = await contract.registerStudent(
-				"ANkit",
-				"191070081",
-				"jankitbb@gmail.com",
-				"7977005251"
-			);
-		} catch (err) {
-			console.log(err);
-		}
+	const registerStaff = async (name, department, emailId, level) => {
+		const contract = fetchContract(signer);
+
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("registerStaff", [
+			name,
+			department,
+			emailId,
+			level,
+		]);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGasLessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
+	const requestDocument = async (
+		docName,
+		description,
+		reqType,
+		department
+	) => {
+		const contract = fetchContract(signer);
+
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("requestDocument", [
+			docName,
+			description,
+			reqType,
+			department,
+		]);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGasLessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
+	const fetchAllRequestsForStudent = async () => {
+		const contract = fetchContract(signer);
+		const data = contract.fetchAllRequestsForStudent();
+		return data;
+	};
+
+	const fetchIndividualRequest = async (reqId) => {
+		const contract = fetchContract(signer);
+		const data = contract.fetchIndividualRequest(reqId);
+		return data;
+	};
+
+	const fetchAllDocumentsForStudent = async () => {
+		const contract = fetchContract(signer);
+		const data = contract.fetchAllDocumentsForStudent();
+		return data;
+	};
+
+	const fetchIndividualDocumentForStudent = async (docId) => {
+		const contract = fetchContract(signer);
+		const data = contract.fetchIndividualDocumentForStudent(docId);
+		return data;
+	};
+
+	const fetchAllRequestsForCollegeStaff = async () => {
+		const contract = fetchContract(signer);
+		const data = contract.fetchAllRequestsForCollegeStaff();
+		return data;
+	};
+
+	const rejectRequest = async (reqId, comment) => {
+		const contract = fetchContract(signer);
+
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("rejectRequest", [
+			reqId,
+			comment,
+		]);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGasLessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
+	const updateRequest = async (reqId, comment) => {
+		const contract = fetchContract(signer);
+
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("updateRequest", [
+			reqId,
+			comment,
+		]);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGasLessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
 	};
 
 	return (
 		<CVPContext.Provider
 			value={{
-				connect,
-				disconnect,
-				loading,
-				provider: provider,
-				ethersProvider: ethersProvider || null,
-				web3Provider: web3Provider || null,
-				chainId: chainId || 0,
-				address: address || "",
 				registerStudent,
-				registerStudent1,
+				registerStaff,
+				requestDocument,
+				fetchAllRequestsForStudent,
+				fetchIndividualRequest,
+				fetchAllDocumentsForStudent,
+				fetchIndividualDocumentForStudent,
+				fetchAllRequestsForCollegeStaff,
+				rejectRequest,
+				updateRequest,
 			}}
 		>
 			{children}
