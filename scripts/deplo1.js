@@ -1,7 +1,7 @@
 const hre = require("hardhat");
 
 async function main() {
-	const Cvp = await hre.ethers.getContractFactory("Cvp");
+	const Cvp = await hre.ethers.getContractFactory("Storage");
 	const cvp = await Cvp.deploy();
 
 	await cvp.deployed();
