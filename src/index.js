@@ -5,13 +5,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { CVPProvider } from "./Context/CVPContext";
 import "@biconomy/web3-auth/dist/src/style.css";
+import { SmartAccountProvider } from "./Context/SmartAccountContext";
+import { Web3AuthProvider } from "./Context/SocialLoginContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<React.StrictMode>
-		<CVPProvider>
-			<App />
-		</CVPProvider>
+		<Web3AuthProvider>
+			<SmartAccountProvider>
+				<App />
+			</SmartAccountProvider>
+		</Web3AuthProvider>
 	</React.StrictMode>
 );
 
