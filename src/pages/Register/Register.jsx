@@ -5,19 +5,19 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const navigate = useNavigate();
 
-  const [pubAddr, setPubAddr] = useState();
-  const [sid, setSid] = useState();
-  const [email, setEmail] = useState();
+  const [pubAddr, setPubAddr] = useState("");
+  const [sid, setSid] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (pubAddr || sid === "" || email === "") {
+    if (pubAddr === "" || sid === "" || email === "") {
       alert("Enter all details first");
       return;
     }
 
     try {
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.log(err);
       return;
