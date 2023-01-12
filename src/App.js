@@ -35,7 +35,7 @@ const App = () => {
 			element: <StudentDashboard />,
 		},
 		{
-			path: "/verify",
+			path: "/verify/:token",
 			element: <Verify />,
 		},
 		{
