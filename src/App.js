@@ -18,38 +18,38 @@ const App = () => {
       path: "/admin",
       element: <Admin />,
     },
-	{
-		path:"/",
-		element:<MainHome/>
-	},
+    {
+      path: "/",
+      element: <MainHome />,
+    },
     {
       path: "/issueMarksheet",
       element: <MarkSheetUploadPage />,
     },
-	{
-		path: "/register",
-		element: <Register/>
-	},
-	{
-		path: "/dashboard",
-		element: <StudentDashboard/>
-	},
-	{
-		path: "/verify",
-		element:<Verify/>
-	},
-	{
-		path:"/requests",
-		element:<Requests/>
-	}
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path: "/dashboard",
+      element: <StudentDashboard />,
+    },
+    {
+      path: "/verify",
+      element: <Verify />,
+    },
+    {
+      path: "/requests",
+      element: <Requests />,
+    },
   ]);
 
-	return (
-		<>
-			<Navbar />
-			<RouterProvider router={router}></RouterProvider>
-		</>
-	);
+  return (
+    <>
+      <Navbar />
+      <RouterProvider router={router}></RouterProvider>
+    </>
+  );
 };
 
 export default App;
