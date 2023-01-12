@@ -1,0 +1,18 @@
+.registerBtn{
+    background-color: #ECECEC;
+    padding: 1.1rem 2rem;
+    font-size: 1.3rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    color: #555;
+    width: 15%;
+    margin: 1.1rem auto;
+    text-decoration: none;
+}
+
+.registerBtn:hover{
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
+    color: black;
+}

@@ -1,0 +1,30 @@
+.detailsBox{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 20px;
+}
+.heading{
+    font-size: 25px;
+	font-weight: 700;
+	width: 100%;
+	color: #555;
+	margin-bottom: 20px;
+    text-align: center;
+}
+.table {
+	font-size: 17px;
+	width: 75%;
+    margin: auto;
+}
+.table th,
+.table td {
+	border: 0.5px solid black;
+    padding: 5px 10px;
+}
+.tableRow {
+	margin: 10px 0;
+}

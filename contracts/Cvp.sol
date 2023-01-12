@@ -151,7 +151,8 @@ contract Cvp {
 
         requestsMapping[requestCount] = Request({
             reqId: requestCount,
-            studentAdd: studentAdd,
+            stude
+            ntAdd: studentAdd,
             docName: docName,
             description: description,
             level: 2, //TODo:For timebieng humne ye rakha hai baad mai change karna hai
