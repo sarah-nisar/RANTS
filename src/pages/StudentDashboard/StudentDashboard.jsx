@@ -8,20 +8,22 @@ import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
 
 const StudentDashboard = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const [name, setName] = useState("Atharva");
-  const [pubAddr, setPubAddr] = useState(
-    "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
-  );
-  const [sid, setSid] = useState("191070053");
-  const [email, setEmail] = useState("appatil_b19@ce.vjti.ac.in");
-  const [docDetails, setDocDetails] = useState("10th Marksheet Certificate");
-  const [reqType, setreqType] = useState("Create");
-  const [department, setdepartment] = useState("");
-  const [docName, setdocName] = useState("");
+	const [name, setName] = useState("Atharva");
+	const [sid, setSid] = useState("191070053");
+	const [email, setEmail] = useState("appatil_b19@ce.vjti.ac.in");
+	const [docDetails, setDocDetails] = useState("10th Marksheet Certificate");
+	const [reqType, setreqType] = useState("Create");
+	const [department, setdepartment] = useState("");
+	const [docName, setdocName] = useState("");
 
-  const { registerStudent, getStudent, fetchAllDocumentsForStudent, requestDocument } = useCVPContext();
+	const {
+		registerStudent,
+		getStudent,
+		fetchAllDocumentsForStudent,
+		requestDocument,
+	} = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
 	useEffect(() => {
@@ -33,18 +35,18 @@ const StudentDashboard = () => {
 			const student = await getStudent();
 			if (student) {
 				navigate("/dashboard");
-        console.log(student);
+				console.log(student);
 			}
 		} catch (err) {
 			console.log(err);
 		}
 	});
-  
-  const FetchAllDocumentsForStudent = useCallback(async () => {
+
+	const FetchAllDocumentsForStudent = useCallback(async () => {
 		try {
 			const documents = await fetchAllDocumentsForStudent();
 			if (documents) {
-        console.log(documents);
+				console.log(documents);
 			}
 		} catch (err) {
 			console.log(err);
@@ -52,101 +54,127 @@ const StudentDashboard = () => {
 	});
 
 	useEffect(() => {
+		fetchStudent();
 		FetchAllDocumentsForStudent();
 	}, [currentAccount]);
 
-  const handleSubmit = async (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (
-			docName === "" ||
-			department === "" ||
-			docDetails === "" 
-		) {
+		console.log(docName, docDetails, department);
+		if (docName === "" || department === "" || docDetails === "") {
 			alert("Enter all details first");
 			return;
 		}
 
 		try {
-			await requestDocument(pubAddr, docName, docDetails, reqType, department);
+			await requestDocument(
+				currentAccount,
+				docName,
+				docDetails,
+				reqType,
+				department
+			);
 		} catch (err) {
 			console.log(err);
 			return;
 		}
 	};
 
-  return (
-    <>
-      <div className={styles.dashboardBox}>
-        <div className={styles.heading}>
-          Welcome <span className={styles.name}>{name}</span>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>My details</span>
-          <div className={styles.details}>
-            Public Address: <span className={styles.name}>{pubAddr}</span>
-          </div>
-          <div className={styles.details}>
-            Registration ID: <span className={styles.name}>{sid}</span>
-          </div>
-          <div className={styles.details}>
-            VJTI Email ID: <span className={styles.name}>{email}</span>
-          </div>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>My Documents</span>
-          <div className={styles.details}>
-            Public Address: <span className={styles.name}>{pubAddr}</span>
-          </div>
-          <div className={styles.details}>
-            Registration ID: <span className={styles.name}>{sid}</span>
-          </div>
-          <div className={styles.details}>
-            VJTI Email ID: <span className={styles.name}>{email}</span>
-          </div>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>Request a document</span>
-          <form onSubmit={handleSubmit} className={`${styles.formBox}`}>
-    
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>Document type</label>
-              <select className={`${styles2.input}`} onChange={(e) => setdocName(e.target.value)}>
-                <option>Marksheet</option>
-                <option>Transcripts</option>
-                <option>Leaving Certificate</option>
-              </select>
-            </div>
+	return (
+		<>
+			<div className={styles.dashboardBox}>
+				<div className={styles.heading}>
+					Welcome <span className={styles.name}>{name}</span>
+				</div>
+				<div className={styles.detailsBox}>
+					<span className={styles.detailsHeading}>My details</span>
+					<div className={styles.details}>
+						Public Address:{" "}
+						<span className={styles.name}>{currentAccount}</span>
+					</div>
+					<div className={styles.details}>
+						Registration ID:{" "}
+						<span className={styles.name}>{sid}</span>
+					</div>
+					<div className={styles.details}>
+						VJTI Email ID:{" "}
+						<span className={styles.name}>{email}</span>
+					</div>
+				</div>
+				<div className={styles.detailsBox}>
+					<span className={styles.detailsHeading}>My Documents</span>
+					<div className={styles.details}>
+						Public Address:{" "}
+						<span className={styles.name}>{currentAccount}</span>
+					</div>
+					<div className={styles.details}>
+						Registration ID:{" "}
+						<span className={styles.name}>{sid}</span>
+					</div>
+					<div className={styles.details}>
+						VJTI Email ID:{" "}
+						<span className={styles.name}>{email}</span>
+					</div>
+				</div>
+				<div className={styles.detailsBox}>
+					<span className={styles.detailsHeading}>
+						Request a document
+					</span>
+					<form
+						onSubmit={handleSubmit}
+						className={`${styles.formBox}`}
+					>
+						<div className={`${styles2.inputContainer}`}>
+							<label className={`${styles2.inputLabel}`}>
+								Document type
+							</label>
+							<select
+								className={`${styles2.input}`}
+								onChange={(e) => setdocName(e.target.value)}
+							>
+								<option>Marksheet</option>
+								<option>Transcripts</option>
+								<option>Leaving Certificate</option>
+							</select>
+						</div>
 
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>Department</label>
-              <select className={`${styles2.input}`} onChange={(e) => setdepartment(e.target.value)}>
-                <option>Academic Section</option>
-                <option>Examination Section</option>
-                <option>Scholarship Section</option>
-              </select>
-            </div>
+						<div className={`${styles2.inputContainer}`}>
+							<label className={`${styles2.inputLabel}`}>
+								Department
+							</label>
+							<select
+								className={`${styles2.input}`}
+								onChange={(e) => setdepartment(e.target.value)}
+							>
+								<option>Academic Section</option>
+								<option>Examination Section</option>
+								<option>Scholarship Section</option>
+							</select>
+						</div>
 
-
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>
-                Document details
-              </label>
-              <input
-                className={`${styles2.input}`}
-                type="textarea"
-                placeholder="Enter document details"
-                onChange={(e) => setDocDetails(e.target.value)}
-                value={docDetails}
-              />
-            </div>
-          </form>
-        </div>
-        <a className={styles.requestFileBtn} href="/">
-          <span className="ml-4">Request File</span>
-        </a>
-      </div>
-    </>
-  );
+						<div className={`${styles2.inputContainer}`}>
+							<label className={`${styles2.inputLabel}`}>
+								Document details
+							</label>
+							<input
+								className={`${styles2.input}`}
+								type="textarea"
+								placeholder="Enter document details"
+								onChange={(e) => setDocDetails(e.target.value)}
+								value={docDetails}
+							/>
+						</div>
+					</form>
+				</div>
+				<button
+					className={styles.requestFileBtn}
+					onClick={handleSubmit}
+				>
+					Request File
+				</button>
+			</div>
+		</>
+	);
 };
 
 export default StudentDashboard;

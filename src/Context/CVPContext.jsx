@@ -116,6 +116,7 @@ export const CVPProvider = ({ children }) => {
 	};
 
 	const requestDocument = async (
+		address,
 		docName,
 		description,
 		reqType,
@@ -130,6 +131,7 @@ export const CVPProvider = ({ children }) => {
 		smartAccount = await smartAccount.init();
 
 		const data = contract.interface.encodeFunctionData("requestDocument", [
+			address,
 			docName,
 			description,
 			reqType,
@@ -143,6 +145,7 @@ export const CVPProvider = ({ children }) => {
 
 		const txResponse = await smartAccount.sendGaslessTransaction({
 			transaction: tx1,
+			value: ethers.utils.parseUnits("1", "ether"),
 		});
 		console.log(txResponse);
 	};

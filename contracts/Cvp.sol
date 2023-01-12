@@ -167,11 +167,12 @@ contract Cvp {
         string memory reqType,
         string memory department
     ) public payable {
-        require(
+        if (
             keccak256(abi.encodePacked(docName)) ==
-                keccak256(abi.encodePacked("Academic Transcript")) &&
-                msg.value >= 1 ether
-        );
+            keccak256(abi.encodePacked("Academic Transcript"))
+        ) {
+            require(msg.value >= 1 ether);
+        }
         owner.transfer(msg.value);
 
         requestsMapping[requestCount] = Request({

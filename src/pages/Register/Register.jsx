@@ -27,7 +27,7 @@ const Register = () => {
 				navigate("/dashboard");
 			}
 		} catch (err) {
-			console.log(err);
+			// console.log(err);
 		}
 	});
 
