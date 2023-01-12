@@ -1,11 +1,12 @@
 import React from "react";
 import styles from "./Admin.module.css";
 import { useNavigate } from "react-router-dom";
-import templateMarkSheet from '../../images/template.jpg';
-import templateLeaving from '../../images/leavingtemplate.png';
-import templateTranscript from '../../images/transcripttemplate.png';
+import ms from '../../images/ms.svg';
+import lc from '../../images/lc.svg';
+import tc from '../../images/tc.svg';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ const HomePage = () => {
     navigate("/requests");
   };
 
+  const navigateToRegisterStaff = () => {
+    navigate("/registerStaff");
+  };
+
   return (
     <div className={styles.homePageContainer}>
       <div className={styles.homePageBodyContainer}>
@@ -26,18 +31,20 @@ const HomePage = () => {
           <span className={styles.issueDocSubHeader}>Issue Documents</span>
           <div className={styles.issueDocGrid}>
             <div
-              style={{backgroundImage: `linear-gradient(#00000000, #0B64CC), url(${templateMarkSheet})`}}
               className={styles.issueDocCard}
               onClick={navigateToMarksheetUpload}
             >
+              <img src={ms} className={styles.cardIcon}/>
               Mark Sheets
             </div>
             <div className={styles.issueDocCard}
-              style={{backgroundImage: `linear-gradient(#00000000, #e74c3c), url(${templateTranscript})`}}
-            >Transcripts</div>
+            >
+              <img src={tc} className={styles.cardIcon}/>
+              Transcripts</div>
             <div className={styles.issueDocCard}
-              style={{backgroundImage: `linear-gradient(#00000000, #e67e22), url(${templateLeaving})`}}
-            >Leaving Certificate</div>
+            >
+              <img src={lc} className={styles.cardIcon}/>
+              Leaving Certificate</div>
           </div>
         </div>
 
@@ -54,6 +61,12 @@ const HomePage = () => {
               <div className={styles.quickActionCardContent}>
                 <MarkEmailUnreadIcon style={{marginRight: '0.4rem'}}/>
                 View Requests
+              </div>
+            </div>
+            <div className={`${styles.quickActionCard} ${styles.viewRequestsCard}`} onClick={navigateToRegisterStaff}>
+              <div className={styles.quickActionCardContent}>
+                <PersonAddAlt1Icon style={{marginRight: '0.4rem'}}/>
+                Add Staff Member
               </div>
             </div>
           </div>

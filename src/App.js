@@ -11,12 +11,15 @@ import MarkSheetUploadPage from "./pages/MarkSheetUploadPage/MarkSheetUploadPage
 import { useCVPContext } from "./Context/CVPContext";
 import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
+import RegisterStaff from "./pages/RegisterStaff/RegisterStaff";
+import { useLocation } from "react-router-dom";
 
 const App = () => {
+
   const router = createBrowserRouter([
     {
       path: "/admin",
-      element: <Admin />,
+      element: <><Navbar /><Admin /></>,
     },
 	{
 		path:"/",
@@ -24,30 +27,36 @@ const App = () => {
 	},
     {
       path: "/issueMarksheet",
-      element: <MarkSheetUploadPage />,
+      element: <><Navbar /><MarkSheetUploadPage /></>,
     },
 	{
 		path: "/register",
-		element: <Register/>
+		element: <><Navbar /><Register/></>
 	},
 	{
 		path: "/dashboard",
-		element: <StudentDashboard/>
+		element: <><Navbar /><StudentDashboard/></>
 	},
 	{
 		path: "/verify",
-		element:<Verify/>
+		element: <><Navbar /><Verify/></>
 	},
 	{
 		path:"/requests",
-		element:<Requests/>
+		element: <><Navbar /><Requests/></>
+	},
+	{
+		path:"/registerStaff",
+		element: <><Navbar /><RegisterStaff/></>
 	}
   ]);
 
+
+  
 	return (
 		<>
-			<Navbar />
-			<RouterProvider router={router}></RouterProvider>
+			<RouterProvider router={router}>
+			</RouterProvider>
 		</>
 	);
 };

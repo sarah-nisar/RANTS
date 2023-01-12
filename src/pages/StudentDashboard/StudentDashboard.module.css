@@ -37,6 +37,19 @@
     margin: auto;
 }
 
+.docCard{
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background-color: aliceblue;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}
+
+.docCard:hover{
+    background-color: rgb(217, 237, 255);
+}
+
 .table {
 	font-size: 17px;
 	width: 100%;

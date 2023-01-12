@@ -62,6 +62,7 @@ const StudentDashboard = () => {
 		try {
 			const data = await fetchAllDocumentsForStudent();
 			setDocuments(data);
+			console.log(data);
 		} catch (err) {
 			console.log(err);
 		}
@@ -120,6 +121,11 @@ const StudentDashboard = () => {
 		}
 	};
 
+	const openDocPage = (ipfsCID, docName) => {
+		const win = window.open(`https://${ipfsCID}.ipfs.w3s.link/${docName}`);
+		win.focus();
+	}
+
 	return (
 		<>
 			{studentDetails && studentDetails.length !== 0 ? (
@@ -160,7 +166,11 @@ const StudentDashboard = () => {
 							My Documents
 						</span>
 						{documents.map((item, index) => {
-							return <li key={index}>{item.studentAdd}</li>;
+							return <div className={styles.docCard} onClick={() => {openDocPage(item.ipfsCID, item.docName)}}>
+								<span>Document Name: {item.docName}</span>
+								<span>Description: {item.description}</span>
+								<span>Department: {item.department}</span>
+							</div>;
 						})}
 					</div>
 
