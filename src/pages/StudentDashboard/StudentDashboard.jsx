@@ -8,144 +8,250 @@ import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
 
 const StudentDashboard = () => {
-  const [name, setName] = useState("Atharva");
-  const [pubAddr, setPubAddr] = useState(
-    "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
-  );
-  const [sid, setSid] = useState("191070053");
-  const [email, setEmail] = useState("appatil_b19@ce.vjti.ac.in");
-  const [docType, setDocType] = useState("Select");
-  const [dept, setDept] = useState("Select");
-  const [docDetails, setDocDetails] = useState("");
-  const [pendingDocDetails, setPendingDocDetails] = useState([
-    { docType: "Marksheet", dept: "Academic", docDetails: "Sem 1 Marksheet" },
-    {
-      docType: "Leaving Certificate",
-      dept: "Academic",
-      docDetails: "12th Leaving Certificate",
-    },
-  ]);
+	const navigate = useNavigate();
 
-  const handleDeptChange = (e) => {
-    setDept(e.target.value);
-  };
+	// Student details
+	const [studentDetails, setStudentDetails] = useState([]);
 
-  const handleDocTypeChnage = (e) => {
-    setDocType(e.target.value);
-  };
+	// Student documents
+	const [documents, setDocuments] = useState([]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("DocType", docType);
-    if (docType === "Select" || dept === "Select" || docDetails === "") {
-      alert("Enter all details first");
-      return;
-    }
-    setPendingDocDetails()
-  };
+	// Pending requests
+	const [requests, setRequests] = useState([]);
 
-  return (
-    <>
-      <div className={styles.dashboardBox}>
-        <div className={styles.heading}>
-          Welcome <span className={styles.name}>{name}</span>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>My details</span>
-          <div className={styles.details}>
-            Public Address: <span className={styles.name}>{pubAddr}</span>
-          </div>
-          <div className={styles.details}>
-            Registration ID: <span className={styles.name}>{sid}</span>
-          </div>
-          <div className={styles.details}>
-            VJTI Email ID: <span className={styles.name}>{email}</span>
-          </div>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>My Documents</span>
-          <div className={styles.details}>
-            Public Address: <span className={styles.name}>{pubAddr}</span>
-          </div>
-          <div className={styles.details}>
-            Registration ID: <span className={styles.name}>{sid}</span>
-          </div>
-          <div className={styles.details}>
-            VJTI Email ID: <span className={styles.name}>{email}</span>
-          </div>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>Pending Requests</span>
-          <table className={`table-auto ${styles.table} `}>
-            <thead>
-              <tr className={styles.tableRow}>
-                <th>Document Type</th>
-                <th>Department</th>
-                <th>Document Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingDocDetails.map((value, index) => {
-                return (
-                  <tr className={styles.tableRow} key={index}>
-                    <td>{value.docType}</td>
-                    <td>{value.dept}</td>
-                    <td>{value.docDetails}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <div className={styles.detailsBox}>
-          <span className={styles.detailsHeading}>Request a document</span>
-          <form className={`${styles.formBox}`}>
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>Document type</label>
-              <select
-                className={`${styles2.input}`}
-                onChange={handleDocTypeChnage}
-              >
-                <option>Select</option>
-                <option>Marksheet</option>
-                <option>Transcripts</option>
-                <option>Leaving Certificate</option>
-              </select>
-            </div>
+	// Upload request states
+	const [docType, setDocType] = useState("Marksheet");
+	const [dept, setDept] = useState("Academic Section");
+	const [docDetails, setDocDetails] = useState("");
 
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>Department</label>
-              <select
-                className={`${styles2.input}`}
-                onChange={handleDeptChange}
-              >
-                <option>Select</option>
-                <option>Academic Section</option>
-                <option>Examination Section</option>
-                <option>Scholarship Section</option>
-              </select>
-            </div>
+	const [pendingDocDetails, setPendingDocDetails] = useState([
+		{
+			docType: "Marksheet",
+			dept: "Academic",
+			docDetails: "Sem 1 Marksheet",
+		},
+		{
+			docType: "Leaving Certificate",
+			dept: "Academic",
+			docDetails: "12th Leaving Certificate",
+		},
+	]);
 
-            <div className={`${styles2.inputContainer}`}>
-              <label className={`${styles2.inputLabel}`}>
-                Document details
-              </label>
-              <input
-                className={`${styles2.input}`}
-                type="textarea"
-                placeholder="Enter document details"
-                onChange={(e) => setDocDetails(e.target.value)}
-                value={docDetails}
-              />
-            </div>
-          </form>
-        </div>
-        <a className={styles.requestFileBtn} onClick={handleSubmit}>
-          <span className="ml-4">Request File</span>
-        </a>
-      </div>
-    </>
-  );
+	const {
+		fetchAllDocumentsForStudent,
+		getStudent,
+		fetchAllRequestsForStudent,
+		requestDocument,
+	} = useCVPContext();
+	const { checkIfWalletConnected, currentAccount } = useAuth();
+
+	useEffect(() => {
+		checkIfWalletConnected();
+	}, []);
+
+	const fetchStudent = useCallback(async () => {
+		try {
+			const student = await getStudent();
+			setStudentDetails(student);
+		} catch (err) {
+			navigate("/register");
+		}
+	});
+
+	const fetchDocuments = useCallback(async () => {
+		try {
+			const data = await fetchAllDocumentsForStudent();
+			setDocuments(data);
+		} catch (err) {
+			console.log(err);
+		}
+	});
+
+	const fetchPendingRequests = useCallback(async () => {
+		try {
+			console.log("Hello");
+			const data = await fetchAllRequestsForStudent();
+			console.log(data);
+			var result = [];
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].status.toNumber() === 1) result.push(data[i]);
+			}
+			setRequests(result);
+		} catch (err) {
+			console.log(err);
+		}
+	});
+
+	useEffect(() => {
+		if (currentAccount) {
+			fetchStudent();
+			fetchPendingRequests();
+			fetchDocuments();
+		}
+	}, [currentAccount]);
+
+	const handleDeptChange = (e) => {
+		setDept(e.target.value);
+	};
+
+	const handleDocTypeChnage = (e) => {
+		setDocType(e.target.value);
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		console.log("DocType", docType);
+		if (docType === "Select" || dept === "Select" || docDetails === "") {
+			alert("Enter all details first");
+			return;
+		}
+
+		try {
+			await requestDocument(
+				currentAccount,
+				docType,
+				docDetails,
+				"Create",
+				dept
+			);
+			await fetchPendingRequests();
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	return (
+		<>
+			{studentDetails && studentDetails.length !== 0 ? (
+				<div className={styles.dashboardBox}>
+					<div className={styles.heading}>
+						Welcome{" "}
+						<span className={styles.name}>
+							{studentDetails.name}
+						</span>
+					</div>
+
+					<div className={styles.detailsBox}>
+						<span className={styles.detailsHeading}>
+							My details
+						</span>
+						<div className={styles.details}>
+							Public Address:{" "}
+							<span className={styles.name}>
+								{studentDetails.studentAdd}
+							</span>
+						</div>
+						<div className={styles.details}>
+							Registration ID:{" "}
+							<span className={styles.name}>
+								{studentDetails.studentId}
+							</span>
+						</div>
+						<div className={styles.details}>
+							VJTI Email ID:{" "}
+							<span className={styles.name}>
+								{studentDetails.emailId}
+							</span>
+						</div>
+					</div>
+
+					<div className={styles.detailsBox}>
+						<span className={styles.detailsHeading}>
+							My Documents
+						</span>
+						{documents.map((item, index) => {
+							return <li key={index}>{item.studentAdd}</li>;
+						})}
+					</div>
+
+					<div className={styles.detailsBox}>
+						<span className={styles.detailsHeading}>
+							Pending Requests
+						</span>
+						<table className={`table-auto ${styles.table} `}>
+							<thead>
+								<tr className={styles.tableRow}>
+									<th>Document Type</th>
+									<th>Department</th>
+									<th>Document Description</th>
+								</tr>
+							</thead>
+							<tbody>
+								{requests.map((value, index) => {
+									return (
+										<tr
+											className={styles.tableRow}
+											key={index}
+										>
+											<td>{value.docName}</td>
+											<td>{value.department}</td>
+											<td>{value.description}</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+
+					<div className={styles.detailsBox}>
+						<span className={styles.detailsHeading}>
+							Request a document
+						</span>
+						<form className={`${styles.formBox}`}>
+							<div className={`${styles2.inputContainer}`}>
+								<label className={`${styles2.inputLabel}`}>
+									Document type
+								</label>
+								<select
+									className={`${styles2.input}`}
+									onChange={handleDocTypeChnage}
+								>
+									<option>Marksheet</option>
+									<option>Transcripts</option>
+									<option>Leaving Certificate</option>
+								</select>
+							</div>
+
+							<div className={`${styles2.inputContainer}`}>
+								<label className={`${styles2.inputLabel}`}>
+									Department
+								</label>
+								<select
+									className={`${styles2.input}`}
+									onChange={handleDeptChange}
+								>
+									<option>Academic Section</option>
+									<option>Examination Section</option>
+									<option>Scholarship Section</option>
+								</select>
+							</div>
+
+							<div className={`${styles2.inputContainer}`}>
+								<label className={`${styles2.inputLabel}`}>
+									Document details
+								</label>
+								<input
+									className={`${styles2.input}`}
+									type="text"
+									placeholder="Enter document details"
+									onChange={(e) =>
+										setDocDetails(e.target.value)
+									}
+									value={docDetails}
+								/>
+							</div>
+						</form>
+					</div>
+					<button
+						className={styles.requestFileBtn}
+						onClick={handleSubmit}
+					>
+						Request File
+					</button>
+				</div>
+			) : null}
+		</>
+	);
 };
 
 export default StudentDashboard;
