@@ -50,7 +50,7 @@ const Register = () => {
 
 		try {
 			await registerStudent(name, email, pubAddr, mobileNo, sid);
-			navigate("/");
+			navigate("/dashboard");
 		} catch (err) {
 			console.log(err);
 			return;

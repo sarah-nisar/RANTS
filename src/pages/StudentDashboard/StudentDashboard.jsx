@@ -2,9 +2,14 @@ import React from "react";
 import styles from "./StudentDashboard.module.css";
 import styles2 from "../Register/Register.module.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
+import { useCVPContext } from "../../Context/CVPContext";
+import { useAuth } from "../../Context/AuthContext";
+import { Description } from "@ethersproject/properties";
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("Atharva");
   const [pubAddr, setPubAddr] = useState(
     "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
@@ -12,8 +17,62 @@ const StudentDashboard = () => {
   const [sid, setSid] = useState("191070053");
   const [email, setEmail] = useState("appatil_b19@ce.vjti.ac.in");
   const [docDetails, setDocDetails] = useState("10th Marksheet Certificate");
+  const [reqType, setreqType] = useState("Create");
+  const [department, setdepartment] = useState("");
+  const [docName, setdocName] = useState("");
 
-  const handleSubmit = () => {};
+  const { registerStudent, getStudent, fetchAllDocumentsForStudent, requestDocument } = useCVPContext();
+	const { checkIfWalletConnected, currentAccount } = useAuth();
+
+	useEffect(() => {
+		checkIfWalletConnected();
+	}, []);
+
+	const fetchStudent = useCallback(async () => {
+		try {
+			const student = await getStudent();
+			if (student) {
+				navigate("/dashboard");
+        console.log(student);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	});
+  
+  const FetchAllDocumentsForStudent = useCallback(async () => {
+		try {
+			const documents = await fetchAllDocumentsForStudent();
+			if (documents) {
+        console.log(documents);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	});
+
+	useEffect(() => {
+		FetchAllDocumentsForStudent();
+	}, [currentAccount]);
+
+  const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (
+			docName === "" ||
+			department === "" ||
+			docDetails === "" 
+		) {
+			alert("Enter all details first");
+			return;
+		}
+
+		try {
+			await requestDocument(pubAddr, docName, docDetails, reqType, department);
+		} catch (err) {
+			console.log(err);
+			return;
+		}
+	};
 
   return (
     <>
@@ -51,7 +110,7 @@ const StudentDashboard = () => {
     
             <div className={`${styles2.inputContainer}`}>
               <label className={`${styles2.inputLabel}`}>Document type</label>
-              <select className={`${styles2.input}`}>
+              <select className={`${styles2.input}`} onChange={(e) => setdocName(e.target.value)}>
                 <option>Marksheet</option>
                 <option>Transcripts</option>
                 <option>Leaving Certificate</option>
@@ -60,7 +119,7 @@ const StudentDashboard = () => {
 
             <div className={`${styles2.inputContainer}`}>
               <label className={`${styles2.inputLabel}`}>Department</label>
-              <select className={`${styles2.input}`}>
+              <select className={`${styles2.input}`} onChange={(e) => setdepartment(e.target.value)}>
                 <option>Academic Section</option>
                 <option>Examination Section</option>
                 <option>Scholarship Section</option>
@@ -76,7 +135,7 @@ const StudentDashboard = () => {
                 className={`${styles2.input}`}
                 type="textarea"
                 placeholder="Enter document details"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setDocDetails(e.target.value)}
                 value={docDetails}
               />
             </div>
