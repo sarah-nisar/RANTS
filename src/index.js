@@ -8,11 +8,11 @@ import { CVPProvider } from "./Context/CVPContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-	<React.StrictMode>
-		<AuthContextProvider>
-			<CVPProvider>
-				<App />
-			</CVPProvider>
-		</AuthContextProvider>
-	</React.StrictMode>
+  <React.StrictMode>
+    <AuthContextProvider>
+      <CVPProvider>
+        <App />
+      </CVPProvider>
+    </AuthContextProvider>
+  </React.StrictMode>
 );

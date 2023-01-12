@@ -21,10 +21,10 @@ const App = () => {
       path: "/admin",
       element: <><Navbar /><Admin /></>,
     },
-	{
-		path:"/",
-		element:<MainHome/>
-	},
+    {
+      path: "/",
+      element: <MainHome />,
+    },
     {
       path: "/issueMarksheet",
       element: <><Navbar /><MarkSheetUploadPage /></>,
