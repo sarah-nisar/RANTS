@@ -145,7 +145,6 @@ export const CVPProvider = ({ children }) => {
 
 		const txResponse = await smartAccount.sendGaslessTransaction({
 			transaction: tx1,
-			value: ethers.utils.parseUnits("1", "ether"),
 		});
 		console.log(txResponse);
 	};
@@ -305,6 +304,17 @@ export const CVPProvider = ({ children }) => {
 		console.log(txResponse);
 	};
 
+	// const verifyDocument =
+
+	const verifyDocument = async (cid) => {
+		const contract = await connectingWithSmartContract();
+		const data = await contract.verifyDocument(cid, {
+			value: ethers.utils.parseUnits("0.001", "ether"),
+			gasLimit: 100000,
+		});
+		return data;
+	};
+
 	return (
 		<CVPContext.Provider
 			value={{
@@ -324,6 +334,7 @@ export const CVPProvider = ({ children }) => {
 				getAllStaffMembers,
 				uploadFilesToIPFS,
 				uploadBulkDocuments,
+				verifyDocument,
 			}}
 		>
 			{children}
