@@ -4,18 +4,21 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    // const navigateToHome = () => {
-    //     navigate("/");
-    // }
+    const navigateToHome = () => {
+        navigate("/");
+    }
 
     return (
         <div className={styles.navbar}>
-            <div className={styles.logoContainer}>
-                vjti.docs
+            <div className={styles.navbarContainer}>
+                <div onClick={navigateToHome} className={styles.logoContainer}>
+                    vjti.docs
+                </div>
+                <div className={styles.accountIcon}></div>
             </div>
-            <div className={styles.accountIcon}></div>
+            
         </div>
     );
 }

@@ -59,6 +59,18 @@ const MarkSheetUploadPage = () => {
 		useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
+    const downloadCanvasImage = () => {
+        var canvases = document.getElementsByClassName("templateCanvas");
+        console.log(canvases);
+        
+        Array.from(canvases).forEach((canvas) => {
+            var url = canvas.toDataURL("image/png");
+            var link = document.createElement('a');
+            link.download = 'filename.png';
+            link.href = url;
+            link.click();
+        })
+    }
 	const [user, setUser] = useState([]);
 
 	useEffect(() => {
@@ -81,15 +93,6 @@ const MarkSheetUploadPage = () => {
 		if (currentAccount !== "") fetchStudent();
 	}, [currentAccount]);
 
-	// TODO: Downloads only one, make it download all
-	const downloadCanvasImage = () => {
-		var canvas = document.getElementById("templateCanvas");
-		var url = canvas.toDataURL("image/png");
-		var link = document.createElement("a");
-		link.download = "filename.png";
-		link.href = url;
-		link.click();
-	};
 
 	const uploadRecord = useRef();
 	const [docFileName, setDocFileName] = useState("");

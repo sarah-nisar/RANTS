@@ -8,15 +8,7 @@ import Modal from "react-modal";
 import axios from "../../helpers/axios";
 
 const Register = () => {
-  const sgMail = require("@sendgrid/mail");
-  sgMail.setApiKey(
-    "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"
-  );
-
-  const secret = authenticator.generateSecret();
-  const token = authenticator.generate(secret);
-
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [otp, setOtp] = useState("");
@@ -58,9 +50,9 @@ const Register = () => {
     }
   };
 
-  useEffect(() => {
-    checkIfWalletConnected();
-  }, []);
+	useEffect(() => {
+		checkIfWalletConnected();
+	}, []);
 
   const fetchStudent = useCallback(async () => {
     try {
@@ -73,9 +65,10 @@ const Register = () => {
     }
   });
 
-  useEffect(() => {
-    fetchStudent();
-  }, [currentAccount]);
+	useEffect(() => {
+		fetchStudent();
+		setPubAddr(currentAccount);
+	}, [currentAccount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

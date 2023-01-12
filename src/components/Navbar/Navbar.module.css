@@ -3,6 +3,13 @@
     background-image: linear-gradient(#bcc9ff, #ffffff00);
     padding: 1.5rem;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.navbarContainer{
+    width: 80%;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
