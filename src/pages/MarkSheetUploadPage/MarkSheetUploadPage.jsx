@@ -48,12 +48,16 @@ const MarkSheetUploadPage = () => {
 
     // TODO: Downloads only one, make it download all
     const downloadCanvasImage = () => {
-        var canvas = document.getElementById("templateCanvas");
-        var url = canvas.toDataURL("image/png");
-        var link = document.createElement('a');
-        link.download = 'filename.png';
-        link.href = url;
-        link.click();
+        var canvases = document.getElementsByClassName("templateCanvas");
+        console.log(canvases);
+        
+        Array.from(canvases).forEach((canvas) => {
+            var url = canvas.toDataURL("image/png");
+            var link = document.createElement('a');
+            link.download = 'filename.png';
+            link.href = url;
+            link.click();
+        })
     }
 
     useEffect(() => {

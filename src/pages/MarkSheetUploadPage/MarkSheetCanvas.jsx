@@ -9,7 +9,7 @@ const Canvas = ({ entry, draw, height, width }) => {
     });
   
     
-    return <canvas id="templateCanvas" ref={canvas} height={height} width={width} />;
+    return <canvas className="templateCanvas" ref={canvas} height={height} width={width} />;
 };
 
 export default Canvas;
