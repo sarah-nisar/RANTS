@@ -36,6 +36,10 @@ const Admin = () => {
 		navigate("/issueMarksheet");
 	};
 
+	const navigateToRequests = () => {
+		navigate("/requests");
+	};
+
 	return (
 		<div className={styles.homePageContainer}>
 			<div className={styles.homePageBodyContainer}>
@@ -84,7 +88,12 @@ const Admin = () => {
 						<div className={styles.issueDocCard}>
 							View Student Docs
 						</div>
-						<div className={styles.issueDocCard}>View Requests</div>
+						<div
+							className={styles.issueDocCard}
+							onClick={navigateToRequests}
+						>
+							View Requests
+						</div>
 					</div>
 				</div>
 			</div>
