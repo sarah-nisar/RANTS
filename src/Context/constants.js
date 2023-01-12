@@ -1,6 +1,6 @@
 import cvp from "../artifacts/contracts/Cvp.sol/Cvp.json";
 
-export const CVPAddress = "0x0b81c4a0D021E2210F983BBe9b2aB67a34FAF455";
+export const CVPAddress = "0x9d28fD58bB8625dd5Bfb20EDeD37076Cdcc784F5";
 export const CvpABI = cvp.abi;
 
 export const ChainId = {

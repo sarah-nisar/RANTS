@@ -6,55 +6,33 @@ const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
-	const [provider, setProvider] = useState(undefined);
-	const [signer, setSigner] = useState(undefined);
-	const [signerAddress, setSignerAddress] = useState(undefined);
-	const [loading, setLoading] = useState(true);
+	const [currentAccount, setCurrentAccount] = useState("");
 
-	useEffect(() => {
-		const onLoad = async () => {
-			setLoading(true);
-			//@ts-ignore
-			const provider = await new ethers.providers.Web3Provider(
-				window.ethereum
-			);
-			setProvider(provider);
-			setLoading(false);
-		};
-
-		onLoad();
-	}, []);
-
-	const getSigner = async (provider) => {
-		provider.send("eth_requestAccounts", []);
-		const signer = provider.getSigner();
-		setSigner(signer);
+	const checkIfWalletConnected = async () => {
+		try {
+			if (!window.ethereum) return console.log("Install Metamask");
+			const accounts = await window.ethereum.request({
+				method: "eth_accounts",
+			});
+			if (accounts.length) {
+				setCurrentAccount(accounts[0]);
+				console.log("Current Account", currentAccount);
+			} else {
+				console.log("No accounts found!");
+			}
+		} catch (error) {
+			console.log("Someting wrong while connecting to wallet");
+		}
 	};
-
-	const isConnected = () => signer !== undefined;
-
-	const getWalletAddress = () => {
-		signer.getAddress().then((address) => {
-			setSignerAddress(address);
-		});
-	};
-
-	if (signer !== undefined) {
-		getWalletAddress();
-	}
 
 	return (
 		<AuthContext.Provider
 			value={{
-				provider,
-				signerAddress,
-				getSigner,
-				isConnected,
-				getWalletAddress,
-				signer,
+				checkIfWalletConnected,
+				currentAccount,
 			}}
 		>
-			{loading ? null : children}
+			{children}
 		</AuthContext.Provider>
 	);
 };
