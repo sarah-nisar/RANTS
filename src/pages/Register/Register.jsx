@@ -65,11 +65,9 @@ const Register = () => {
           />
         </div>
 
-        <div className={`${styles.registerBtn}`}>
-          <a className={`${styles.anchorTag}`} onClick={handleSubmit} href="/">
-            <span className="ml-4">Register</span>
-          </a>
-        </div>
+        <a className={`${styles.anchorTag}`} onClick={handleSubmit} href="/">
+          <span className="ml-4">Register</span>
+        </a>
       </form>
     </div>
   );
