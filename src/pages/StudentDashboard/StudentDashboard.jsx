@@ -2,7 +2,10 @@ import React from "react";
 import styles from "./StudentDashboard.module.css";
 import styles2 from "../Register/Register.module.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
+import { useCVPContext } from "../../Context/CVPContext";
+import { useAuth } from "../../Context/AuthContext";
+import { Description } from "@ethersproject/properties";
 
 const StudentDashboard = () => {
   const [name, setName] = useState("Atharva");

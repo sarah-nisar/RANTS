@@ -7,59 +7,60 @@ import { useAuth } from "../../Context/AuthContext";
 const Register = () => {
   const navigate = useNavigate();
 
-  const { registerStudent, getStudent } = useCVPContext();
+	const [pubAddr, setPubAddr] = useState("");
+	const [sid, setSid] = useState("");
+	const [email, setEmail] = useState("");
+	const [name, setName] = useState("");
+	const [mobileNo, setMobileNo] = useState("");
 
-  const [pubAddr, setPubAddr] = useState("");
-  const [sid, setSid] = useState("");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-
-  const { checkIfWalletConnected, currentAccount } = useAuth();
+	const { registerStudent, getStudent } = useCVPContext();
+	const { checkIfWalletConnected, currentAccount } = useAuth();
 
   useEffect(() => {
     checkIfWalletConnected();
   }, []);
 
-  const fetchStudent = useCallback(async () => {
-    try {
-      const student = await getStudent();
-      if (student) {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
+	const fetchStudent = useCallback(async () => {
+		try {
+			const student = await getStudent();
+			if (student) {
+				navigate("/dashboard");
+			}
+		} catch (err) {
+			// console.log(err);
+		}
+	});
 
   useEffect(() => {
     fetchStudent();
   }, [currentAccount]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (pubAddr === "" || sid === "" || email === "") {
-      alert("Enter all details first");
-      return;
-    }
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (
+			pubAddr === "" ||
+			sid === "" ||
+			email === "" ||
+			name === "" ||
+			mobileNo === ""
+		) {
+			alert("Enter all details first");
+			return;
+		}
 
-    try {
-      await registerStudent(name, email, pubAddr, mobileNo, sid);
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-      return;
-    }
-  };
+		try {
+			await registerStudent(name, email, pubAddr, mobileNo, sid);
+			navigate("/dashboard");
+		} catch (err) {
+			console.log(err);
+			return;
+		}
+	};
 
-  const navigateToMarksheetUpload = () => {
-    navigate("/issueMarksheet");
-  };
-
-  return (
-    <div className={styles.registerPageContainer}>
-      <form onSubmit={handleSubmit} className={`${styles.formBox}`}>
-        <h2 className={`${styles.heading}`}>Register</h2>
+	return (
+		<div className={styles.registerPageContainer}>
+			<form onSubmit={handleSubmit} className={`${styles.formBox}`}>
+				<h2 className={`${styles.heading}`}>Register</h2>
 
         <div className={`${styles.inputContainer}`}>
           <label className={`${styles.inputLabel}`}>Public Address</label>

@@ -66,26 +66,16 @@ contract Cvp {
 
     constructor() {
         owner = payable(msg.sender);
-        collegeStaffsMapping[collegeStaffCount] = CollegeStaff(
-            msg.sender,
-            "College",
-            2,
-            "VJTI",
-            "vjti@vjti.in"
-        );
-        collegeStaffAddressToIDMapping[msg.sender] = collegeStaffCount;
-        collegeStaffCount += 1;
     }
 
     function registerStudent(
-        address studentAdd,
         string memory name,
         string memory studentId,
         string memory emailId,
         string memory mobileNo
     ) public {
         studentsMapping[studentsCount] = Student(
-            studentAdd,
+            msg.sender,
             name,
             studentId,
             emailId,
@@ -97,14 +87,13 @@ contract Cvp {
     }
 
     function registerStaff(
-        address staffAdd,
         string memory name,
         string memory department,
         string memory emailId,
         uint256 level
     ) public {
         collegeStaffsMapping[collegeStaffCount] = CollegeStaff(
-            staffAdd,
+            msg.sender,
             department,
             level,
             name,
@@ -114,29 +103,7 @@ contract Cvp {
         collegeStaffCount += 1;
     }
 
-    function fetchStudentByAddress(
-        address studentAdd
-    ) public view returns (Student memory) {
-        for (uint256 i = 0; i < studentsCount; i++) {
-            if (studentsMapping[i].studentAdd == studentAdd) {
-                return studentsMapping[i];
-            }
-        }
-        revert();
-    }
-
-    function fetchAllStudents() public view returns (Student[] memory) {
-        Student[] memory result = new Student[](studentsCount);
-
-        for (uint256 i = 0; i < studentsCount; i++) {
-            Student storage newStudent = studentsMapping[i];
-            result[i] = newStudent;
-        }
-        return result;
-    }
-
     function requestDocument(
-        address studentAdd,
         string memory docName,
         string memory description,
         string memory reqType,
@@ -151,11 +118,10 @@ contract Cvp {
 
         requestsMapping[requestCount] = Request({
             reqId: requestCount,
-            stude
-            ntAdd: studentAdd,
+            studentAdd: msg.sender,
             docName: docName,
             description: description,
-            level: 2, //TODo:For timebieng humne ye rakha hai baad mai change karna hai
+            level: 1,
             reqType: reqType,
             issuer1: payable(address(0)),
             issuer2: payable(address(0)),
@@ -277,44 +243,32 @@ contract Cvp {
         return result;
     }
 
-    function rejectRequest(
-        uint256 reqId,
-        string memory comment,
-        address staffAdd
-    ) public {
+    function rejectRequest(uint256 reqId, string memory comment) public {
         requestsMapping[reqId].status = 2;
-        requestsMapping[reqId].issuer1 = staffAdd;
-        requestsMapping[reqId].issuer2 = staffAdd;
+        requestsMapping[reqId].issuer1 = msg.sender;
+        requestsMapping[reqId].issuer2 = msg.sender;
         requestsMapping[reqId].comment = comment;
     }
 
-    function updateRequest(
-        uint256 reqId,
-        string memory comment,
-        address staffAdd
-    ) public {
-        requestsMapping[reqId].issuer1 = staffAdd;
+    function updateRequest(uint256 reqId, string memory comment) public {
+        requestsMapping[reqId].issuer1 = msg.sender;
         requestsMapping[reqId].comment = comment;
         requestsMapping[reqId].level = 2;
     }
 
-    function issueDocument(
-        uint256 reqId,
-        string memory ipfsCID,
-        address staffAdd
-    ) public {
+    function issueDocument(uint256 reqId, string memory ipfsCID) public {
         documentsMapping[documentsCount] = Document({
             docId: documentsCount,
             docName: requestsMapping[reqId].docName,
             description: requestsMapping[reqId].description,
             studentAdd: requestsMapping[reqId].studentAdd,
-            issuer2: staffAdd,
+            issuer2: msg.sender,
             reqId: reqId,
             ipfsCID: ipfsCID,
             department: requestsMapping[reqId].department
         });
 
-        requestsMapping[reqId].issuer2 = staffAdd;
+        requestsMapping[reqId].issuer2 = msg.sender;
         requestsMapping[reqId].status = 0;
     }
 
@@ -322,8 +276,7 @@ contract Cvp {
         string[] memory cidArr,
         string memory docName,
         string memory description,
-        string[] memory emails,
-        address staffAdd
+        string[] memory emails
     ) public {
         for (uint256 i = 0; i < cidArr.length; i++) {
             documentsMapping[documentsCount] = Document({
@@ -332,11 +285,11 @@ contract Cvp {
                 description: description,
                 studentAdd: studentsMapping[studentsEmailToIdMapping[emails[i]]]
                     .studentAdd,
-                issuer2: staffAdd,
+                issuer2: msg.sender,
                 reqId: 0,
                 ipfsCID: cidArr[i],
                 department: collegeStaffsMapping[
-                    collegeStaffAddressToIDMapping[staffAdd]
+                    collegeStaffAddressToIDMapping[msg.sender]
                 ].department
             });
 
