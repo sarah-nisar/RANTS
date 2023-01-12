@@ -3,6 +3,7 @@ import styles from "./Register.module.css";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -121,13 +122,18 @@ const Register = () => {
 					/>
 				</div>
 
-				<a
+				{/* <a
 					className={`${styles.registerBtn}`}
 					onClick={handleSubmit}
 					href="/"
 				>
 					<span className="ml-4">Register</span>
-				</a>
+          
+				</a> */}
+        <button onClick={handleSubmit} className={styles.registerBtn}>
+            Register
+            <ArrowForwardIcon className={styles.arrowForwardIcon}/>
+          </button>
 			</form>
 		</div>
 	);
