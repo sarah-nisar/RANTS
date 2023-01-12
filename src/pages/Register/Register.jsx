@@ -7,14 +7,13 @@ import { useAuth } from "../../Context/AuthContext";
 const Register = () => {
 	const navigate = useNavigate();
 
-	const { registerStudent, getStudent } = useCVPContext();
-
 	const [pubAddr, setPubAddr] = useState("");
 	const [sid, setSid] = useState("");
 	const [email, setEmail] = useState("");
 	const [name, setName] = useState("");
 	const [mobileNo, setMobileNo] = useState("");
 
+	const { registerStudent, getStudent } = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
 	useEffect(() => {
@@ -25,7 +24,7 @@ const Register = () => {
 		try {
 			const student = await getStudent();
 			if (student) {
-				navigate("/");
+				navigate("/dashboard");
 			}
 		} catch (err) {
 			console.log(err);
@@ -38,22 +37,24 @@ const Register = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (pubAddr === "" || sid === "" || email === "") {
+		if (
+			pubAddr === "" ||
+			sid === "" ||
+			email === "" ||
+			name === "" ||
+			mobileNo === ""
+		) {
 			alert("Enter all details first");
 			return;
 		}
 
 		try {
-			await registerStudent("ANkit", email, pubAddr, "7977005251", sid);
+			await registerStudent(name, email, pubAddr, mobileNo, sid);
 			navigate("/");
 		} catch (err) {
 			console.log(err);
 			return;
 		}
-	};
-
-	const navigateToMarksheetUpload = () => {
-		navigate("/issueMarksheet");
 	};
 
 	return (

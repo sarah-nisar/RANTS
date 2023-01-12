@@ -125,6 +125,26 @@ contract Cvp {
         revert();
     }
 
+    function fetchCollegeStaffByAddress(
+        address staffAdd
+    ) public view returns (CollegeStaff memory) {
+        return collegeStaffsMapping[collegeStaffAddressToIDMapping[staffAdd]];
+    }
+
+    function fetchAllStaffMembers()
+        public
+        view
+        returns (CollegeStaff[] memory)
+    {
+        CollegeStaff[] memory result = new CollegeStaff[](collegeStaffCount);
+
+        for (uint256 i = 0; i < collegeStaffCount; i++) {
+            CollegeStaff storage newStaffMember = collegeStaffsMapping[i];
+            result[i] = newStaffMember;
+        }
+        return result;
+    }
+
     function fetchAllStudents() public view returns (Student[] memory) {
         Student[] memory result = new Student[](studentsCount);
 
