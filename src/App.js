@@ -13,36 +13,36 @@ import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
 
 const App = () => {
-  const router = createBrowserRouter([
-    {
-      path: "/admin",
-      element: <Admin />,
-    },
-	{
-		path:"/",
-		element:<MainHome/>
-	},
-    {
-      path: "/issueMarksheet",
-      element: <MarkSheetUploadPage />,
-    },
-	{
-		path: "/register",
-		element: <Register/>
-	},
-	{
-		path: "/dashboard",
-		element: <StudentDashboard/>
-	},
-	{
-		path: "/verify",
-		element:<Verify/>
-	},
-	{
-		path:"/requests",
-		element:<Requests/>
-	}
-  ]);
+	const router = createBrowserRouter([
+		{
+			path: "/admin",
+			element: <Admin />,
+		},
+		{
+			path: "/",
+			element: <MainHome />,
+		},
+		{
+			path: "/issueMarksheet",
+			element: <MarkSheetUploadPage />,
+		},
+		{
+			path: "/register",
+			element: <Register />,
+		},
+		{
+			path: "/dashboard",
+			element: <StudentDashboard />,
+		},
+		{
+			path: "/verify",
+			element: <Verify />,
+		},
+		{
+			path: "/requests",
+			element: <Requests />,
+		},
+	]);
 
 	return (
 		<>
