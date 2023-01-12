@@ -13,27 +13,42 @@ import template from "../../images/template.jpg";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
+import UploadIcon from '@mui/icons-material/Upload';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 const baseStyle = {
-	flex: 1,
-	height: "100px",
-	display: "flex",
-	flexDirection: "column",
-	alignItems: "center",
-	padding: "20px",
-	borderWidth: 2,
-	borderRadius: 2,
-	borderColor: "#eeeeee",
-	borderStyle: "dashed",
-	backgroundColor: "#fafafa",
-	color: "#bdbdbd",
-	outline: "none",
-	transition: "border .24s ease-in-out",
-};
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#bdbdbd',
+    outline: 'none',
+    transition: 'border .24s ease-in-out'
+  };
+  
+  const focusedStyle = {
+    borderColor: '#2196f3'
+  };
+  
+  const acceptStyle = {
+    borderColor: '#00e676'
+  };
+  
+  const rejectStyle = {
+    borderColor: '#ff1744'
+  };
 
 const MarkSheetUploadPage = () => {
 	const navigate = useNavigate();
-	const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+	const { acceptedFiles, getRootProps, getInputProps,  isFocused,
+        isDragAccept,
+        isDragReject } = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
 	const templateImage = useRef();
 
@@ -42,6 +57,17 @@ const MarkSheetUploadPage = () => {
 			{file.path} - {file.size} bytes
 		</li>
 	));
+
+    const style = useMemo(() => ({
+        ...baseStyle,
+        ...(isFocused ? focusedStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+      }), [
+        isFocused,
+        isDragAccept,
+        isDragReject
+      ]);
 
 	const draw = (context, entry) => {
 		var img = document.getElementById("templateImage");
@@ -150,8 +176,9 @@ const MarkSheetUploadPage = () => {
 				</span>
 				<div className={styles.issueMarksheetContainer}>
 					<div className={styles.bulkUploadSection}>
-						<div {...getRootProps({ baseStyle })}>
+						<div {...getRootProps({ style })}>
 							<input {...getInputProps()} />
+                            <UploadIcon />
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
@@ -185,7 +212,7 @@ const MarkSheetUploadPage = () => {
 							<input
 								className={styles.regNumInput}
 								type="text"
-								placeholder="Email"
+								placeholder="Name"
 								value={docName}
 								onChange={(e) => setDocName(e.target.value)}
 							/>
@@ -196,7 +223,7 @@ const MarkSheetUploadPage = () => {
 								className={styles.regNumInput}
 								type="text"
 								value={description}
-								placeholder="Email"
+								placeholder="Description"
 								onChange={(e) => setDescription(e.target.value)}
 							/>
 							<span className={styles.inputLabel}>
@@ -212,7 +239,8 @@ const MarkSheetUploadPage = () => {
 								/>
 							</div>
 						</div>
-						<button onClick={handleSubmit}>Issue document</button>
+						<button className={styles.issueDocBtn} onClick={handleSubmit}>
+                            <TaskAltIcon className={styles.tickIcon}/> Issue</button>
 					</div>
 				</div>
 

@@ -3,6 +3,7 @@ import styles from "./RegisterStaff.module.css";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const RegisterStaff = () => {
 	const navigate = useNavigate();
@@ -74,7 +75,7 @@ const RegisterStaff = () => {
 						className={`${styles.input}`}
 						type="text"
 						placeholder="Enter public address"
-						readOnly
+                        onChange={(e) => setPubAddr(e.target.value)}
 						value={pubAddr}
 					/>
 				</div>
@@ -95,9 +96,8 @@ const RegisterStaff = () => {
                         className={`${styles.input}`}
                         onChange={handleDepartmentTypeChange}
                     >
-                        <option>Marksheet</option>
-                        <option>Transcripts</option>
-                        <option>Leaving Certificate</option>
+                        <option>Exam Dept</option>
+                        <option>Academics</option>
                     </select>
 				</div>
 
@@ -114,13 +114,10 @@ const RegisterStaff = () => {
 					/>
 				</div>
 
-				<a
-					className={`${styles.registerBtn}`}
-					onClick={handleSubmit}
-					href="/"
-				>
-					<span className="ml-4">Register</span>
-				</a>
+                <button onClick={handleSubmit} className={styles.registerBtn}>
+                    Register
+                    <ArrowForwardIcon className={styles.arrowForwardIcon}/>
+                </button>
 			</form>
 		</div>
 	);
