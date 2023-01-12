@@ -128,7 +128,12 @@ contract Cvp {
     function fetchCollegeStaffByAddress(
         address staffAdd
     ) public view returns (CollegeStaff memory) {
-        return collegeStaffsMapping[collegeStaffAddressToIDMapping[staffAdd]];
+        for (uint256 i = 0; i < collegeStaffCount; i++) {
+            if (collegeStaffsMapping[i].staffAdd == staffAdd) {
+                return collegeStaffsMapping[i];
+            }
+        }
+        revert();
     }
 
     function fetchAllStaffMembers()

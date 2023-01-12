@@ -5,6 +5,7 @@ import { activeChainId, CvpABI, CVPAddress } from "./constants";
 import SmartAccount from "@biconomy/smart-account";
 import { ChainId } from "@biconomy/core-types";
 import { useAuth } from "./AuthContext";
+import { Web3Storage } from "web3.storage";
 
 const fetchContract = (signerOrProvider) =>
 	new ethers.Contract(CVPAddress, CvpABI, signerOrProvider);
@@ -31,7 +32,10 @@ export const CVPContext = React.createContext();
 export const useCVPContext = () => useContext(CVPContext);
 
 export const CVPProvider = ({ children }) => {
-	const { checkIfWalletConnected, currentAccount } = useAuth();
+	const web3AccessToken =
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
+	const web3Storage = new Web3Storage({ token: web3AccessToken });
+	const { currentAccount } = useAuth();
 
 	const connectingWithSmartContract = async () => {
 		try {
@@ -238,6 +242,66 @@ export const CVPProvider = ({ children }) => {
 		}
 	};
 
+	const getAllStaffMembers = async () => {
+		const contract = await connectingWithSmartContract();
+		const data = await contract.fetchAllStaffMembers();
+		console.log(data);
+		return data;
+	};
+
+	const getStaffMember = async () => {
+		const contract = await connectingWithSmartContract();
+		if (currentAccount) {
+			console.log(currentAccount);
+			const data = await contract.fetchCollegeStaffByAddress(
+				currentAccount
+			);
+			console.log(data);
+			return data;
+		}
+	};
+
+	const uploadFilesToIPFS = async (file) => {
+		try {
+			// console.log(file);
+			const cid = await web3Storage.put(file);
+			return cid;
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const uploadBulkDocuments = async (
+		cidArr,
+		docName,
+		description,
+		emails,
+		staffAdd
+	) => {
+		const contract = await connectingWithSmartContract();
+
+		const web3Modal = new Wenb3Model();
+		const connection = await web3Modal.connect();
+		const provider = new ethers.providers.Web3Provider(connection);
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData(
+			"issueMultipleDocument",
+			[cidArr, docName, description, emails, staffAdd]
+		);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGaslessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
 	return (
 		<CVPContext.Provider
 			value={{
@@ -253,6 +317,10 @@ export const CVPProvider = ({ children }) => {
 				updateRequest,
 				getStudent,
 				getAllStudent,
+				getStaffMember,
+				getAllStaffMembers,
+				uploadFilesToIPFS,
+				uploadBulkDocuments,
 			}}
 		>
 			{children}
