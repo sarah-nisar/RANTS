@@ -20,11 +20,24 @@
     font-weight: bold;
     color: #1363FD;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logoImg{
+    width: 40px;
+    margin-right: 0.4rem;
 }
 
 .accountIcon{
     width: 2.2rem;
     height: 2.2rem;
+    
+}
+.avatar{
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: #1363FD;
     border-radius: 50%;
 }

@@ -59,6 +59,10 @@ const Admin = () => {
     navigate("/requests");
   };
 
+  const navigateToViewStudentDocs = () => {
+    navigate("/viewStudentDocs");
+  };
+
   return (
     <div className={styles.homePageContainer}>
       <div className={styles.homePageBodyContainer}>
@@ -89,7 +93,7 @@ const Admin = () => {
         <div className={styles.homePageSection}>
           <span className={styles.issueDocSubHeader}>Quick Actions</span>
           <div className={styles.issueDocGrid}>
-            <div className={`${styles.quickActionCard} ${styles.viewDocCard}`}>
+            <div className={`${styles.quickActionCard} ${styles.viewDocCard}`} onClick={navigateToViewStudentDocs}>
               <div className={styles.quickActionCardContent}>
                 <AccountCircleIcon style={{ marginRight: '0.4rem' }} />
                 View Student Docs

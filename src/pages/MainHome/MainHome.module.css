@@ -3,12 +3,14 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    align-items: center;
 }
 
 .heroSection{
+    width: 100%;
     height: 85vh;
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -66,4 +68,34 @@
 .downArrow{
     color: white;
     font-size: 1.5rem;
+}
+
+.sectionHeader{
+    margin-top: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1363FD;
+}
+
+.infoContainer{
+    width: 80%;
+    padding: 4rem 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.infoCard{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #1363FD;
+}
+
+.infoImage{
+    width: 200px;
+    margin-bottom: 1rem;
 }

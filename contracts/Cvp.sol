@@ -313,6 +313,33 @@ contract Cvp {
 
         return result;
     }
+    function fetchAllDocumentsForStudentByAdmin(
+        string memory emailId
+    )
+        public
+        view
+        returns (Document[] memory)
+    {
+        uint256 itemCount;
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+                itemCount += 1;
+            }
+        }
+
+        Document[] memory result = new Document[](itemCount);
+        itemCount = 0;
+
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+                Document storage newItem = documentsMapping[i];
+                result[itemCount] = newItem;
+                itemCount += 1;
+            }
+        }
+
+        return result;
+    }
 
     function fetchIndividualDocumentForStudent(
         uint256 docID
@@ -459,9 +486,7 @@ contract Cvp {
 
     function verifyDocument(
         string memory token
-    ) public payable returns (Document memory) {
-        require(msg.value >= 1 ether);
-        owner.transfer(msg.value);
+    ) public view returns (Document memory) {
         for (uint256 i = 0; i < documentsCount; i++) {
             if (
                 keccak256(abi.encodePacked(documentsMapping[i].token)) ==
@@ -471,5 +496,11 @@ contract Cvp {
             }
         }
         revert("Not found");
+    }
+
+    function payForVerification(
+    ) public payable  {
+        require(msg.value >= 1 ether);
+        owner.transfer(msg.value);
     }
 }

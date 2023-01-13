@@ -7,6 +7,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
+import one from '../../images/one.png'
+import two from '../../images/two.png'
+import three from '../../images/three.png'
 
 const MainHome = () => {
   const navigate = useNavigate();
@@ -56,7 +59,7 @@ const MainHome = () => {
           vjti.docs
         </div>
         <div className={styles.descSection}>
-          <span>Building safe & secure solution<br />
+          <span>Building a secure & efficient solution<br />
 for Certificate Verification</span>
           <button onClick={navigateToRegisterPage} className={styles.registerBtn}>
             Register
@@ -64,10 +67,23 @@ for Certificate Verification</span>
           </button>
 
         </div>
-        <div>
-          <ExpandMoreIcon className={styles.downArrow}/>
+      </div>
+      <span className={styles.sectionHeader}>Special Features</span>
+      <div className={styles.infoContainer}>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={one} alt="" />
+          <span>Secured by Blockchain</span>
+        </div>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={two} alt="" />
+          <span>Easy Document Verification</span>
+        </div>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={three} alt="" />
+          <span>Gasless Transactions</span>
         </div>
       </div>
+
     </div>
   );
 };
