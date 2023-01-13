@@ -149,6 +149,38 @@ export const CVPProvider = ({ children }) => {
 		console.log(txResponse);
 	};
 
+	const updateRequestDocument = async (
+		address,
+		docName,
+		description,
+		reqType,
+		department,
+		docId
+	) => {
+		const contract = await connectingWithSmartContract();
+
+		const web3Modal = new Wenb3Model();
+		const connection = await web3Modal.connect();
+		const provider = new ethers.providers.Web3Provider(connection);
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData(
+			"updateRequestDocument",
+			[address, docName, description, reqType, department, docId]
+		);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGaslessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
 	const fetchAllRequestsForStudent = async () => {
 		const contract = await connectingWithSmartContract();
 		const data = contract.fetchAllRequestsForStudent();
@@ -278,7 +310,9 @@ export const CVPProvider = ({ children }) => {
 		docName,
 		description,
 		emails,
-		staffAdd
+		fileNames,
+		staffAdd,
+		tokens
 	) => {
 		const contract = await connectingWithSmartContract();
 
@@ -290,8 +324,42 @@ export const CVPProvider = ({ children }) => {
 
 		const data = contract.interface.encodeFunctionData(
 			"issueMultipleDocument",
-			[cidArr, docName, description, emails, staffAdd]
+			[cidArr, docName, description, emails, fileNames, staffAdd, tokens]
 		);
+
+		const tx1 = {
+			to: CVPAddress,
+			data,
+		};
+
+		const txResponse = await smartAccount.sendGaslessTransaction({
+			transaction: tx1,
+		});
+		console.log(txResponse);
+	};
+
+	const issueDocument = async (
+		reqId,
+		ipfsCID,
+		ipfsFileName,
+		token,
+		staffAdd
+	) => {
+		const contract = await connectingWithSmartContract();
+
+		const web3Modal = new Wenb3Model();
+		const connection = await web3Modal.connect();
+		const provider = new ethers.providers.Web3Provider(connection);
+		let smartAccount = new SmartAccount(provider, options);
+		smartAccount = await smartAccount.init();
+
+		const data = contract.interface.encodeFunctionData("issueDocument", [
+			reqId,
+			ipfsCID,
+			ipfsFileName,
+			token,
+			staffAdd,
+		]);
 
 		const tx1 = {
 			to: CVPAddress,
@@ -306,9 +374,9 @@ export const CVPProvider = ({ children }) => {
 
 	// const verifyDocument =
 
-	const verifyDocument = async (cid) => {
+	const verifyDocument = async (token) => {
 		const contract = await connectingWithSmartContract();
-		const data = await contract.verifyDocument(cid, {
+		const data = await contract.verifyDocument(token, {
 			value: ethers.utils.parseUnits("0.001", "ether"),
 			gasLimit: 100000,
 		});
@@ -335,6 +403,8 @@ export const CVPProvider = ({ children }) => {
 				uploadFilesToIPFS,
 				uploadBulkDocuments,
 				verifyDocument,
+				issueDocument,
+				updateRequestDocument,
 			}}
 		>
 			{children}

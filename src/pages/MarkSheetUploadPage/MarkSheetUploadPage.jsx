@@ -13,42 +13,49 @@ import template from "../../images/template.jpg";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
-import UploadIcon from '@mui/icons-material/Upload';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import UploadIcon from "@mui/icons-material/Upload";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode";
 
 const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out'
-  };
-  
-  const focusedStyle = {
-    borderColor: '#2196f3'
-  };
-  
-  const acceptStyle = {
-    borderColor: '#00e676'
-  };
-  
-  const rejectStyle = {
-    borderColor: '#ff1744'
-  };
+	flex: 1,
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
+	padding: "20px",
+	borderWidth: 2,
+	borderRadius: 2,
+	borderColor: "#eeeeee",
+	borderStyle: "dashed",
+	backgroundColor: "#fafafa",
+	color: "#bdbdbd",
+	outline: "none",
+	transition: "border .24s ease-in-out",
+};
+
+const focusedStyle = {
+	borderColor: "#2196f3",
+};
+
+const acceptStyle = {
+	borderColor: "#00e676",
+};
+
+const rejectStyle = {
+	borderColor: "#ff1744",
+};
 
 const MarkSheetUploadPage = () => {
 	const navigate = useNavigate();
-	const { acceptedFiles, getRootProps, getInputProps,  isFocused,
-        isDragAccept,
-        isDragReject } = useDropzone();
+	const {
+		acceptedFiles,
+		getRootProps,
+		getInputProps,
+		isFocused,
+		isDragAccept,
+		isDragReject,
+	} = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
 	const templateImage = useRef();
 
@@ -58,16 +65,15 @@ const MarkSheetUploadPage = () => {
 		</li>
 	));
 
-    const style = useMemo(() => ({
-        ...baseStyle,
-        ...(isFocused ? focusedStyle : {}),
-        ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
-      }), [
-        isFocused,
-        isDragAccept,
-        isDragReject
-      ]);
+	const style = useMemo(
+		() => ({
+			...baseStyle,
+			...(isFocused ? focusedStyle : {}),
+			...(isDragAccept ? acceptStyle : {}),
+			...(isDragReject ? rejectStyle : {}),
+		}),
+		[isFocused, isDragAccept, isDragReject]
+	);
 
 	const draw = (context, entry) => {
 		var img = document.getElementById("templateImage");
@@ -85,18 +91,18 @@ const MarkSheetUploadPage = () => {
 		useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
-    const downloadCanvasImage = () => {
-        var canvases = document.getElementsByClassName("templateCanvas");
-        console.log(canvases);
-        
-        Array.from(canvases).forEach((canvas) => {
-            var url = canvas.toDataURL("image/png");
-            var link = document.createElement('a');
-            link.download = 'filename.png';
-            link.href = url;
-            link.click();
-        })
-    }
+	const downloadCanvasImage = () => {
+		var canvases = document.getElementsByClassName("templateCanvas");
+		console.log(canvases);
+
+		Array.from(canvases).forEach((canvas) => {
+			var url = canvas.toDataURL("image/png");
+			var link = document.createElement("a");
+			link.download = "filename.png";
+			link.href = url;
+			link.click();
+		});
+	};
 	const [user, setUser] = useState([]);
 
 	useEffect(() => {
@@ -119,13 +125,12 @@ const MarkSheetUploadPage = () => {
 		if (currentAccount !== "") fetchStudent();
 	}, [currentAccount]);
 
-
 	const uploadRecord = useRef();
 	const [docFileName, setDocFileName] = useState("");
 	const [docFile, setDocFile] = useState("");
 
 	const [emailId, setEmailId] = useState("");
-	const [docName, setDocName] = useState("");
+	const [docName, setDocName] = useState("Marksheet");
 	const [description, setDescription] = useState("");
 
 	const handleDocUpload = (e) => {
@@ -141,15 +146,24 @@ const MarkSheetUploadPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		const token = uuidv4();
+		const qrCode = await QRCode.toCanvas(
+			`http://localhost:3000/verify/${token}`
+		);
+		console.log(qrCode);
+		// TODO: add qr code to that pdf file
+
 		const cid = await uploadFilesToIPFS(docFile);
 		console.log(cid);
 
 		await uploadBulkDocuments(
 			[cid],
-			docFileName,
+			docName,
 			description,
 			[emailId],
-			currentAccount
+			[docFileName],
+			currentAccount,
+			[token]
 		);
 	};
 
@@ -178,7 +192,7 @@ const MarkSheetUploadPage = () => {
 					<div className={styles.bulkUploadSection}>
 						<div {...getRootProps({ style })}>
 							<input {...getInputProps()} />
-                            <UploadIcon />
+							<UploadIcon />
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
@@ -239,8 +253,12 @@ const MarkSheetUploadPage = () => {
 								/>
 							</div>
 						</div>
-						<button className={styles.issueDocBtn} onClick={handleSubmit}>
-                            <TaskAltIcon className={styles.tickIcon}/> Issue</button>
+						<button
+							className={styles.issueDocBtn}
+							onClick={handleSubmit}
+						>
+							<TaskAltIcon className={styles.tickIcon} /> Issue
+						</button>
 					</div>
 				</div>
 
