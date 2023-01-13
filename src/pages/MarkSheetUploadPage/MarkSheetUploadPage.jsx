@@ -22,11 +22,6 @@ import { PDFDocument } from "pdf-lib";
 import { ToastContainer, toast } from "react-toastify";
 
 import * as PDFJS from "pdfjs-dist/webpack";
-import { PDFtoIMG } from "react-pdf-to-image";
-// const PDFJS = window.pdfjsLib;
-// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
-
-// import e from "cors";
 
 const baseStyle = {
   flex: 1,
@@ -57,19 +52,20 @@ const rejectStyle = {
 };
 
 const MarkSheetUploadPage = () => {
-  // const [emails, setEmails] = useState([]);
-  const navigate = useNavigate();
-  const {
-    acceptedFiles,
-    getRootProps,
-    getInputProps,
-    isFocused,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone();
-  const [bulkEntries, setBulkEntries] = useState([]);
-  const [tokens, setTokens] = useState([]);
-  const templateImage = useRef();
+	// const [emails, setEmails] = useState([]);
+	const navigate = useNavigate();
+	const {
+		acceptedFiles,
+		getRootProps,
+		getInputProps,
+		isFocused,
+		isDragAccept,
+		isDragReject,
+	} = useDropzone();
+	const [bulkEntries, setBulkEntries] = useState([]);
+	const [tokens, setTokens] = useState([]);
+	const templateImage = useRef();
+	const hiddenChooseFile = useRef();
 
   const files = acceptedFiles.map((file) => (
     <li key={file.path}>

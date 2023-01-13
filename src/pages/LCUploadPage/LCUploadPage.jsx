@@ -62,7 +62,9 @@ const LCUploadPage = () => {
     isDragReject,
   } = useDropzone();
   const [bulkEntries, setBulkEntries] = useState([]);
+  const [tokens, setTokens] = useState([]);
   const templateImage = useRef();
+  const hiddenChooseFile = useRef();
 
   const files = acceptedFiles.map((file) => (
     <li key={file.path}>
@@ -80,7 +82,7 @@ const LCUploadPage = () => {
     [isFocused, isDragAccept, isDragReject]
   );
 
-  const draw = (context, entry) => {
+  const draw = async (context, entry, token) => {
     var img = document.getElementById("templateImage");
     context.drawImage(img, 0, 0, 420, 594);
     context.font = "14px Arial";
@@ -94,6 +96,11 @@ const LCUploadPage = () => {
     context.fillText(entry.DateOfAdmission, 156, 365);
     context.fillText(entry.GeneralConduct, 156, 421);
     context.fillText(entry.Remarks, 114, 471);
+
+    const qrCode = await QRCode.toCanvas(
+      `http://localhost:3000/verify/${token}`
+    );
+    context.drawImage(qrCode, 0, 0);
   };
 
   const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =

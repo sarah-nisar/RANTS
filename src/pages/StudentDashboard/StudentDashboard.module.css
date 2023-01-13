@@ -1,7 +1,15 @@
-.dashboardBox{
+.studentDashboardContainer{
+    width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 20px 150px;
+    align-items: center;
+}
+
+.dashboardBox{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .heading{
     font-size: 25px;
@@ -13,7 +21,14 @@
 }
 .name{
     color: #1363FD;
+    display: flex;
+    justify-content: start;
 }
+
+.accountName{
+    color: #1363FD;
+}
+
 .detailsHeading{
     font-size: 20px;
 	font-weight: 700;
@@ -32,22 +47,54 @@
     font-size: 1.1rem;
     padding: 10px;
 }
+
+.emptyListMessage{}
+
+.detailsBoxContent{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+}
+
+.key{
+    display: flex;
+}
+
 .details{
     padding: 10px;
     margin: auto;
 }
 
+.docCardHeader{
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    background-image: linear-gradient(#538cff, #1c68ff);
+    color: white;
+    border-radius: 0.2rem;
+}
+
 .docCard{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     padding: 0.5rem;
-    background-color: aliceblue;
+    background-color: rgb(226, 241, 255);
     border-radius: 0.2rem;
     cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.oddDocCard{
+    background-color: rgb(192, 225, 255);
 }
 
 .docCard:hover{
     background-color: rgb(217, 237, 255);
+    transform: translateY(-0.1rem);
+}
+
+.docCardContent{
+    flex: 1;
 }
 
 .formBox {
@@ -82,20 +129,23 @@
     display: none;
 }
 .requestFileBtn{
-    background-color: #ECECEC;
-    padding: 1.1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 0.4rem;
-    border: none;
-    cursor: pointer;
-    color: #555;
-    text-decoration: none;
+    margin-top: 1rem;
     display: flex;
-    justify-content: center;
-    margin: auto;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.8rem 1.8rem;
+    background-image: linear-gradient(#538cff, #2a71ff);
+    border: none;
+    outline: none;
+    border-radius: 0.4rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    transition: all 0.5s ease;
+    margin-bottom: 2rem;
 }
 
 .requestFileBtn:hover{
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
-    color: black;
+    background-image: linear-gradient(#538cff, #1c68ff);
+    transform: scale(1.02);
 }

@@ -59,15 +59,9 @@ const MainHome = () => {
           vjti.docs
         </div>
         <div className={styles.descSection}>
-          <span>
-            Building safe & secure solution
-            <br />
-            for Certificate Verification
-          </span>
-          <button
-            onClick={navigateToRegisterPage}
-            className={styles.registerBtn}
-          >
+          <span>Building a secure & efficient solution<br />
+for Certificate Verification</span>
+          <button onClick={navigateToRegisterPage} className={styles.registerBtn}>
             Register
             <ArrowForwardIcon className={styles.arrowForwardIcon} />
           </button>

@@ -20,6 +20,14 @@
     font-weight: bold;
     color: #1363FD;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logoImg{
+    width: 40px;
+    margin-right: 0.4rem;
 }
 
 .accountIcon{
