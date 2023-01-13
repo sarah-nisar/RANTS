@@ -13,6 +13,7 @@ import { useCVPContext } from "./Context/CVPContext";
 import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
 import RegisterStaff from "./pages/RegisterStaff/RegisterStaff";
+import ViewStudentDocs from "./pages/ViewStudentDocs/ViewStudentDocs";
 import { useLocation } from "react-router-dom";
 import Update from "./pages/Update/Update";
 import LCUploadPage from "./pages/LCUploadPage/LCUploadPage";
@@ -113,6 +114,30 @@ const App = () => {
         </>
       ),
     },
+	{
+		path: "/register",
+		element: <><Navbar /><Register/></>
+	},
+	{
+		path: "/dashboard",
+		element: <><Navbar /><StudentDashboard/></>
+	},
+	{
+		path: "/verify/:token",
+		element: <><Navbar /><Verify/></>
+	},
+	{
+		path:"/requests",
+		element: <><Navbar /><Requests/></>
+	},
+	{
+		path:"/registerStaff",
+		element: <><Navbar /><RegisterStaff/></>
+	},
+	{
+		path:"/viewStudentDocs",
+		element: <><Navbar /><ViewStudentDocs/></>
+	}
   ]);
 
   return (
