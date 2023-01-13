@@ -64,9 +64,9 @@ for Certificate Verification</span>
           </button>
 
         </div>
-        <div>
+        {/* <div>
           <ExpandMoreIcon className={styles.downArrow}/>
-        </div>
+        </div> */}
       </div>
     </div>
   );
