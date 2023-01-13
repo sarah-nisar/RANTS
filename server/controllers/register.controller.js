@@ -141,7 +141,6 @@ exports.otpController = (req, res) => {
   }
 };
 
-<<<<<<< HEAD
 exports.commentController = (req, res) =>{
   const errors = validationResult(req);
 
@@ -172,7 +171,8 @@ exports.commentController = (req, res) =>{
           error: "Could not send email\n" + err,
         });
       });
-=======
+    }
+  }
 
 exports.documentUploadController = async (req, res) => {
   let streamUpload = (req) => {
@@ -250,6 +250,5 @@ exports.getDocumentController = async (req, res) => {
       message: "Error Occurred! " + error,
       success: false 
     })
->>>>>>> c55df7aced3e3ab15781ef75adaa783a62e9f85b
   }
 }
