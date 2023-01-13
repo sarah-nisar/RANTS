@@ -7,6 +7,7 @@ import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
 import MoonLoader from "react-spinners/MoonLoader";
+import { ToastContainer, toast } from "react-toastify";
 
 const StudentDashboard = () => {
 	const navigate = useNavigate();
@@ -104,6 +105,13 @@ const StudentDashboard = () => {
 		}
 	});
 
+  useEffect(() => {
+    if (currentAccount) {
+      fetchStudent();
+      fetchPendingRequests();
+      fetchDocuments();
+    }
+  }, [currentAccount]);
 	const fetchDocuments = useCallback(async () => {
 		try {
 			const data = await fetchAllDocumentsForStudent();
@@ -202,6 +210,7 @@ const StudentDashboard = () => {
 
 	return (
     <>
+      <ToastContainer />
       {studentDetails && studentDetails.length !== 0 ? (
         <div className={styles.studentDashboardContainer}>
           <div className={styles.dashboardBox}>

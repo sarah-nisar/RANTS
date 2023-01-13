@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
 import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
+import { ToastContainer, toast } from "react-toastify";
 
 import * as PDFJS from "pdfjs-dist/webpack";
 
@@ -202,29 +203,48 @@ const MarkSheetUploadPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const token = uuidv4();
-		console.log(docFile[0]);
-		const qrCode = await QRCode.toCanvas(
-			`http://localhost:3000/verify/${token}`
-		);
+		if (
+			emailId === "" ||
+			docName === "" ||
+			description === "" ||
+			docFile === ""
+		) {
+			toast.error("Enter all details first");
+			return;
+		} else {
+			if (emailId.slice(-10) === "vjti.ac.in") {
+				try {
+					toast.warn("Please wait for a moment");
+					const token = uuidv4();
+					console.log(docFile[0]);
+					const qrCode = await QRCode.toCanvas(
+						`http://localhost:3000/verify/${token}`
+					);
 
-		const pdf = await convertPdfToImages(docFile[0], qrCode);
-		console.log(pdf);
+					const pdf = await convertPdfToImages(docFile[0], qrCode);
+					console.log(pdf);
 
-		const files = [new File([pdf], "Marksheet.pdf")];
+					const files = [new File([pdf], "Marksheet.pdf")];
 
-		const cid = await uploadFilesToIPFS(files);
-		console.log(cid);
-
-		await uploadBulkDocuments(
-			[cid],
-			docName,
-			description,
-			[emailId],
-			["Marksheet.pdf"],
-			currentAccount,
-			[token]
-		);
+					const cid = await uploadFilesToIPFS(files);
+					console.log(cid);
+					await uploadBulkDocuments(
+						[cid],
+						docName,
+						description,
+						[emailId],
+						["Marksheet.pdf"],
+						currentAccount,
+						[token]
+					);
+					toast.success("Marksheets Uploaded");
+				} catch (err) {
+					toast.error("Some error occurred");
+				}
+			} else {
+				toast.error("Please enter VJTI email address");
+			}
+		}
 	};
 
 	const issueDocuments = async (e) => {
@@ -248,6 +268,23 @@ const MarkSheetUploadPage = () => {
 			console.log(cid);
 			cids.push(cid);
 		}
+		// Array.from(canvases)
+		// 	.forEach(async (canvas) => {
+		// 		var url = canvas.toDataURL("image/png");
+		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+		// 		pdf.addImage(url, "JPEG", 0, 0);
+
+		// 		fileNames.push("Marksheet.pdf");
+
+		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+		// 		const cid = await uploadFilesToIPFS(files);
+		// 		console.log(cid);
+		// 		cids.push(cid);
+		// 	})
+		// 	.then(() => {
+		// 		console.log("ehl");
+		// 	});
 
 		const emails = [bulkEntries.map((item) => item.EmailId)];
 
@@ -288,6 +325,9 @@ const MarkSheetUploadPage = () => {
 
 					temp.push(token);
 				}
+
+				// console.log(temp);
+
 				setTokens(temp);
 				console.log(json);
 			};
@@ -296,129 +336,128 @@ const MarkSheetUploadPage = () => {
 	}, [acceptedFiles]);
 
 	return (
-		<div className={styles.marksheetUploadPageContainer}>
-			<div className={styles.marksheetUploadPageBodyContainer}>
-				<span className={styles.issueMarksheetHeader}>
-					Issue Marksheet
-				</span>
-				<div className={styles.issueMarksheetContainer}>
-					<div className={styles.bulkUploadSection}>
-						<div {...getRootProps({ style })}>
-							<input {...getInputProps()} />
-							<UploadIcon />
-							<p>Select Excel File for bulk upload</p>
-						</div>
-						{bulkEntries.length > 0 && (
-							<div className={styles.bulkDetails}>
-								<span className={styles.bulkCount}>
-									{bulkEntries.length} students
-								</span>
-								<div className={styles.bulkButtonContainer}>
-									<button
-										className={styles.bulkDownloadBtn}
-										onClick={downloadCanvasImage}
-									>
+		<>
+			<ToastContainer />
+			<div className={styles.marksheetUploadPageContainer}>
+				<div className={styles.marksheetUploadPageBodyContainer}>
+					<span className={styles.issueMarksheetHeader}>
+						Issue Marksheet
+					</span>
+					<div className={styles.issueMarksheetContainer}>
+						<div className={styles.bulkUploadSection}>
+							<div {...getRootProps({ style })}>
+								<input {...getInputProps()} />
+								<UploadIcon />
+								<p>Select Excel File for bulk upload</p>
+							</div>
+							{bulkEntries.length > 0 && (
+								<div>
+									<span>
+										Generating mark sheets for{" "}
+										{bulkEntries.length} students
+									</span>
+									<button onClick={downloadCanvasImage}>
 										Download
 									</button>
-									<button
-										className={styles.bulkIssueBtn}
-										onClick={issueDocuments}
-									>
+									<button onClick={issueDocuments}>
 										Issue documents
 									</button>
 								</div>
-							</div>
-						)}
-					</div>
-					<div className={styles.verticalDivider}></div>
-					<div className={styles.singleUploadSection}>
-						<div className={styles.singleUploadForm}>
-							<span className={styles.inputLabel}>
-								Student Email Id
-							</span>
-							<input
-								className={styles.regNumInput}
-								type="text"
-								value={emailId}
-								placeholder="Email"
-								onChange={(e) => setEmailId(e.target.value)}
-							/>
-							<span className={styles.inputLabel}>
-								Document name
-							</span>
-							<input
-								className={styles.regNumInput}
-								type="text"
-								placeholder="Name"
-								value={docName}
-								onChange={(e) => setDocName(e.target.value)}
-							/>
-							<span className={styles.inputLabel}>
-								Document description
-							</span>
-							<input
-								className={styles.regNumInput}
-								type="text"
-								value={description}
-								placeholder="Description"
-								onChange={(e) => setDescription(e.target.value)}
-							/>
-							<span className={styles.inputLabel}>
-								Select Mark Sheet PDF
-							</span>
-
-							<div className={styles.fileUploadContainer}>
-								<button
-									onClick={() => {
-										hiddenChooseFile.current.click();
-									}}
-									className={styles.chooseFileBtn}
-								>
-									{docFileName === ""
-										? "Choose File"
-										: docFileName}
-								</button>
-								<input
-									ref={hiddenChooseFile}
-									type="file"
-									id="formFile"
-									onChange={handleDocFileChange}
-									className={styles.chooseFileInput}
-								/>
-							</div>
+							)}
 						</div>
-						<button
-							className={styles.issueDocBtn}
-							onClick={handleSubmit}
-						>
-							<TaskAltIcon className={styles.tickIcon} /> Issue
-						</button>
-					</div>
-				</div>
+						<div className={styles.verticalDivider}></div>
+						<div className={styles.singleUploadSection}>
+							<div className={styles.singleUploadForm}>
+								<span className={styles.inputLabel}>
+									Student Email Id
+								</span>
+								<input
+									className={styles.regNumInput}
+									type="text"
+									value={emailId}
+									placeholder="Email"
+									onChange={(e) => setEmailId(e.target.value)}
+								/>
+								<span className={styles.inputLabel}>
+									Document name
+								</span>
+								<input
+									className={styles.regNumInput}
+									type="text"
+									placeholder="Name"
+									value={docName}
+									onChange={(e) => setDocName(e.target.value)}
+								/>
+								<span className={styles.inputLabel}>
+									Document description
+								</span>
+								<input
+									className={styles.regNumInput}
+									type="text"
+									value={description}
+									placeholder="Description"
+									onChange={(e) =>
+										setDescription(e.target.value)
+									}
+								/>
+								<span className={styles.inputLabel}>
+									Select Mark Sheet PDF
+								</span>
 
-				<div className={styles.canvasContainer}>
-					{bulkEntries.map((entry, index) => {
-						return (
-							<Canvas
-								key={index}
-								entry={entry}
-								draw={draw}
-								token={tokens[index]}
-								height={594}
-								width={420}
-							/>
-						);
-					})}
-					<img
-						id="templateImage"
-						className={styles.templateImage}
-						height={594}
-						width={420}
-						src={template}
-					/>
+								<div className={styles.fileUploadContainer}>
+									<button
+										onClick={() => {
+											hiddenChooseFile.current.click();
+										}}
+										className={styles.chooseFileBtn}
+									>
+										{docFileName === ""
+											? "Choose File"
+											: docFileName}
+									</button>
+									<input
+										ref={hiddenChooseFile}
+										type="file"
+										id="formFile"
+										onChange={handleDocFileChange}
+										className={styles.chooseFileInput}
+									/>
+								</div>
+							</div>
+							<button
+								className={styles.issueDocBtn}
+								onClick={handleSubmit}
+							>
+								<TaskAltIcon className={styles.tickIcon} />{" "}
+								Issue
+							</button>
+						</div>
+					</div>
+
+					<div className={styles.canvasContainer}>
+						{bulkEntries.map((entry, index) => {
+							return (
+								<Canvas
+									key={index}
+									entry={entry}
+									draw={draw}
+									token={tokens[index]}
+									height={594}
+									width={420}
+								/>
+							);
+						})}
+						<img
+							id="templateImage"
+							className={styles.templateImage}
+							height={594}
+							width={420}
+							src={template}
+						/>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

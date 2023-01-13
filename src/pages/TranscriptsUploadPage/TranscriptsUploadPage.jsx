@@ -1,9 +1,9 @@
 import React, {
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import styles from "./TranscriptsUploadPage.module.css";
 import { useDropzone } from "react-dropzone";
@@ -15,6 +15,7 @@ import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
 import UploadIcon from "@mui/icons-material/Upload";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { ToastContainer, toast } from "react-toastify";
 
 import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
@@ -22,6 +23,7 @@ import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 
 import * as PDFJS from "pdfjs-dist/webpack";
+
 
 const baseStyle = {
 	flex: 1,
@@ -160,6 +162,96 @@ const TranscriptsUploadPage = () => {
 		setDocFile(e.target.files);
 	};
 
+	const convertPdfToImages = async (file, qrCode) => {
+		const pdfDoc = await PDFDocument.create();
+
+		PDFJS.GlobalWorkerOptions.workerSrc =
+			"https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+
+		const images = [];
+		const uri = URL.createObjectURL(file);
+		const pdf = await PDFJS.getDocument({ url: uri }).promise;
+		const canvas = document.createElement("canvas");
+
+		for (let i = 0; i < pdf.numPages; i++) {
+			const page = await pdf.getPage(i + 1);
+			const viewport = page.getViewport({ scale: 1 });
+			var context = canvas.getContext("2d");
+
+			canvas.height = viewport.height;
+			canvas.width = viewport.width;
+			await page.render({ canvasContext: context, viewport: viewport })
+				.promise;
+			if (i === 0) {
+				context.drawImage(qrCode, 50, 50);
+			}
+			images.push(canvas.toDataURL("image/png"));
+			const pngImage = await pdfDoc.embedPng(images[i]);
+
+			const page1 = pdfDoc.addPage();
+			page1.drawImage(pngImage);
+		}
+		const pdfBytes = await pdfDoc.save();
+
+		return pdfBytes;
+	};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      emailId === "" ||
+      docName === "" ||
+      description === "" ||
+      docFile === ""
+    ) {
+      toast.error("Enter all details first");
+      return;
+    } else {
+      if (emailId.slice(-10) === "vjti.ac.in") {
+        try {
+          toast.warn("Please wait for a moment");
+          const cid = await uploadFilesToIPFS(docFile);
+          console.log(cid);
+
+          await uploadBulkDocuments(
+            [cid],
+            docFileName,
+            description,
+            [emailId],
+            currentAccount
+          );
+          toast.success("Transcript Uploaded");
+        } catch (err) {
+          toast.error("Some error occurred");
+        }
+      } else {
+        toast.error("Please enter VJTI email address");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (acceptedFiles.length > 0) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = xlsx.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = xlsx.utils.sheet_to_json(worksheet);
+        setBulkEntries(json);
+      };
+      reader.readAsArrayBuffer(acceptedFiles[0]);
+    }
+  }, [acceptedFiles]);
+
+  return (
+	<>
+	<ToastContainer/>
+    <div className={styles.marksheetUploadPageContainer}>
+      <div className={styles.marksheetUploadPageBodyContainer}>
+        <span className={styles.issueMarksheetHeader}>Issue Transcripts</span>
+        {/* <div className={styles.issueMarksheetContainer}>
 	const convertPdfToImages = async (file, qrCode) => {
 		const pdfDoc = await PDFDocument.create();
 
@@ -347,7 +439,7 @@ const TranscriptsUploadPage = () => {
 				/>
 			</div>
 		</div>
-		// </div>
+		</>
 	);
 };
 
