@@ -15,6 +15,7 @@
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^1.2.2",
+		"convertapi": "^1.11.2",
 		"cors": "^2.8.5",
 		"ethers": "^5.7.2",
 		"express": "^4.18.2",
@@ -23,7 +24,8 @@
 		"jspdf": "^2.5.1",
 		"node-polyfill-webpack-plugin": "^2.0.1",
 		"otplib": "^12.0.1",
-		"pdfjs-dist": "^3.2.146",
+		"pdf-lib": "^1.17.1",
+		"pdfjs-dist": "2.6.347",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-dropzone": "^14.2.3",
@@ -38,6 +40,7 @@
 		"web-vitals": "^2.1.4",
 		"web3.storage": "^4.4.0",
 		"web3modal": "^1.9.11",
+		"worker-loader": "^3.0.8",
 		"xlsx": "^0.18.5"
 	},
 	"scripts": {
