@@ -8,11 +8,13 @@ import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import MarkSheetUploadPage from "./pages/MarkSheetUploadPage/MarkSheetUploadPage";
+import TranscriptsUploadPage from "./pages/TranscriptsUploadPage/TranscriptsUploadPage.jsx"
 import { useCVPContext } from "./Context/CVPContext";
 import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
 import RegisterStaff from "./pages/RegisterStaff/RegisterStaff";
 import { useLocation } from "react-router-dom";
+import LCUploadPage from "./pages/LCUploadPage/LCUploadPage";
 
 const App = () => {
 
@@ -29,6 +31,14 @@ const App = () => {
       path: "/issueMarksheet",
       element: <><Navbar /><MarkSheetUploadPage /></>,
     },
+	{
+		path: "/issueTranscripts",
+		element: <><Navbar /><TranscriptsUploadPage /></>,
+	},
+	{
+		path: "/issueLC",
+		element: <><Navbar /><LCUploadPage /></>,
+	},
 	{
 		path: "/register",
 		element: <><Navbar /><Register/></>
