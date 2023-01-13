@@ -92,10 +92,10 @@ const Requests = () => {
     const pdf = await convertPdfToImages(inputFile[0], qrCode);
     console.log("pdf", pdf);
 
-    const files = [new File([pdf], "Marksheet.pdf")];
+    const files = [new File([pdf], inputFileName)];
 
     const cid = await uploadFilesToIPFS(files);
-    console.log(cid);
+    console.log("cid",cid);
 
     await uploadBulkDocuments(
       [cid],

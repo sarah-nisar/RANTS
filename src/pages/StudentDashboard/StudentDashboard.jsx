@@ -2,10 +2,11 @@ import React from "react";
 import styles from "./StudentDashboard.module.css";
 import styles2 from "../Register/Register.module.css";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -19,11 +20,17 @@ const StudentDashboard = () => {
   // Pending requests
   const [requests, setRequests] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const uploadFile = useRef(null);
+
   // Upload request states
   const [docType, setDocType] = useState("Marksheet");
   const [dept, setDept] = useState("Academic Section");
   const [docDetails, setDocDetails] = useState("");
-  const [requestType, setRequestType] = useState("");
+  const [requestType, setRequestType] = useState("New");
+  const [inputFileName, setInputFileName] = useState("Select file");
+  const [inputFile, setInputFile] = useState(null);
 
   const [pendingDocDetails, setPendingDocDetails] = useState([
     {
@@ -51,6 +58,16 @@ const StudentDashboard = () => {
     checkIfWalletConnected();
   }, []);
 
+  const handleFile = (e) => {
+    e.preventDefault();
+    uploadFile.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    setInputFileName(e.target.files[0].name);
+    setInputFile(e.target.files);
+  };
+
   const fetchStudent = useCallback(async () => {
     try {
       const student = await getStudent();
@@ -64,7 +81,7 @@ const StudentDashboard = () => {
     try {
       const data = await fetchAllDocumentsForStudent();
       setDocuments(data);
-      console.log(data);
+      console.log("data", data);
     } catch (err) {
       console.log(err);
     }
@@ -268,6 +285,19 @@ const StudentDashboard = () => {
                   placeholder="Enter document details"
                   onChange={(e) => setDocDetails(e.target.value)}
                   value={docDetails}
+                />
+              </div>
+              <div className={`${styles2.inputContainer}`}>
+                <label className={`${styles2.inputLabel}`}>Upload File</label>
+                <button onClick={handleFile} className={styles.inputCombined}>
+                  {inputFileName}
+                </button>
+                <input
+                  onChange={handleFileChange}
+                  ref={uploadFile}
+                  className={` ${styles.fileInput}`}
+                  type="file"
+                  placeholder={""}
                 />
               </div>
             </form>
