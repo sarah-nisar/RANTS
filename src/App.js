@@ -13,13 +13,18 @@ import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
 import RegisterStaff from "./pages/RegisterStaff/RegisterStaff";
 import { useLocation } from "react-router-dom";
+import  Update  from "./pages/Update/Update";
 
 const App = () => {
-
   const router = createBrowserRouter([
     {
       path: "/admin",
-      element: <><Navbar /><Admin /></>,
+      element: (
+        <>
+          <Navbar />
+          <Admin />
+        </>
+      ),
     },
     {
       path: "/",
@@ -27,38 +32,74 @@ const App = () => {
     },
     {
       path: "/issueMarksheet",
-      element: <><Navbar /><MarkSheetUploadPage /></>,
+      element: (
+        <>
+          <Navbar />
+          <MarkSheetUploadPage />
+        </>
+      ),
     },
-	{
-		path: "/register",
-		element: <><Navbar /><Register/></>
-	},
-	{
-		path: "/dashboard",
-		element: <><Navbar /><StudentDashboard/></>
-	},
-	{
-		path: "/verify/:token",
-		element: <><Navbar /><Verify/></>
-	},
-	{
-		path:"/requests",
-		element: <><Navbar /><Requests/></>
-	},
-	{
-		path:"/registerStaff",
-		element: <><Navbar /><RegisterStaff/></>
-	}
+    {
+      path: "/register",
+      element: (
+        <>
+          <Navbar />
+          <Register />
+        </>
+      ),
+    },
+    {
+      path: "/dashboard",
+      element: (
+        <>
+          <Navbar />
+          <StudentDashboard />
+        </>
+      ),
+    },
+    {
+      path: "/verify/:token",
+      element: (
+        <>
+          <Navbar />
+          <Verify />
+        </>
+      ),
+    },
+    {
+      path: "/requests",
+      element: (
+        <>
+          <Navbar />
+          <Requests />
+        </>
+      ),
+    },
+    {
+      path: "/registerStaff",
+      element: (
+        <>
+          <Navbar />
+          <RegisterStaff />
+        </>
+      ),
+    },
+    {
+      path: "/update/:id",
+      element: (
+        <>
+          <Navbar />
+          <Update />
+        </>
+      ),
+    },
   ]);
 
-
-  
-	return (
-		<>
-			<RouterProvider router={router}>
-			</RouterProvider>
-		</>
-	);
+  return (
+    <>
+      <RouterProvider router={router}></RouterProvider>
+    </>
+  );
 };
 
 export default App;

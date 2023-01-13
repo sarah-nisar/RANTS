@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.9;
+import "hardhat/console.sol";
 
 contract Cvp {
     address payable owner;
-
     struct Student {
         address studentAdd;
         string name;
@@ -74,6 +74,8 @@ contract Cvp {
     receive() external payable {}
 
     constructor() {
+            console.log("yahhoo");
+
         owner = payable(msg.sender);
         collegeStaffsMapping[collegeStaffCount] = CollegeStaff(
             msg.sender,
@@ -324,53 +326,58 @@ contract Cvp {
         view
         returns (Request[] memory)
     {
-        uint256 staffId = collegeStaffAddressToIDMapping[msg.sender];
-        uint256 itemCount;
+        // uint256 staffId = collegeStaffAddressToIDMapping[msg.sender];
+        console.log("aaaaaaaaaaa");
+        uint256 itemCount2;
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                msg.sender == owner &&
-                (requestsMapping[i].level ==
-                    collegeStaffsMapping[staffId].level &&
-                    requestsMapping[i].status == 1 &&
-                    keccak256(
-                        abi.encodePacked((requestsMapping[i].department))
-                    ) ==
-                    keccak256(
-                        abi.encodePacked(
-                            (collegeStaffsMapping[staffId].department)
-                        )
-                    ))
+                msg.sender == owner 
+                // &&
+                // (
+                //     // requestsMapping[i].level ==
+                //     // collegeStaffsMapping[staffId].level &&
+                //     // requestsMapping[i].status == 1 &&
+                //     keccak256(
+                //         abi.encodePacked((requestsMapping[i].department))
+                //     ) ==
+                //     keccak256(
+                //         abi.encodePacked(
+                //             (collegeStaffsMapping[staffId].department)
+                //         )
+                //     ))
             ) {
-                itemCount += 1;
+                itemCount2 += 1;
             }
         }
 
-        Request[] memory result = new Request[](itemCount);
-        itemCount = 0;
+        Request[] memory result2 = new Request[](itemCount2);
+        itemCount2 = 0;
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                msg.sender == owner &&
-                (requestsMapping[i].level ==
-                    collegeStaffsMapping[staffId].level &&
-                    requestsMapping[i].status == 1 &&
-                    keccak256(
-                        abi.encodePacked((requestsMapping[i].department))
-                    ) ==
-                    keccak256(
-                        abi.encodePacked(
-                            (collegeStaffsMapping[staffId].department)
-                        )
-                    ))
+                msg.sender == owner 
+                // &&
+                // (
+                //     // requestsMapping[i].level ==
+                //     // collegeStaffsMapping[staffId].level &&
+                //     // requestsMapping[i].status == 1 &&
+                //     keccak256(
+                //         abi.encodePacked((requestsMapping[i].department))
+                //     ) ==
+                //     keccak256(
+                //         abi.encodePacked(
+                //             (collegeStaffsMapping[staffId].department)
+                //         )
+                //     ))
             ) {
-                Request storage newItem = requestsMapping[i];
-                result[itemCount] = newItem;
-                itemCount += 1;
+                Request storage newItem2 = requestsMapping[i];
+                result2[itemCount2] = newItem2;
+                itemCount2 += 1;
             }
         }
 
-        return result;
+        return result2;
     }
 
     function rejectRequest(

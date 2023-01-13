@@ -28,3 +28,177 @@
 .tableRow {
 	margin: 10px 0;
 }
+.eventsPageContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2A2D37;
+    min-height: 100vh;
+    color: white;
+}
+
+.backpage{
+    cursor: pointer;
+}
+
+.eventPageHeader{
+    width: 100%;
+    background-color: #1C1F27;
+    padding: 24px;
+    font-weight: bold;
+    border-bottom: 0.4rem solid #1DA0FF;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.eventPageBody{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.searchEventsContainer{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.searchEventsTitle{
+	font-family: 'Fira Sans', sans-serif;
+    text-align: left;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.eventSearchInput{
+    width: 250px;
+    background-color: #dfdfdf;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    padding: 14px;
+    color: white;
+}
+
+.eventSearchInput:focus{
+    background-color: #1363FD;
+}
+.eventSearchInput:focus::-webkit-input-placeholder {
+    color: white;
+}
+.eventsListGrid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));;
+    column-gap: 1rem;
+    row-gap: 1rem;
+}
+.exploreEventsContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.eventBox{
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f1f1;
+    padding: 15px 0.9rem;
+    border-radius: 4px;
+    box-shadow: 1px 1px 5px #ffffff;
+    transition: all ease 0.3s;
+    font-size: 1rem;
+}
+
+.eventBox:hover{
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
+    transform: scale(1.04) translateY(-3px);
+    background-color: #1363FD;
+    color: white;
+}
+.eventBox div{
+    padding: 10px;
+}
+.eventName{
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
+.values:hover{
+    color: #c1c1c1;
+}
+.buttonBox{
+    display: flex;
+    justify-content: space-around;
+}
+
+.issueBtn, .rejectBtn{
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 7px 20px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+.issueBtn{
+    background-color: #1dff34;
+}
+.rejectBtn{
+    background-color: #ff4242;
+}
+.issueBtn:hover{
+    background-color: #00ce15;
+}
+.rejectBtn:hover{
+    background-color: #df0000;
+
+}
+
+
+.formBox {
+	padding: 10px 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: 0.5s;
+    width: 100%;
+}
+.inputCombined {
+	border: 0px;
+    border-radius: 5px;
+    padding: 10px 15px;
+	outline: none;
+	cursor: pointer;
+    margin: 15px;
+}
+.fileInput{
+    display: none;
+}
+.modalIssueBtn, .submitButton{
+    background-color: #ECECEC;
+    padding: 0.5rem 2rem;
+    font-size: 0.875rem;
+    border-radius: 0.4rem;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    /* width: 13%; */
+    margin: auto;
+}
+.modalIssueBtn:hover, .submitButton:hover{
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
+    color: black;
+}
+.input {
+    width: 100%;
+    padding: 12px 0px;
+    outline: none;
+    border: none;
+    margin: 10px;
+    font-size: 1.1rem;
+    border-bottom: 1px #525252 solid;
+}
