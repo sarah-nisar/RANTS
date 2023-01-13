@@ -49,7 +49,7 @@
 .inputCombined {
 	border: 0px;
     border-radius: 5px;
-    padding: 10px 15px;
+    padding: 0.5rem 1.6rem;
 	outline: none;
 	cursor: pointer;
     margin: 15px;
@@ -89,6 +89,6 @@
 	font-weight: 700;
 	width: 100%;
 	color: rgb(26, 26, 26);
-	margin-bottom: 20px;
+	margin: 20px auto;
     text-align: center;
 }
