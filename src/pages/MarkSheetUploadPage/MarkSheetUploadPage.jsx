@@ -18,8 +18,14 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
 import jsPDF from "jspdf";
-import PDFJS from "pdfjs-dist";
-import e from "cors";
+import { PDFDocument } from "pdf-lib";
+
+import * as PDFJS from "pdfjs-dist/webpack";
+import { PDFtoIMG } from "react-pdf-to-image";
+// const PDFJS = window.pdfjsLib;
+// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
+
+// import e from "cors";
 
 const baseStyle = {
 	flex: 1,
@@ -50,6 +56,7 @@ const rejectStyle = {
 };
 
 const MarkSheetUploadPage = () => {
+	// const [emails, setEmails] = useState([]);
 	const navigate = useNavigate();
 	const {
 		acceptedFiles,
@@ -79,7 +86,8 @@ const MarkSheetUploadPage = () => {
 		[isFocused, isDragAccept, isDragReject]
 	);
 
-	const draw = async (context, entry) => {
+	const draw = async (context, entry, token) => {
+		console.log("dfsjkl");
 		var img = document.getElementById("templateImage");
 		context.drawImage(img, 0, 0, 420, 594);
 		context.font = "14px Arial";
@@ -89,14 +97,10 @@ const MarkSheetUploadPage = () => {
 		context.fillText("VII", 350, 176);
 		context.fillText(entry.CPI, 122, 543);
 		context.fillText(entry.SPI, 305, 543);
-
-		const token = uuidv4();
 		const qrCode = await QRCode.toCanvas(
 			`http://localhost:3000/verify/${token}`
 		);
-
 		context.drawImage(qrCode, 0, 0);
-		setTokens([...tokens, token]);
 	};
 
 	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
@@ -155,62 +159,55 @@ const MarkSheetUploadPage = () => {
 		setDocFile(e.target.files);
 	};
 
-	const readFileData = (file) => {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				resolve(e.target.result);
-			};
-			reader.onerror = (err) => {
-				reject(err);
-			};
-			reader.readAsDataURL(file);
-		});
-	};
+	const convertPdfToImages = async (file, qrCode) => {
+		const pdfDoc = await PDFDocument.create();
 
-	//param: file -> the input file (e.g. event.target.files[0])
-	//return: images -> an array of images encoded in base64
-	const convertPdfToImages = async (file) => {
+		PDFJS.GlobalWorkerOptions.workerSrc =
+			"https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+
 		const images = [];
-		console.log(file);
-		const data = await readFileData(file);
-		console.log(data);
-		const pdf = await PDFJS.getDocument(data);
+		const uri = URL.createObjectURL(file);
+		const pdf = await PDFJS.getDocument({ url: uri }).promise;
 		const canvas = document.createElement("canvas");
+
 		for (let i = 0; i < pdf.numPages; i++) {
 			const page = await pdf.getPage(i + 1);
 			const viewport = page.getViewport({ scale: 1 });
-			const context = canvas.getContext("2d");
+			var context = canvas.getContext("2d");
+
 			canvas.height = viewport.height;
 			canvas.width = viewport.width;
 			await page.render({ canvasContext: context, viewport: viewport })
 				.promise;
-			images.append(canvas.toDataURL());
+			if (i === 0) {
+				context.drawImage(qrCode, 50, 50);
+			}
+			images.push(canvas.toDataURL("image/png"));
+			const pngImage = await pdfDoc.embedPng(images[i]);
+
+			const page1 = pdfDoc.addPage();
+			page1.drawImage(pngImage);
 		}
-		canvas.remove();
-		return images;
+		const pdfBytes = await pdfDoc.save();
+
+		return pdfBytes;
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const images = convertPdfToImages(docFile[0]);
-		console.log(images);
-		// TODO: add qr code to that pdf file
 		const token = uuidv4();
+		console.log(docFile[0]);
 		const qrCode = await QRCode.toCanvas(
 			`http://localhost:3000/verify/${token}`
 		);
-		console.log(qrCode);
-		const imgData = qrCode.toDataURL("image/png");
-		const pdf = new jsPDF();
-		pdf.addImage(imgData, "JPEG", 0, 0);
-		// pdf.output('dataurlnewwindow');
-		pdf.save("download.pdf");
 
-		return;
+		const pdf = await convertPdfToImages(docFile[0], qrCode);
+		console.log(pdf);
 
-		const cid = await uploadFilesToIPFS(docFile);
+		const files = [new File([pdf], "Marksheet.pdf")];
+
+		const cid = await uploadFilesToIPFS(files);
 		console.log(cid);
 
 		await uploadBulkDocuments(
@@ -231,8 +228,9 @@ const MarkSheetUploadPage = () => {
 
 		var cids = [];
 		var fileNames = [];
-		Array.from(canvases).forEach(async (canvas) => {
-			var url = canvas.toDataURL("image/png");
+
+		for (let i = 0; i < canvases.length; i++) {
+			var url = canvases[i].toDataURL("image/png");
 			const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
 			pdf.addImage(url, "JPEG", 0, 0);
 
@@ -243,11 +241,45 @@ const MarkSheetUploadPage = () => {
 			const cid = await uploadFilesToIPFS(files);
 			console.log(cid);
 			cids.push(cid);
-			// var link = document.createElement("a");
-			// link.download = "filename.png";
-			// link.href = url;
-			// link.click();
-		});
+		}
+		// Array.from(canvases)
+		// 	.forEach(async (canvas) => {
+		// 		var url = canvas.toDataURL("image/png");
+		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+		// 		pdf.addImage(url, "JPEG", 0, 0);
+
+		// 		fileNames.push("Marksheet.pdf");
+
+		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+		// 		const cid = await uploadFilesToIPFS(files);
+		// 		console.log(cid);
+		// 		cids.push(cid);
+		// 	})
+		// 	.then(() => {
+		// 		console.log("ehl");
+		// 	});
+
+		const emails = [bulkEntries.map((item) => item.EmailId)];
+
+		console.log(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+		await uploadBulkDocuments(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
 	};
 
 	useEffect(() => {
@@ -260,6 +292,18 @@ const MarkSheetUploadPage = () => {
 				const worksheet = workbook.Sheets[sheetName];
 				const json = xlsx.utils.sheet_to_json(worksheet);
 				setBulkEntries(json);
+
+				var temp = [];
+				for (let i = 0; i < json.length; i++) {
+					const token = uuidv4();
+
+					temp.push(token);
+				}
+
+				// console.log(temp);
+
+				setTokens(temp);
+				console.log(json);
 			};
 			reader.readAsArrayBuffer(acceptedFiles[0]);
 		}
@@ -349,12 +393,13 @@ const MarkSheetUploadPage = () => {
 				</div>
 
 				<div className={styles.canvasContainer}>
-					{bulkEntries.map((entry) => {
-						// console.log(entry);
+					{bulkEntries.map((entry, index) => {
 						return (
 							<Canvas
+								key={index}
 								entry={entry}
 								draw={draw}
+								token={tokens[index]}
 								height={594}
 								width={420}
 							/>
