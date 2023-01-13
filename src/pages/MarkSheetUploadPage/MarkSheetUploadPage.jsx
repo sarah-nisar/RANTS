@@ -21,11 +21,6 @@ import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 
 import * as PDFJS from "pdfjs-dist/webpack";
-import { PDFtoIMG } from "react-pdf-to-image";
-// const PDFJS = window.pdfjsLib;
-// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
-
-// import e from "cors";
 
 const baseStyle = {
 	flex: 1,
@@ -242,23 +237,6 @@ const MarkSheetUploadPage = () => {
 			console.log(cid);
 			cids.push(cid);
 		}
-		// Array.from(canvases)
-		// 	.forEach(async (canvas) => {
-		// 		var url = canvas.toDataURL("image/png");
-		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
-		// 		pdf.addImage(url, "JPEG", 0, 0);
-
-		// 		fileNames.push("Marksheet.pdf");
-
-		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
-
-		// 		const cid = await uploadFilesToIPFS(files);
-		// 		console.log(cid);
-		// 		cids.push(cid);
-		// 	})
-		// 	.then(() => {
-		// 		console.log("ehl");
-		// 	});
 
 		const emails = [bulkEntries.map((item) => item.EmailId)];
 
@@ -299,9 +277,6 @@ const MarkSheetUploadPage = () => {
 
 					temp.push(token);
 				}
-
-				// console.log(temp);
-
 				setTokens(temp);
 				console.log(json);
 			};
