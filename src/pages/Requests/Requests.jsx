@@ -6,12 +6,19 @@ import styles from "./Requests.module.css";
 import Modal from "react-modal";
 import CloseIcon from "@mui/icons-material/Close";
 import MoonLoader from "react-spinners/MoonLoader";
+import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode";
+import jsPDF from "jspdf";
+import { PDFDocument } from "pdf-lib";
+import * as PDFJS from "pdfjs-dist/webpack";
 
 const Requests = () => {
   const {
     getStaffMember,
     fetchAllRequestsForCollegeStaff,
     getStudentByAddress,
+    uploadFilesToIPFS,
+    uploadBulkDocuments,
   } = useCVPContext();
   const { checkIfWalletConnected, currentAccount } = useAuth();
 
@@ -23,6 +30,9 @@ const Requests = () => {
   const [inputFile, setInputFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [reqId, setReqId] = useState("");
+  const [description, setDescription] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [docFileName, setDocFileName] = useState("");
 
   function closeModal() {
     setModalIsOpen(false);
@@ -34,7 +44,69 @@ const Requests = () => {
   function navigateToUpdate() {
     navigate(`/update/${reqId}`);
   }
-  const handleSubmit = () => {};
+
+  const convertPdfToImages = async (file, qrCode) => {
+    const pdfDoc = await PDFDocument.create();
+
+    PDFJS.GlobalWorkerOptions.workerSrc =
+      "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+
+    const images = [];
+    const uri = URL.createObjectURL(file);
+    console.log("uri", uri);
+    const pdf = await PDFJS.getDocument({ url: uri }).promise;
+    const canvas = document.createElement("canvas");
+
+    for (let i = 0; i < pdf.numPages; i++) {
+      const page = await pdf.getPage(i + 1);
+      const viewport = page.getViewport({ scale: 1 });
+      var context = canvas.getContext("2d");
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      await page.render({ canvasContext: context, viewport: viewport }).promise;
+      if (i === 0) {
+        context.drawImage(qrCode, 50, 50);
+      }
+      images.push(canvas.toDataURL("image/png"));
+      const pngImage = await pdfDoc.embedPng(images[i]);
+
+      const page1 = pdfDoc.addPage();
+      page1.drawImage(pngImage);
+    }
+    const pdfBytes = await pdfDoc.save();
+
+    return pdfBytes;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const token = uuidv4();
+    // console.log(docFile[0]);
+    const qrCode = await QRCode.toCanvas(
+      `http://localhost:3000/verify/${token}`
+    );
+
+    console.log("inputFIle", inputFile);
+    const pdf = await convertPdfToImages(inputFile[0], qrCode);
+    console.log("pdf", pdf);
+
+    const files = [new File([pdf], "Marksheet.pdf")];
+
+    const cid = await uploadFilesToIPFS(files);
+    console.log(cid);
+
+    await uploadBulkDocuments(
+      [cid],
+      inputFileName,
+      description,
+      [emailId],
+      [docFileName],
+      currentAccount,
+      [token]
+    );
+  };
   const openModal = async (e) => {
     e.preventDefault();
     setModalIsOpen(true);
@@ -93,7 +165,7 @@ const Requests = () => {
             emailId: studentData.emailId,
             mobileNo: studentData.mobileNo,
           });
-		  setReqId(data[j].reqId)
+          setReqId(data[j].reqId);
         }
         console.log("data", resData);
       } catch (err) {
@@ -155,7 +227,7 @@ const Requests = () => {
               <input
                 onChange={handleFileChange}
                 ref={uploadFile}
-                accept="image/*"
+                // accept="pdf/*"
                 className={` ${styles.fileInput}`}
                 type="file"
                 placeholder={""}

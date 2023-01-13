@@ -186,7 +186,7 @@ const StudentDashboard = () => {
                 <div
                   className={styles.docCard}
                   onClick={() => {
-                    openDocPage(item.ipfsCID, item.docName);
+                    openDocPage(item.file.cid, item.file.fileName);
                   }}
                 >
                   <span>Document Name: {item.docName}</span>
