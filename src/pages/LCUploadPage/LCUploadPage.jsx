@@ -57,6 +57,7 @@ const LCUploadPage = () => {
         isDragReject } = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
 	const templateImage = useRef();
+	const hiddenChooseFile = useRef();
 
 	const files = acceptedFiles.map((file) => (
 		<li key={file.path}>
@@ -225,6 +226,10 @@ const LCUploadPage = () => {
 		}
 	}, [acceptedFiles]);
 
+	const issueDocuments = () => {
+		
+	}
+
 	return (
 		<div className={styles.marksheetUploadPageContainer}>
 			<div className={styles.marksheetUploadPageBodyContainer}>
@@ -239,14 +244,18 @@ const LCUploadPage = () => {
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
-							<div>
-								<span>
-									Generating leaving certificates for{" "}
+							<div className={styles.bulkDetails}>
+								<span className={styles.bulkCount}>
 									{bulkEntries.length} students
 								</span>
-								<button onClick={downloadCanvasImage}>
-									Download
-								</button>
+								<div className={styles.bulkButtonContainer}>
+									<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+										Download
+									</button>
+									<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+										Issue documents
+									</button>
+								</div>
 							</div>
 						)}
 					</div>
@@ -287,13 +296,19 @@ const LCUploadPage = () => {
 								Select LC PDF
 							</span>
 
-							<div className="mt-1">
+							<div className={styles.fileUploadContainer}>
+								<button onClick={() => {
+									hiddenChooseFile.current.click()
+								}} className={styles.chooseFileBtn}>
+									{(docFileName === "") ? 'Choose File' : docFileName}</button>
 								<input
+									ref={hiddenChooseFile}
 									type="file"
 									id="formFile"
 									onChange={handleDocFileChange}
-									className="form-control block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+									className={styles.chooseFileInput}
 								/>
+
 							</div>
 						</div>
 						<button className={styles.issueDocBtn} onClick={handleSubmit}>

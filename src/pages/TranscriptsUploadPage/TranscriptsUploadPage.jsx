@@ -51,6 +51,7 @@ const TranscriptsUploadPage = () => {
         isDragReject } = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
 	const templateImage = useRef();
+	const hiddenChooseFile = useRef();
 
 	const files = acceptedFiles.map((file) => (
 		<li key={file.path}>
@@ -230,13 +231,19 @@ const TranscriptsUploadPage = () => {
 								Select Transcripts PDF
 							</span>
 
-							<div className="mt-1">
+							<div className={styles.fileUploadContainer}>
+								<button onClick={() => {
+									hiddenChooseFile.current.click()
+								}} className={styles.chooseFileBtn}>
+									{(docFileName === "") ? 'Choose File' : docFileName}</button>
 								<input
+									ref={hiddenChooseFile}
 									type="file"
 									id="formFile"
 									onChange={handleDocFileChange}
-									className="form-control block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+									className={styles.chooseFileInput}
 								/>
+
 							</div>
 						</div>
 						<button className={styles.issueDocBtn} onClick={handleSubmit}>

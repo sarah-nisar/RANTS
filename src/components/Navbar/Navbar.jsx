@@ -3,6 +3,8 @@ import styles from './Navbar.module.css';
 import { useNavigate } from "react-router-dom";
 import Avatar, { genConfig } from 'react-nice-avatar'
 import { useAuth } from "../../Context/AuthContext";
+import logo from '../../images/logoblue.svg';
+
 const Navbar = () => {
 
     const navigate = useNavigate();
@@ -21,6 +23,7 @@ const Navbar = () => {
         <div className={styles.navbar}>
             <div className={styles.navbarContainer}>
                 <div onClick={navigateToHome} className={styles.logoContainer}>
+                    <img className={styles.logoImg} src={logo} alt="" />
                     vjti.docs
                 </div>
                 <div>

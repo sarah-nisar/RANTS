@@ -59,7 +59,7 @@ const MainHome = () => {
           vjti.docs
         </div>
         <div className={styles.descSection}>
-          <span>Building safe & secure solution<br />
+          <span>Building a secure & efficient solution<br />
 for Certificate Verification</span>
           <button onClick={navigateToRegisterPage} className={styles.registerBtn}>
             Register

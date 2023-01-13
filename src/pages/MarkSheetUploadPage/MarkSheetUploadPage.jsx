@@ -69,6 +69,7 @@ const MarkSheetUploadPage = () => {
 	const [bulkEntries, setBulkEntries] = useState([]);
 	const [tokens, setTokens] = useState([]);
 	const templateImage = useRef();
+	const hiddenChooseFile = useRef();
 
 	const files = acceptedFiles.map((file) => (
 		<li key={file.path}>
@@ -242,23 +243,6 @@ const MarkSheetUploadPage = () => {
 			console.log(cid);
 			cids.push(cid);
 		}
-		// Array.from(canvases)
-		// 	.forEach(async (canvas) => {
-		// 		var url = canvas.toDataURL("image/png");
-		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
-		// 		pdf.addImage(url, "JPEG", 0, 0);
-
-		// 		fileNames.push("Marksheet.pdf");
-
-		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
-
-		// 		const cid = await uploadFilesToIPFS(files);
-		// 		console.log(cid);
-		// 		cids.push(cid);
-		// 	})
-		// 	.then(() => {
-		// 		console.log("ehl");
-		// 	});
 
 		const emails = [bulkEntries.map((item) => item.EmailId)];
 
@@ -323,17 +307,18 @@ const MarkSheetUploadPage = () => {
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
-							<div>
-								<span>
-									Generating mark sheets for{" "}
+							<div className={styles.bulkDetails}>
+								<span className={styles.bulkCount}>
 									{bulkEntries.length} students
 								</span>
-								<button onClick={downloadCanvasImage}>
-									Download
-								</button>
-								<button onClick={issueDocuments}>
-									Issue documents
-								</button>
+								<div className={styles.bulkButtonContainer}>
+									<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+										Download
+									</button>
+									<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+										Issue documents
+									</button>
+								</div>
 							</div>
 						)}
 					</div>
@@ -374,13 +359,19 @@ const MarkSheetUploadPage = () => {
 								Select Mark Sheet PDF
 							</span>
 
-							<div className="mt-1">
+							<div className={styles.fileUploadContainer}>
+								<button onClick={() => {
+									hiddenChooseFile.current.click()
+								}} className={styles.chooseFileBtn}>
+									{(docFileName === "") ? 'Choose File' : docFileName}</button>
 								<input
+									ref={hiddenChooseFile}
 									type="file"
 									id="formFile"
 									onChange={handleDocFileChange}
-									className="form-control block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+									className={styles.chooseFileInput}
 								/>
+
 							</div>
 						</div>
 						<button

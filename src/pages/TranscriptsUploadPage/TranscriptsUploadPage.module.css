@@ -55,6 +55,7 @@
 }
 
 .singleUploadForm{
+    width: 40%;
     display: flex;
     flex-direction: column;
 }
@@ -70,6 +71,26 @@
     border: none;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
+}
+
+.fileUploadContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.chooseFileBtn{
+    padding: 0.8rem 0.6rem;
+    border-radius: 0.5rem;
+    background-color: #dfdfdf;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    color: rgb(45, 45, 45);
+    font-weight: bold;
+}
+
+.chooseFileInput{
+    display: none;
 }
 
 .issueBtn{

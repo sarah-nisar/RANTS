@@ -36,6 +36,43 @@
     padding: 1rem;
 }
 
+.bulkDetails{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bulkButtonContainer{
+    display: flex;
+    flex-direction: row;
+}
+
+.bulkCount{
+    margin-top: 1rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.bulkDownloadBtn, .bulkIssueBtn{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    background-image: linear-gradient(#538cff, #2a71ff);
+    border: none;
+    outline: none;
+    border-radius: 0.4rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+.bulkDownloadBtn{
+    margin-right: 0.5rem;
+}
+
 .verticalDivider{
     height: 300px;
     width: 1px;
@@ -52,6 +89,7 @@
 }
 
 .singleUploadForm{
+    width: 60%;
     display: flex;
     flex-direction: column;
 }
@@ -67,6 +105,26 @@
     border: none;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
+}
+
+.fileUploadContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.chooseFileBtn{
+    padding: 0.8rem 0.6rem;
+    border-radius: 0.5rem;
+    background-color: #dfdfdf;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    color: rgb(45, 45, 45);
+    font-weight: bold;
+}
+
+.chooseFileInput{
+    display: none;
 }
 
 .issueBtn{
