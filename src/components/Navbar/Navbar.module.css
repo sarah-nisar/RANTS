@@ -25,6 +25,11 @@
 .accountIcon{
     width: 2.2rem;
     height: 2.2rem;
+    
+}
+.avatar{
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: #1363FD;
     border-radius: 50%;
 }

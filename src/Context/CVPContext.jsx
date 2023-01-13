@@ -203,6 +203,12 @@ export const CVPProvider = ({ children }) => {
     return data;
   };
 
+  const fetchAllDocumentsForStudentByAdmin = async (emailId) => {
+	const contract = await connectingWithSmartContract();
+	const data = contract.fetchAllDocumentsForStudentByAdmin(emailId);
+	return data;
+};
+
   const fetchIndividualDocumentForStudent = async (docId) => {
     const contract = await connectingWithSmartContract();
     const data = contract.fetchIndividualDocumentForStudent(docId);
@@ -393,6 +399,7 @@ export const CVPProvider = ({ children }) => {
 		return res;
 	};
 
+
   return (
     <CVPContext.Provider
       value={{
@@ -415,7 +422,7 @@ export const CVPProvider = ({ children }) => {
         uploadBulkDocuments,
         verifyDocument,
         issueDocument,
-        updateRequestDocument,
+        updateRequestDocument,fetchAllDocumentsForStudentByAdmin,
       }}
     >
       {children}
