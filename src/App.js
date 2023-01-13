@@ -29,32 +29,6 @@ const App = () => {
       path: "/issueMarksheet",
       element: <><Navbar /><MarkSheetUploadPage /></>,
     },
-<<<<<<< HEAD
-    {
-      path: "/register",
-      element: <Register />,
-    },
-    {
-      path: "/dashboard",
-      element: <StudentDashboard />,
-    },
-    {
-      path: "/verify",
-      element: <Verify />,
-    },
-    {
-      path: "/requests",
-      element: <Requests />,
-    },
-  ]);
-
-  return (
-    <>
-      <Navbar />
-      <RouterProvider router={router}></RouterProvider>
-    </>
-  );
-=======
 	{
 		path: "/register",
 		element: <><Navbar /><Register/></>
@@ -85,7 +59,6 @@ const App = () => {
 			</RouterProvider>
 		</>
 	);
->>>>>>> 353f8bc661a30a9f45df4684d0b206a64c84a51b
 };
 
 export default App;
