@@ -31,6 +31,7 @@ const Admin = () => {
       console.log(staffMember);
       setUser(staffMember);
     } catch (err) {
+      console.log(err);
       navigate("/register");
     }
   });
