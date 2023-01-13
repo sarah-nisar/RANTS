@@ -7,6 +7,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
+import one from '../../images/one.png'
+import two from '../../images/two.png'
+import three from '../../images/three.png'
 
 const MainHome = () => {
   const navigate = useNavigate();
@@ -64,10 +67,23 @@ for Certificate Verification</span>
           </button>
 
         </div>
-        {/* <div>
-          <ExpandMoreIcon className={styles.downArrow}/>
-        </div> */}
       </div>
+      <span className={styles.sectionHeader}>Special Features</span>
+      <div className={styles.infoContainer}>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={one} alt="" />
+          <span>Secured by Blockchain</span>
+        </div>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={two} alt="" />
+          <span>Easy Document Verification</span>
+        </div>
+        <div className={styles.infoCard}>
+          <img className={styles.infoImage} src={three} alt="" />
+          <span>Gasless Transactions</span>
+        </div>
+      </div>
+
     </div>
   );
 };
