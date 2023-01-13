@@ -9,7 +9,7 @@ import styles from "./LCUploadPage.module.css";
 import { useDropzone } from "react-dropzone";
 import * as xlsx from "xlsx";
 import Canvas from "./LCCanvas";
-import template from "../../images/template.jpg";
+import template from "../../images/LeavingTemplate.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
@@ -74,11 +74,15 @@ const LCUploadPage = () => {
 		context.drawImage(img, 0, 0, 420, 594);
 		context.font = "14px Arial";
 		context.fillStyle = "black";
-		context.fillText(entry.Name, 95, 176);
-		context.fillText(entry.RegNum, 250, 176);
-		context.fillText("VII", 350, 176);
-		context.fillText(entry.CPI, 122, 543);
-		context.fillText(entry.SPI, 305, 543);
+		context.fillText(entry.ID, 66, 165);
+		context.fillText(entry.SrNo, 318, 165);
+		// context.fillText("VII", 350, 176);
+		context.fillText(entry.full_name, 156, 225);
+		context.fillText(entry.DOB, 156, 270);
+		context.fillText(entry.PlaceOfBirth, 156, 320);
+		context.fillText(entry.DateOfAdmission, 156, 365);
+		context.fillText(entry.GeneralConduct, 156, 421);
+		context.fillText(entry.Remarks, 114, 471);
 	};
 
 	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
