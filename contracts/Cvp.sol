@@ -74,7 +74,7 @@ contract Cvp {
     receive() external payable {}
 
     constructor() {
-            console.log("yahhoo");
+        console.log("yahhoo");
 
         owner = payable(msg.sender);
         collegeStaffsMapping[collegeStaffCount] = CollegeStaff(
@@ -182,15 +182,7 @@ contract Cvp {
         string memory reqType,
         string memory department
     ) public payable {
-        // if (
-        //     keccak256(abi.encodePacked(docName)) ==
-        //     keccak256(abi.encodePacked("Academic Transcript"))
-        // ) {
-        //     require(msg.value >= 1 ether);
-        // }
         owner.transfer(msg.value);
-
-        // IPFSFile[] memory files = new IPFSFile[](0);
 
         requestsMapping[requestCount] = Request({
             reqId: requestCount,
@@ -222,19 +214,7 @@ contract Cvp {
         // string[] memory cids,
         uint256 docId
     ) public payable {
-        // if (
-        //     keccak256(abi.encodePacked(docName)) ==
-        //     keccak256(abi.encodePacked("Academic Transcript"))
-        // ) {
-        //     require(msg.value >= 1 ether);
-        // }
         owner.transfer(msg.value);
-
-        // IPFSFile[] memory files = new IPFSFile[](cids.length);
-        // for (uint256 i = 0; i < cids.length; i++) {
-        //     IPFSFile memory newFile = IPFSFile(cids[i], fileNames[i]);
-        // files[i] = newFile;
-        // }
 
         requestsMapping[requestCount] = Request({
             reqId: requestCount,
@@ -313,16 +293,16 @@ contract Cvp {
 
         return result;
     }
+
     function fetchAllDocumentsForStudentByAdmin(
         string memory emailId
-    )
-        public
-        view
-        returns (Document[] memory)
-    {
+    ) public view returns (Document[] memory) {
         uint256 itemCount;
         for (uint256 i = 0; i < documentsCount; i++) {
-            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+            if (
+                documentsMapping[i].studentAdd ==
+                studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd
+            ) {
                 itemCount += 1;
             }
         }
@@ -331,7 +311,56 @@ contract Cvp {
         itemCount = 0;
 
         for (uint256 i = 0; i < documentsCount; i++) {
-            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+            if (
+                documentsMapping[i].studentAdd ==
+                studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd
+            ) {
+                Document storage newItem = documentsMapping[i];
+                result[itemCount] = newItem;
+                itemCount += 1;
+            }
+        }
+
+        return result;
+    }
+
+    function fetchAllDocumentsForStudentByStaff(
+        string memory emailId
+    ) public view returns (Document[] memory) {
+        uint256 itemCount;
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (
+                documentsMapping[i].studentAdd ==
+                studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd &&
+                keccak256(abi.encodePacked(documentsMapping[i].department)) ==
+                keccak256(
+                    abi.encodePacked(
+                        collegeStaffsMapping[
+                            collegeStaffAddressToIDMapping[msg.sender]
+                        ].department
+                    )
+                )
+            ) {
+                itemCount += 1;
+            }
+        }
+
+        Document[] memory result = new Document[](itemCount);
+        itemCount = 0;
+
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (
+                documentsMapping[i].studentAdd ==
+                studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd &&
+                keccak256(abi.encodePacked(documentsMapping[i].department)) ==
+                keccak256(
+                    abi.encodePacked(
+                        collegeStaffsMapping[
+                            collegeStaffAddressToIDMapping[msg.sender]
+                        ].department
+                    )
+                )
+            ) {
                 Document storage newItem = documentsMapping[i];
                 result[itemCount] = newItem;
                 itemCount += 1;
@@ -359,7 +388,7 @@ contract Cvp {
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                msg.sender == owner 
+                msg.sender == owner
                 // &&
                 // (
                 //     // requestsMapping[i].level ==
@@ -383,7 +412,7 @@ contract Cvp {
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                msg.sender == owner 
+                msg.sender == owner
                 // &&
                 // (
                 //     // requestsMapping[i].level ==
@@ -498,8 +527,7 @@ contract Cvp {
         revert("Not found");
     }
 
-    function payForVerification(
-    ) public payable  {
+    function payForVerification() public payable {
         require(msg.value >= 1 ether);
         owner.transfer(msg.value);
     }

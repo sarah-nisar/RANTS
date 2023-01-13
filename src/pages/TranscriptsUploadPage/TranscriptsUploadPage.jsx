@@ -73,6 +73,8 @@ const TranscriptsUploadPage = () => {
 		</li>
 	));
 
+	const [isOwner, setIsOwner] = useState(false);
+
 	const style = useMemo(
 		() => ({
 			...baseStyle,
@@ -95,8 +97,12 @@ const TranscriptsUploadPage = () => {
 		context.fillText(entry.SPI, 305, 543);
 	};
 
-	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
-		useCVPContext();
+	const {
+		getStaffMember,
+		uploadFilesToIPFS,
+		isOwnerAddress,
+		uploadBulkDocuments,
+	} = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
 	const downloadCanvasImage = () => {
@@ -122,7 +128,12 @@ const TranscriptsUploadPage = () => {
 		try {
 			const staffMember = await getStaffMember();
 			console.log(staffMember);
+			const owner = await isOwnerAddress();
+			setIsOwner(owner);
 			setUser(staffMember);
+			if (!owner && staffMember.department !== "Academic Section") {
+				navigate("/admin");
+			}
 		} catch (err) {
 			navigate("/register");
 		}
@@ -378,20 +389,25 @@ const TranscriptsUploadPage = () => {
 							Select Transcripts PDF
 						</span>
 
-							<div className={styles.fileUploadContainer}>
-								<button onClick={() => {
-									hiddenChooseFile.current.click()
-								}} className={styles.chooseFileBtn}>
-									{(docFileName === "") ? 'Choose File' : docFileName}</button>
-								<input
-									ref={hiddenChooseFile}
-									type="file"
-									id="formFile"
-									onChange={handleDocFileChange}
-									className={styles.chooseFileInput}
-								/>
-
-							</div>
+						<div className={styles.fileUploadContainer}>
+							<button
+								onClick={() => {
+									hiddenChooseFile.current.click();
+								}}
+								className={styles.chooseFileBtn}
+							>
+								{docFileName === ""
+									? "Choose File"
+									: docFileName}
+							</button>
+							<input
+								ref={hiddenChooseFile}
+								type="file"
+								id="formFile"
+								onChange={handleDocFileChange}
+								className={styles.chooseFileInput}
+							/>
+						</div>
 					</div>
 					<button
 						className={styles.issueDocBtn}
