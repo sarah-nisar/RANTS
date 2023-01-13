@@ -89,3 +89,36 @@ exports.otpController = (req, res) => {
     }
   }
 };
+
+exports.commentController = (req, res) =>{
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const firstError = errors.array().map((error) => error.msg)[0];
+    return res.status(400).json({
+      error: firstError,
+    });
+  } else {
+    const { comment, reqId } = req.body;
+    const emailData = {
+      from: "appatil_b19@ce.vjti.ac.in",
+      to: email,
+      subject: "Document not issued",
+      html: `<h1>Sorry, we are unable to issue your document with request ID: ${reqId}.
+      The following comment is stated by the issuer: ${comment}</h1>`,
+    };
+    sgMail
+      .send(emailData)
+      .then((sent) => {
+        return res.status(200).json({
+          message: `Email has been sent to ${email}`,
+        });
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          success: false,
+          error: "Could not send email\n" + err,
+        });
+      });
+  }
+}

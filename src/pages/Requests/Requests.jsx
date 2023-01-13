@@ -11,6 +11,9 @@ import QRCode from "qrcode";
 import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 import * as PDFJS from "pdfjs-dist/webpack";
+import { async } from "q";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "../../helpers/axios";
 
 const Requests = () => {
   const {
@@ -27,7 +30,7 @@ const Requests = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIsOpen2, setModalIsOpen2] = useState(false);
   const [inputFileName, setInputFileName] = useState("Select file");
-  const [inputFile, setInputFile] = useState(null);
+  const [inputFile, setInputFile] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [reqId, setReqId] = useState("");
   const [description, setDescription] = useState("");
@@ -81,32 +84,57 @@ const Requests = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (inputFile == "") {
+      toast.error("Please upload a file");
+    } else {
+      toast.warn("Please wait for a moment");
+      const token = uuidv4();
+      // console.log(docFile[0]);
+      const qrCode = await QRCode.toCanvas(
+        `http://localhost:3000/verify/${token}`
+      );
 
-    const token = uuidv4();
-    // console.log(docFile[0]);
-    const qrCode = await QRCode.toCanvas(
-      `http://localhost:3000/verify/${token}`
-    );
+      console.log("inputFIle", inputFile);
+      const pdf = await convertPdfToImages(inputFile[0], qrCode);
+      console.log("pdf", pdf);
 
-    console.log("inputFIle", inputFile);
-    const pdf = await convertPdfToImages(inputFile[0], qrCode);
-    console.log("pdf", pdf);
+      const files = [new File([pdf], inputFileName)];
 
-    const files = [new File([pdf], inputFileName)];
+      const cid = await uploadFilesToIPFS(files);
+      console.log("cid", cid);
 
-    const cid = await uploadFilesToIPFS(files);
-    console.log("cid",cid);
-
-    await uploadBulkDocuments(
-      [cid],
-      inputFileName,
-      description,
-      [emailId],
-      [docFileName],
-      currentAccount,
-      [token]
-    );
+      await uploadBulkDocuments(
+        [cid],
+        inputFileName,
+        description,
+        [emailId],
+        [docFileName],
+        currentAccount,
+        [token]
+      );
+      toast.success("Document issued successfully");
+    }
   };
+
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    if (comment === "") {
+      toast.error("Please specify comment");
+    } else {
+      await axios
+        .post("/register/comment", { comment, reqId, emailId })
+        .then((res) => {
+          console.log("res", res);
+          toast.success(res.data.message);
+        })
+        .catch((err) => {
+          console.log("Errrr", err);
+          toast.error(err);
+        });
+    }
+  };
+
+  //   const handleSubmit2
   const openModal = async (e) => {
     e.preventDefault();
     setModalIsOpen(true);
@@ -290,7 +318,10 @@ const Requests = () => {
               />
             </div>
 
-            <button className={`${styles.submitButton}`} onClick={handleSubmit}>
+            <button
+              className={`${styles.submitButton}`}
+              onClick={handleSubmit2}
+            >
               {isLoading ? (
                 <MoonLoader className={styles.loader} color="white" size={20} />
               ) : (

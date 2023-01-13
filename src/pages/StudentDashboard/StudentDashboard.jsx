@@ -7,6 +7,7 @@ import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
 import MoonLoader from "react-spinners/MoonLoader";
+import { ToastContainer, toast } from "react-toastify";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -102,26 +103,10 @@ const StudentDashboard = () => {
     }
   });
 
-  const fetchPendingRequests2 = useCallback(async () => {
-    try {
-      //   console.log("Hello");
-      const data2 = await fetchAllRequestsForCollegeStaff();
-      console.log("Requests:", data2);
-      var result = [];
-      for (let i = 0; i < data2.length; i++) {
-        if (data2[i].status.toNumber() === 1) result.push(data2[i]);
-      }
-      //   setPendingdescription(result);
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
   useEffect(() => {
     if (currentAccount) {
       fetchStudent();
       fetchPendingRequests();
-      fetchPendingRequests2();
       fetchDocuments();
     }
   }, [currentAccount]);
@@ -147,11 +132,12 @@ const StudentDashboard = () => {
       docDetails === "" ||
       requestType === ""
     ) {
-      alert("Enter all details first");
+      toast.error("Enter all details first");
       return;
     }
 
     try {
+      toast.warn("Wait for a moment");
       await requestDocument(
         currentAccount,
         docType,
@@ -160,9 +146,10 @@ const StudentDashboard = () => {
         dept
       );
       console.log("Request doc created");
+      toast.success("Request Submitted");
       await fetchPendingRequests();
-      await fetchPendingRequests2();
     } catch (err) {
+      toast.error("Error occurred");
       console.log(err);
     }
   };
@@ -174,6 +161,7 @@ const StudentDashboard = () => {
 
   return (
     <>
+      <ToastContainer />
       {studentDetails && studentDetails.length !== 0 ? (
         <div className={styles.dashboardBox}>
           <div className={styles.heading}>
