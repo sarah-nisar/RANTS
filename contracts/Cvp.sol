@@ -36,7 +36,7 @@ contract Cvp {
         uint256 initTime;
         uint256 closeTime;
         uint256 status; // 1 = ongoing 0=successfully closed 2=rejected
-        address issuer1;
+        // address issuer1;
         address issuer2;
         string department;
         // IPFSFile[] referenceFiles;
@@ -197,7 +197,7 @@ contract Cvp {
             description: description,
             level: 2, //TODo:For timebieng humne ye rakha hai baad mai change karna hai
             reqType: reqType,
-            issuer1: payable(address(0)),
+            // issuer1: payable(address(0)),
             issuer2: payable(address(0)),
             initTime: block.timestamp,
             closeTime: 0,
@@ -241,7 +241,7 @@ contract Cvp {
             description: description,
             level: 2, //TODo:For timebieng humne ye rakha hai baad mai change karna hai
             reqType: reqType,
-            issuer1: payable(address(0)),
+            // issuer1: payable(address(0)),
             issuer2: payable(address(0)),
             initTime: block.timestamp,
             closeTime: 0,
@@ -329,13 +329,18 @@ contract Cvp {
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                requestsMapping[i].level ==
-                collegeStaffsMapping[staffId].level &&
-                requestsMapping[i].status == 1 &&
-                keccak256(abi.encodePacked((requestsMapping[i].department))) ==
-                keccak256(
-                    abi.encodePacked((collegeStaffsMapping[staffId].department))
-                )
+                msg.sender == owner &&
+                (requestsMapping[i].level ==
+                    collegeStaffsMapping[staffId].level &&
+                    requestsMapping[i].status == 1 &&
+                    keccak256(
+                        abi.encodePacked((requestsMapping[i].department))
+                    ) ==
+                    keccak256(
+                        abi.encodePacked(
+                            (collegeStaffsMapping[staffId].department)
+                        )
+                    ))
             ) {
                 itemCount += 1;
             }
@@ -346,13 +351,18 @@ contract Cvp {
 
         for (uint256 i = 0; i < requestCount; i++) {
             if (
-                requestsMapping[i].level ==
-                collegeStaffsMapping[staffId].level &&
-                requestsMapping[i].status == 1 &&
-                keccak256(abi.encodePacked((requestsMapping[i].department))) ==
-                keccak256(
-                    abi.encodePacked((collegeStaffsMapping[staffId].department))
-                )
+                msg.sender == owner &&
+                (requestsMapping[i].level ==
+                    collegeStaffsMapping[staffId].level &&
+                    requestsMapping[i].status == 1 &&
+                    keccak256(
+                        abi.encodePacked((requestsMapping[i].department))
+                    ) ==
+                    keccak256(
+                        abi.encodePacked(
+                            (collegeStaffsMapping[staffId].department)
+                        )
+                    ))
             ) {
                 Request storage newItem = requestsMapping[i];
                 result[itemCount] = newItem;
@@ -369,7 +379,7 @@ contract Cvp {
         address staffAdd
     ) public {
         requestsMapping[reqId].status = 2;
-        requestsMapping[reqId].issuer1 = staffAdd;
+        // requestsMapping[reqId].issuer1 = staffAdd;
         requestsMapping[reqId].issuer2 = staffAdd;
         requestsMapping[reqId].comment = comment;
     }
