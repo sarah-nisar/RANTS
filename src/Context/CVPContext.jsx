@@ -32,10 +32,12 @@ export const CVPContext = React.createContext();
 export const useCVPContext = () => useContext(CVPContext);
 
 export const CVPProvider = ({ children }) => {
-  const web3AccessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
-  const web3Storage = new Web3Storage({ token: web3AccessToken });
-  const { currentAccount } = useAuth();
+	// const web3AccessToken =
+	// 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
+	const web3AccessToken =
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzM2MjY2MzYyMzQsIm5hbWUiOiJWSlRJSGFjayJ9.uy6sLbmvqoxFA6103tzsK-Ga0H_x_M9z_iYDoK4sPp0";
+	const web3Storage = new Web3Storage({ token: web3AccessToken });
+	const { currentAccount } = useAuth();
 
   const connectingWithSmartContract = async () => {
     try {
@@ -380,14 +382,16 @@ export const CVPProvider = ({ children }) => {
 
   // const verifyDocument =
 
-  const verifyDocument = async (token) => {
-    const contract = await connectingWithSmartContract();
-    const data = await contract.verifyDocument(token, {
-      value: ethers.utils.parseUnits("0.001", "ether"),
-      gasLimit: 100000,
-    });
-    return data;
-  };
+	const verifyDocument = async (token) => {
+		const contract = await connectingWithSmartContract();
+		const data = await contract.payForVerification({
+			value: ethers.utils.parseUnits("0.00001", "ether"),
+			gasLimit: 100000,
+		});
+
+		const res = await contract.verifyDocument(token);
+		return res;
+	};
 
   return (
     <CVPContext.Provider

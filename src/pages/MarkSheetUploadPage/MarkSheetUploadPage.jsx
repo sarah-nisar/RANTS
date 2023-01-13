@@ -215,7 +215,7 @@ const MarkSheetUploadPage = () => {
 			docName,
 			description,
 			[emailId],
-			[docFileName],
+			["Marksheet.pdf"],
 			currentAccount,
 			[token]
 		);

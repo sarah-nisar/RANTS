@@ -1,8 +1,82 @@
-.heading{
-    font-size: 25px;
-	font-weight: 700;
-	text-align: center;
+.verifyPageContainer{
 	width: 100%;
-	color: #555;
-	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
+
+.beforeVerifyContainer{
+	width: 80%;
+	min-height: 80vh;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.verifyDetails{
+	margin-bottom: 0.5rem;
+}
+
+.detailsContent{
+	color: #1363FD;
+}
+
+.checkDocBtn{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.8rem 1.8rem;
+    background-image: linear-gradient(#538cff, #2a71ff);
+    border: none;
+    outline: none;
+    border-radius: 0.4rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+.checkDocBtn:hover{
+    background-image: linear-gradient(#538cff, #1c68ff);
+    transform: scale(1.02);
+}
+
+.docViewContainer{
+	min-height: 80vh;
+	padding: 1rem 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.docContainer{
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.uploadContainer{
+	flex: 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.pdfPage{
+	height: 594px !important;
+	overflow: hidden;
+}
+
+.documentContainer, .react-pdf__Document{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+

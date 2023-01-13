@@ -459,9 +459,7 @@ contract Cvp {
 
     function verifyDocument(
         string memory token
-    ) public payable returns (Document memory) {
-        require(msg.value >= 1 ether);
-        owner.transfer(msg.value);
+    ) public view returns (Document memory) {
         for (uint256 i = 0; i < documentsCount; i++) {
             if (
                 keccak256(abi.encodePacked(documentsMapping[i].token)) ==
@@ -471,5 +469,11 @@ contract Cvp {
             }
         }
         revert("Not found");
+    }
+
+    function payForVerification(
+    ) public payable  {
+        require(msg.value >= 1 ether);
+        owner.transfer(msg.value);
     }
 }
