@@ -49,6 +49,7 @@ const Verify = () => {
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 	const [cid, setCID] = useState("");
 	const [isVerifiedCorrect, setIsVerifiedCorrect] = useState(0);
+	const [verifiedDocData, setVerifiedDocData] = useState({});
 
 	const { acceptedFiles, getRootProps, getInputProps,  isFocused,
         isDragAccept,
@@ -83,8 +84,6 @@ const Verify = () => {
 		setNumPages(numPages);
 	}
 
-	const URL = "https://bafybeiduictwqflrnd4flaau7irjof3nripn2qbkzyudr5pncs2yvvicfq.ipfs.w3s.link/icpc_travel_form.pdf";
-	const CID = "bafybeiduictwqflrnd4flaau7irjof3nripn2qbkzyudr5pncs2yvvicfq";
 	async function retrieve (cid) {
 		const web3AccessToken =
 		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEFjNjkxYTc1NTFBODU3MzIzMTE2MWZEMzUyMUFEQ0MyNWFEQzIyOWMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzE3ODk2NzI1MjUsIm5hbWUiOiJIYWNrQU1pbmVycyJ9._DQqNUq6VZ-Zg86ol1YHB0L4sWFtowhD6SSdSIRR23Y";
@@ -114,12 +113,8 @@ const Verify = () => {
 			link.href = objectURL;
 			link.click();
 		}
-
+		console.log("ravi")
 		// request succeeded! do something with the response object here...
-	}
-
-	const tryDownload = () => {
-		retrieve(CID);
 	}
 
 	const turnLeft = () => {
@@ -132,12 +127,14 @@ const Verify = () => {
 		console.log(pageNumber);
 	}
 
-	const compareDocs = async () => {
-		
+	const compareTwoDocs = async () => {
+		// console.log("comparing")
 		const file1array = await acceptedFiles[0].arrayBuffer();
 		const file2array = await pdfFile.arrayBuffer();
 		const file1hash = await sha256(file1array);
 		const file2hash = await sha256(file2array);
+		console.log(file1hash)
+		console.log(file2hash)
 		if(file1hash === file2hash){
 			setIsVerifiedCorrect(1);
 		}else{
@@ -158,59 +155,72 @@ const Verify = () => {
         isDragReject
       ]);
 
+	const checkDocument = async(e) => {
+		e.preventDefault();
+		const data = await verifyDocument(token);
+		console.log(data)
+		if(data.file){
+			setIsVerified(true);
+			setVerifiedDocData(data);
+			retrieve(data.file.cid);
+		}
+	}
+
 	return (
 		<div className={styles.verifyPageContainer}>
-			<div className={styles.beforeVerifyContainer}>
-				<span className={styles.verifyDetails}>Doc Name: <span className={styles.detailsContent}>gradesheet.pdf</span></span>
-				<span className={styles.verifyDetails}>Student Email: <span className={styles.detailsContent}>rrmaurya_b19@it.vjti.ac.in</span></span>
-				<span className={styles.verifyDetails}>Student Registration Num: <span className={styles.detailsContent}>191080080</span></span>
-				<button className={styles.checkDocBtn}>Check Document</button>
-			</div>
-			<div className={styles.docViewContainer}>
-				<div className={styles.docContainer}>
-					{(pdfFile) ? 
-						<div className={styles.documentContainer}>
-							<Document file={window.URL.createObjectURL(pdfFile)} onLoadSuccess={onDocumentLoadSuccess}>
-								<Page className={styles.pdfPage} pageNumber={pageNumber} />
-							</Document>
-						<div>
-						
-						
-						<p>
-							Page {pageNumber} of {numPages}
-						</p>
-					</div>
-						
-						</div>
-					: "Its nulll"}
-					<button onClick={turnLeft}>left</button>
-					<button onClick={turnRight}>right</button>
-				</div>
-				<button onClick={tryDownload}>Download</button>
-				
-				<div className={styles.uploadContainer}>
-					<div className={styles.bulkUploadSection}>
-							<div {...getRootProps({ style })}>
-								<input {...getInputProps()} />
-								<UploadIcon />
-								<p>Select Submitted Doc for comparison</p>
-							</div>
-							{acceptedFiles.length > 0 && (
-								
-								<div>
-									<div>{acceptedFiles[0].path}</div>
-									<button onClick={compareDocs}>Compare</button>
-									{
-										(isVerifiedCorrect != 0) ? (
-											(isVerifiedCorrect === 1) ? "Verified!! :)" : "FAKEEE!! :("
-										) : <></>
-										
-									}
+			{
+				(!isVerified) ? <div className={styles.beforeVerifyContainer}>
+					<span className={styles.verifyDetails}>Doc Name: <span className={styles.detailsContent}>gradesheet.pdf</span></span>
+					<span className={styles.verifyDetails}>Student Email: <span className={styles.detailsContent}>rrmaurya_b19@it.vjti.ac.in</span></span>
+					<span className={styles.verifyDetails}>Student Registration Num: <span className={styles.detailsContent}>191080080</span></span>
+					<button onClick={checkDocument} className={styles.checkDocBtn}>Check Document</button>
+				</div> :
+				<div className={styles.docViewContainer}>
+					<div className={styles.uploadContainer}>
+						<div className={styles.bulkUploadSection}>
+								<div {...getRootProps({ style })}>
+									<input {...getInputProps()} />
+									<UploadIcon />
+									<p>Select Submitted Doc for comparison</p>
 								</div>
-							)}
+								{acceptedFiles.length > 0 && (
+									
+									<div>
+										<div>{acceptedFiles[0].path}</div>
+										<button onClick={compareTwoDocs}>Compare Docs</button>
+										{
+											(isVerifiedCorrect != 0) ? (
+												(isVerifiedCorrect === 1) ? "Verified!! :)" : "FAKEEE!! :("
+											) : <></>
+											
+										}
+									</div>
+								)}
+						</div>
 					</div>
-				</div>
+					<div className={styles.docContainer}>
+						{(pdfFile) ? 
+							<div className={styles.documentContainer}>
+								<Document file={window.URL.createObjectURL(pdfFile)} onLoadSuccess={onDocumentLoadSuccess}>
+									<Page className={styles.pdfPage} pageNumber={pageNumber} />
+								</Document>
+							<div>
+							<p>
+								Page {pageNumber} of {numPages}
+							</p>
+						</div>
+							</div>
+						: "Its nulll"}
+						<button onClick={turnLeft}>left</button>
+						<button onClick={turnRight}>right</button>
+					</div>
+				{/* <button onClick={tryDownload}>Download</button> */}
+				
+				
 			</div>
+			}
+			
+			
 		</div>
 	);
 };

@@ -47,6 +47,14 @@ const Admin = () => {
     navigate("/issueMarksheet");
   };
 
+  const navigateToTranscriptsUpload = () => {
+    navigate("/issueTranscripts");
+  };
+
+  const navigateToLCUpload = () => {
+    navigate("/issueLC");
+  };
+
   const navigateToRequests = () => {
     navigate("/requests");
   };
@@ -66,10 +74,12 @@ const Admin = () => {
               Mark Sheets
             </div>
             <div className={styles.issueDocCard}
+            onClick={navigateToTranscriptsUpload}
             >
               <img src={tc} className={styles.cardIcon} />
               Transcripts</div>
             <div className={styles.issueDocCard}
+            onClick={navigateToLCUpload}
             >
               <img src={lc} className={styles.cardIcon} />
               Leaving Certificate</div>

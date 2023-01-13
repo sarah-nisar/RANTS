@@ -166,7 +166,7 @@ const StudentDashboard = () => {
 							My Documents
 						</span>
 						{documents.map((item, index) => {
-							return <div className={styles.docCard} onClick={() => {openDocPage(item.ipfsCID, item.docName)}}>
+							return <div className={styles.docCard} onClick={() => {openDocPage(item.file.cid, item.file.fileName)}}>
 								<span>Document Name: {item.docName}</span>
 								<span>Description: {item.description}</span>
 								<span>Department: {item.department}</span>

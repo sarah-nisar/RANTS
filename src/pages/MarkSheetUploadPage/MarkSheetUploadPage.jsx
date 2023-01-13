@@ -13,43 +13,61 @@ import template from "../../images/template.jpg";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
-import UploadIcon from '@mui/icons-material/Upload';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import UploadIcon from "@mui/icons-material/Upload";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode";
+import jsPDF from "jspdf";
+import { PDFDocument } from "pdf-lib";
+
+import * as PDFJS from "pdfjs-dist/webpack";
+import { PDFtoIMG } from "react-pdf-to-image";
+// const PDFJS = window.pdfjsLib;
+// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
+
+// import e from "cors";
 
 const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    borderWidth: 2,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'dashed',
-    backgroundColor: '#fafafa',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out'
-  };
-  
-  const focusedStyle = {
-    borderColor: '#2196f3'
-  };
-  
-  const acceptStyle = {
-    borderColor: '#00e676'
-  };
-  
-  const rejectStyle = {
-    borderColor: '#ff1744'
-  };
+	flex: 1,
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
+	padding: "20px",
+	borderWidth: 2,
+	borderRadius: 2,
+	borderColor: "#eeeeee",
+	borderStyle: "dashed",
+	backgroundColor: "#fafafa",
+	color: "#bdbdbd",
+	outline: "none",
+	transition: "border .24s ease-in-out",
+};
+
+const focusedStyle = {
+	borderColor: "#2196f3",
+};
+
+const acceptStyle = {
+	borderColor: "#00e676",
+};
+
+const rejectStyle = {
+	borderColor: "#ff1744",
+};
 
 const MarkSheetUploadPage = () => {
+	// const [emails, setEmails] = useState([]);
 	const navigate = useNavigate();
-	const { acceptedFiles, getRootProps, getInputProps,  isFocused,
-        isDragAccept,
-        isDragReject } = useDropzone();
+	const {
+		acceptedFiles,
+		getRootProps,
+		getInputProps,
+		isFocused,
+		isDragAccept,
+		isDragReject,
+	} = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
+	const [tokens, setTokens] = useState([]);
 	const templateImage = useRef();
 
 	const files = acceptedFiles.map((file) => (
@@ -58,18 +76,18 @@ const MarkSheetUploadPage = () => {
 		</li>
 	));
 
-    const style = useMemo(() => ({
-        ...baseStyle,
-        ...(isFocused ? focusedStyle : {}),
-        ...(isDragAccept ? acceptStyle : {}),
-        ...(isDragReject ? rejectStyle : {})
-      }), [
-        isFocused,
-        isDragAccept,
-        isDragReject
-      ]);
+	const style = useMemo(
+		() => ({
+			...baseStyle,
+			...(isFocused ? focusedStyle : {}),
+			...(isDragAccept ? acceptStyle : {}),
+			...(isDragReject ? rejectStyle : {}),
+		}),
+		[isFocused, isDragAccept, isDragReject]
+	);
 
-	const draw = (context, entry) => {
+	const draw = async (context, entry, token) => {
+		console.log("dfsjkl");
 		var img = document.getElementById("templateImage");
 		context.drawImage(img, 0, 0, 420, 594);
 		context.font = "14px Arial";
@@ -79,24 +97,28 @@ const MarkSheetUploadPage = () => {
 		context.fillText("VII", 350, 176);
 		context.fillText(entry.CPI, 122, 543);
 		context.fillText(entry.SPI, 305, 543);
+		const qrCode = await QRCode.toCanvas(
+			`http://localhost:3000/verify/${token}`
+		);
+		context.drawImage(qrCode, 0, 0);
 	};
 
 	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
 		useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
-    const downloadCanvasImage = () => {
-        var canvases = document.getElementsByClassName("templateCanvas");
-        console.log(canvases);
-        
-        Array.from(canvases).forEach((canvas) => {
-            var url = canvas.toDataURL("image/png");
-            var link = document.createElement('a');
-            link.download = 'filename.png';
-            link.href = url;
-            link.click();
-        })
-    }
+	const downloadCanvasImage = () => {
+		var canvases = document.getElementsByClassName("templateCanvas");
+		console.log(canvases);
+
+		Array.from(canvases).forEach((canvas) => {
+			var url = canvas.toDataURL("image/png");
+			var link = document.createElement("a");
+			link.download = "filename.png";
+			link.href = url;
+			link.click();
+		});
+	};
 	const [user, setUser] = useState([]);
 
 	useEffect(() => {
@@ -119,13 +141,12 @@ const MarkSheetUploadPage = () => {
 		if (currentAccount !== "") fetchStudent();
 	}, [currentAccount]);
 
-
 	const uploadRecord = useRef();
 	const [docFileName, setDocFileName] = useState("");
 	const [docFile, setDocFile] = useState("");
 
 	const [emailId, setEmailId] = useState("");
-	const [docName, setDocName] = useState("");
+	const [docName, setDocName] = useState("Marksheet");
 	const [description, setDescription] = useState("");
 
 	const handleDocUpload = (e) => {
@@ -138,18 +159,126 @@ const MarkSheetUploadPage = () => {
 		setDocFile(e.target.files);
 	};
 
+	const convertPdfToImages = async (file, qrCode) => {
+		const pdfDoc = await PDFDocument.create();
+
+		PDFJS.GlobalWorkerOptions.workerSrc =
+			"https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+
+		const images = [];
+		const uri = URL.createObjectURL(file);
+		const pdf = await PDFJS.getDocument({ url: uri }).promise;
+		const canvas = document.createElement("canvas");
+
+		for (let i = 0; i < pdf.numPages; i++) {
+			const page = await pdf.getPage(i + 1);
+			const viewport = page.getViewport({ scale: 1 });
+			var context = canvas.getContext("2d");
+
+			canvas.height = viewport.height;
+			canvas.width = viewport.width;
+			await page.render({ canvasContext: context, viewport: viewport })
+				.promise;
+			if (i === 0) {
+				context.drawImage(qrCode, 50, 50);
+			}
+			images.push(canvas.toDataURL("image/png"));
+			const pngImage = await pdfDoc.embedPng(images[i]);
+
+			const page1 = pdfDoc.addPage();
+			page1.drawImage(pngImage);
+		}
+		const pdfBytes = await pdfDoc.save();
+
+		return pdfBytes;
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const cid = await uploadFilesToIPFS(docFile);
+		const token = uuidv4();
+		console.log(docFile[0]);
+		const qrCode = await QRCode.toCanvas(
+			`http://localhost:3000/verify/${token}`
+		);
+
+		const pdf = await convertPdfToImages(docFile[0], qrCode);
+		console.log(pdf);
+
+		const files = [new File([pdf], "Marksheet.pdf")];
+
+		const cid = await uploadFilesToIPFS(files);
 		console.log(cid);
 
 		await uploadBulkDocuments(
 			[cid],
-			docFileName,
+			docName,
 			description,
 			[emailId],
-			currentAccount
+			["Marksheet.pdf"],
+			currentAccount,
+			[token]
+		);
+	};
+
+	const issueDocuments = async (e) => {
+		e.preventDefault();
+		var canvases = document.getElementsByClassName("templateCanvas");
+		console.log(canvases);
+
+		var cids = [];
+		var fileNames = [];
+
+		for (let i = 0; i < canvases.length; i++) {
+			var url = canvases[i].toDataURL("image/png");
+			const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+			pdf.addImage(url, "JPEG", 0, 0);
+
+			fileNames.push("Marksheet.pdf");
+
+			const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+			const cid = await uploadFilesToIPFS(files);
+			console.log(cid);
+			cids.push(cid);
+		}
+		// Array.from(canvases)
+		// 	.forEach(async (canvas) => {
+		// 		var url = canvas.toDataURL("image/png");
+		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+		// 		pdf.addImage(url, "JPEG", 0, 0);
+
+		// 		fileNames.push("Marksheet.pdf");
+
+		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+		// 		const cid = await uploadFilesToIPFS(files);
+		// 		console.log(cid);
+		// 		cids.push(cid);
+		// 	})
+		// 	.then(() => {
+		// 		console.log("ehl");
+		// 	});
+
+		const emails = [bulkEntries.map((item) => item.EmailId)];
+
+		console.log(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+		await uploadBulkDocuments(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
 		);
 	};
 
@@ -163,6 +292,18 @@ const MarkSheetUploadPage = () => {
 				const worksheet = workbook.Sheets[sheetName];
 				const json = xlsx.utils.sheet_to_json(worksheet);
 				setBulkEntries(json);
+
+				var temp = [];
+				for (let i = 0; i < json.length; i++) {
+					const token = uuidv4();
+
+					temp.push(token);
+				}
+
+				// console.log(temp);
+
+				setTokens(temp);
+				console.log(json);
 			};
 			reader.readAsArrayBuffer(acceptedFiles[0]);
 		}
@@ -178,7 +319,7 @@ const MarkSheetUploadPage = () => {
 					<div className={styles.bulkUploadSection}>
 						<div {...getRootProps({ style })}>
 							<input {...getInputProps()} />
-                            <UploadIcon />
+							<UploadIcon />
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
@@ -189,6 +330,9 @@ const MarkSheetUploadPage = () => {
 								</span>
 								<button onClick={downloadCanvasImage}>
 									Download
+								</button>
+								<button onClick={issueDocuments}>
+									Issue documents
 								</button>
 							</div>
 						)}
@@ -239,18 +383,23 @@ const MarkSheetUploadPage = () => {
 								/>
 							</div>
 						</div>
-						<button className={styles.issueDocBtn} onClick={handleSubmit}>
-                            <TaskAltIcon className={styles.tickIcon}/> Issue</button>
+						<button
+							className={styles.issueDocBtn}
+							onClick={handleSubmit}
+						>
+							<TaskAltIcon className={styles.tickIcon} /> Issue
+						</button>
 					</div>
 				</div>
 
 				<div className={styles.canvasContainer}>
-					{bulkEntries.map((entry) => {
-						// console.log(entry);
+					{bulkEntries.map((entry, index) => {
 						return (
 							<Canvas
+								key={index}
 								entry={entry}
 								draw={draw}
+								token={tokens[index]}
 								height={594}
 								width={420}
 							/>
