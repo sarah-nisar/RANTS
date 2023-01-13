@@ -90,8 +90,15 @@ export const CVPProvider = ({ children }) => {
 		console.log(txResponse);
 	};
 
-	const registerStaff = async (name, department, emailId, level) => {
+	const registerStaff = async (
+		staffAdd,
+		name,
+		department,
+		emailId,
+		level
+	) => {
 		const contract = await connectingWithSmartContract();
+		console.log(staffAdd, name, department, emailId, level);
 
 		const web3Modal = new Wenb3Model();
 		const connection = await web3Modal.connect();
@@ -100,6 +107,7 @@ export const CVPProvider = ({ children }) => {
 		smartAccount = await smartAccount.init();
 
 		const data = contract.interface.encodeFunctionData("registerStaff", [
+			staffAdd,
 			name,
 			department,
 			emailId,
@@ -216,6 +224,12 @@ export const CVPProvider = ({ children }) => {
 		return data;
 	};
 
+	const fetchAllDocumentsForStudentByStaff = async (emailId) => {
+		const contract = await connectingWithSmartContract();
+		const data = contract.fetchAllDocumentsForStudentByStaff(emailId);
+		return data;
+	};
+
 	const fetchAllDocumentsForStudentByAdmin = async (emailId) => {
 		const contract = await connectingWithSmartContract();
 		const data = contract.fetchAllDocumentsForStudentByAdmin(emailId);
@@ -288,6 +302,13 @@ export const CVPProvider = ({ children }) => {
 		const contract = await connectingWithSmartContract();
 		const data = await contract.fetchAllStudents();
 		console.log(data);
+	};
+
+	const isOwnerAddress = async () => {
+		const contract = await connectingWithSmartContract();
+		const data = await contract.isOwner();
+		console.log(data);
+		return data;
 	};
 
 	const getStudent = async () => {
@@ -438,6 +459,8 @@ export const CVPProvider = ({ children }) => {
 				issueDocument,
 				updateRequestDocument,
 				fetchAllDocumentsForStudentByAdmin,
+				fetchAllDocumentsForStudentByStaff,
+				isOwnerAddress,
 			}}
 		>
 			{children}

@@ -101,9 +101,14 @@ const LCUploadPage = () => {
 		);
 		context.drawImage(qrCode, 0, 0);
 	};
+	const [isOwner, setIsOwner] = useState(false);
 
-	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
-		useCVPContext();
+	const {
+		getStaffMember,
+		uploadFilesToIPFS,
+		isOwnerAddress,
+		uploadBulkDocuments,
+	} = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
 	const downloadCanvasImage = () => {
@@ -129,7 +134,12 @@ const LCUploadPage = () => {
 		try {
 			const staffMember = await getStaffMember();
 			console.log(staffMember);
+			const owner = await isOwnerAddress();
+			setIsOwner(owner);
 			setUser(staffMember);
+			if (!owner && staffMember.department !== "Academic Section") {
+				navigate("/admin");
+			}
 		} catch (err) {
 			navigate("/register");
 		}
@@ -287,7 +297,6 @@ const LCUploadPage = () => {
 		}
 	}, [acceptedFiles]);
 
-
 	return (
 		<div className={styles.marksheetUploadPageContainer}>
 			<div className={styles.marksheetUploadPageBodyContainer}>
@@ -307,10 +316,16 @@ const LCUploadPage = () => {
 									{bulkEntries.length} students
 								</span>
 								<div className={styles.bulkButtonContainer}>
-									<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+									<button
+										className={styles.bulkDownloadBtn}
+										onClick={downloadCanvasImage}
+									>
 										Download
 									</button>
-									<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+									<button
+										className={styles.bulkIssueBtn}
+										onClick={issueDocuments}
+									>
 										Issue documents
 									</button>
 								</div>
@@ -355,10 +370,16 @@ const LCUploadPage = () => {
 							</span>
 
 							<div className={styles.fileUploadContainer}>
-								<button onClick={() => {
-									hiddenChooseFile.current.click()
-								}} className={styles.chooseFileBtn}>
-									{(docFileName === "") ? 'Choose File' : docFileName}</button>
+								<button
+									onClick={() => {
+										hiddenChooseFile.current.click();
+									}}
+									className={styles.chooseFileBtn}
+								>
+									{docFileName === ""
+										? "Choose File"
+										: docFileName}
+								</button>
 								<input
 									ref={hiddenChooseFile}
 									type="file"
@@ -366,7 +387,6 @@ const LCUploadPage = () => {
 									onChange={handleDocFileChange}
 									className={styles.chooseFileInput}
 								/>
-
 							</div>
 						</div>
 						<button

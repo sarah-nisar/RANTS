@@ -71,6 +71,7 @@ const MarkSheetUploadPage = () => {
 			{file.path} - {file.size} bytes
 		</li>
 	));
+	const [isOwner, setIsOwner] = useState(false);
 
 	const style = useMemo(
 		() => ({
@@ -99,8 +100,12 @@ const MarkSheetUploadPage = () => {
 		context.drawImage(qrCode, 0, 0);
 	};
 
-	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
-		useCVPContext();
+	const {
+		getStaffMember,
+		uploadFilesToIPFS,
+		isOwnerAddress,
+		uploadBulkDocuments,
+	} = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
 	const downloadCanvasImage = () => {
@@ -126,7 +131,12 @@ const MarkSheetUploadPage = () => {
 		try {
 			const staffMember = await getStaffMember();
 			console.log(staffMember);
+			const owner = await isOwnerAddress();
+			setIsOwner(owner);
 			setUser(staffMember);
+			if (!owner && staffMember.department !== "Exam Section") {
+				navigate("/admin");
+			}
 		} catch (err) {
 			navigate("/register");
 		}
@@ -304,10 +314,16 @@ const MarkSheetUploadPage = () => {
 									{bulkEntries.length} students
 								</span>
 								<div className={styles.bulkButtonContainer}>
-									<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+									<button
+										className={styles.bulkDownloadBtn}
+										onClick={downloadCanvasImage}
+									>
 										Download
 									</button>
-									<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+									<button
+										className={styles.bulkIssueBtn}
+										onClick={issueDocuments}
+									>
 										Issue documents
 									</button>
 								</div>
@@ -352,10 +368,16 @@ const MarkSheetUploadPage = () => {
 							</span>
 
 							<div className={styles.fileUploadContainer}>
-								<button onClick={() => {
-									hiddenChooseFile.current.click()
-								}} className={styles.chooseFileBtn}>
-									{(docFileName === "") ? 'Choose File' : docFileName}</button>
+								<button
+									onClick={() => {
+										hiddenChooseFile.current.click();
+									}}
+									className={styles.chooseFileBtn}
+								>
+									{docFileName === ""
+										? "Choose File"
+										: docFileName}
+								</button>
 								<input
 									ref={hiddenChooseFile}
 									type="file"
@@ -363,7 +385,6 @@ const MarkSheetUploadPage = () => {
 									onChange={handleDocFileChange}
 									className={styles.chooseFileInput}
 								/>
-
 							</div>
 						</div>
 						<button
