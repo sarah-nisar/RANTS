@@ -3,7 +3,7 @@ import styles from "./RegisterStaff.module.css";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const RegisterStaff = () => {
 	const navigate = useNavigate();
@@ -11,7 +11,7 @@ const RegisterStaff = () => {
 	const [pubAddr, setPubAddr] = useState("");
 	const [email, setEmail] = useState("");
 	const [name, setName] = useState("");
-    const [department, setDepartment] = useState("");
+	const [department, setDepartment] = useState("Exam Section");
 
 	const { registerStudent, getStudent, RegisterStaff } = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
@@ -49,7 +49,7 @@ const RegisterStaff = () => {
 		}
 
 		try {
-            await RegisterStaff(name, email, department, 2);
+			await RegisterStaff(name, email, department, 2);
 			// await registerStudent(name, email, pubAddr, mobileNo, sid);
 			navigate("/admin");
 		} catch (err) {
@@ -58,9 +58,9 @@ const RegisterStaff = () => {
 		}
 	};
 
-    const handleDepartmentTypeChange = (e) => {
-        setDepartment(e.target.value);
-    }
+	const handleDepartmentTypeChange = (e) => {
+		setDepartment(e.target.value);
+	};
 
 	return (
 		<div className={styles.registerPageContainer}>
@@ -75,7 +75,7 @@ const RegisterStaff = () => {
 						className={`${styles.input}`}
 						type="text"
 						placeholder="Enter public address"
-                        onChange={(e) => setPubAddr(e.target.value)}
+						onChange={(e) => setPubAddr(e.target.value)}
 						value={pubAddr}
 					/>
 				</div>
@@ -93,12 +93,15 @@ const RegisterStaff = () => {
 				<div className={`${styles.inputContainer}`}>
 					<label className={`${styles.inputLabel}`}>Department</label>
 					<select
-                        className={`${styles.input}`}
-                        onChange={handleDepartmentTypeChange}
-                    >
-                        <option>Exam Dept</option>
-                        <option>Academics</option>
-                    </select>
+						className={`${styles.input}`}
+						onChange={handleDepartmentTypeChange}
+						value={department}
+					>
+						<option value={"Academic Section"}>
+							Academic Section
+						</option>
+						<option value={"Exam Section"}>Exam Section</option>
+					</select>
 				</div>
 
 				<div className={`${styles.inputContainer}`}>
@@ -114,10 +117,10 @@ const RegisterStaff = () => {
 					/>
 				</div>
 
-                <button onClick={handleSubmit} className={styles.registerBtn}>
-                    Register
-                    <ArrowForwardIcon className={styles.arrowForwardIcon}/>
-                </button>
+				<button onClick={handleSubmit} className={styles.registerBtn}>
+					Register
+					<ArrowForwardIcon className={styles.arrowForwardIcon} />
+				</button>
 			</form>
 		</div>
 	);

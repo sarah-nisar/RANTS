@@ -97,19 +97,6 @@
     flex: 1;
 }
 
-.table {
-	font-size: 17px;
-	width: 100%;
-}
-.table th,
-.table td {
-	border: 0.5px solid black;
-    padding: 5px 10px;
-}
-.tableRow {
-	margin: 10px 0;
-}
-
 .formBox {
 	padding: 10px 40px;
 	display: flex;
@@ -118,6 +105,28 @@
 	align-items: center;
 	transition: 0.5s;
     width: 100%;
+}
+.inputContainer {
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-around; */
+    /* width: 40%; */
+}
+
+.inputCombined {
+	border: 0px;
+    border-radius: 5px;
+	outline: none;
+	cursor: pointer;
+    width: 100%;
+    padding: 12px 0px;
+    outline: none;
+    border: none;
+    margin: 10px;
+    font-size: 1.1rem;
+}
+.fileInput{
+    display: none;
 }
 .requestFileBtn{
     margin-top: 1rem;

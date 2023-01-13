@@ -21,11 +21,6 @@ import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 
 import * as PDFJS from "pdfjs-dist/webpack";
-import { PDFtoIMG } from "react-pdf-to-image";
-// const PDFJS = window.pdfjsLib;
-// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
-
-// import e from "cors";
 
 const baseStyle = {
 	flex: 1,
@@ -283,9 +278,6 @@ const MarkSheetUploadPage = () => {
 
 					temp.push(token);
 				}
-
-				// console.log(temp);
-
 				setTokens(temp);
 				console.log(json);
 			};
