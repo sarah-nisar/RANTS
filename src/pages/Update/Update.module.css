@@ -1,0 +1,94 @@
+.heading{
+    font-size: 25px;
+	font-weight: 700;
+	width: 100%;
+	color: #555;
+    margin: auto;
+	margin-bottom: 20px;
+    text-align: center;
+}
+.eventBox{
+    width: 30%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f1f1;
+    padding: 15px 0.9rem;
+    border-radius: 4px;
+    box-shadow: 1px 1px 5px #ffffff;
+    transition: all ease 0.3s;
+    font-size: 1rem;
+}
+
+.eventBox:hover{
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
+    transform: scale(1.04) translateY(-3px);
+    background-color: #1363FD;
+    color: white;
+}
+.eventBox div{
+    padding: 10px;
+}
+.eventName{
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
+.values:hover{
+    color: #c1c1c1;
+}
+
+.formBox {
+	padding: 10px 40px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: 0.5s;
+    width: 100%;
+}
+.inputCombined {
+	border: 0px;
+    border-radius: 5px;
+    padding: 10px 15px;
+	outline: none;
+	cursor: pointer;
+    margin: 15px;
+}
+.fileInput{
+    display: none;
+}
+.modalIssueBtn, .submitButton{
+    background-color: #ECECEC;
+    padding: 0.5rem 2rem;
+    font-size: 0.875rem;
+    border-radius: 0.4rem;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    /* width: 13%; */
+    margin: auto;
+}
+.modalIssueBtn:hover, .submitButton:hover{
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.13);
+    color: black;
+}
+.input {
+    width: 100%;
+    padding: 12px 0px;
+    outline: none;
+    border: none;
+    margin: 10px;
+    font-size: 1.1rem;
+    border-bottom: 1px #525252 solid;
+}
+.heading2{
+    font-size: 20px;
+	font-weight: 700;
+	width: 100%;
+	color: rgb(26, 26, 26);
+	margin-bottom: 20px;
+    text-align: center;
+}

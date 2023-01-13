@@ -77,12 +77,12 @@
     padding: 1.1rem 2rem;
     font-size: 1.1rem;
     border-radius: 0.4rem;
+    border: none;
     cursor: pointer;
     color: #555;
     text-decoration: none;
     display: flex;
     justify-content: center;
-    width: 13%;
     margin: auto;
 }
 

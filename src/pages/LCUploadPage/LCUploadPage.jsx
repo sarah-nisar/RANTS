@@ -5,69 +5,57 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import styles from "./MarkSheetUploadPage.module.css";
+import styles from "./LCUploadPage.module.css";
 import { useDropzone } from "react-dropzone";
 import * as xlsx from "xlsx";
-import Canvas from "./MarkSheetCanvas";
-import template from "../../images/template.jpg";
+import Canvas from "./LCCanvas";
+import template from "../../images/LeavingTemplate.jpeg";
 import { useNavigate } from "react-router-dom";
 import { useCVPContext } from "../../Context/CVPContext";
 import { useAuth } from "../../Context/AuthContext";
-import UploadIcon from "@mui/icons-material/Upload";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import UploadIcon from '@mui/icons-material/Upload';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode";
 import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 
 import * as PDFJS from "pdfjs-dist/webpack";
-import { PDFtoIMG } from "react-pdf-to-image";
-// const PDFJS = window.pdfjsLib;
-// var convertapi = require("convertapi")("TuJziFdVtP6qxZFJ");
-
-// import e from "cors";
 
 const baseStyle = {
-	flex: 1,
-	display: "flex",
-	flexDirection: "column",
-	alignItems: "center",
-	padding: "20px",
-	borderWidth: 2,
-	borderRadius: 2,
-	borderColor: "#eeeeee",
-	borderStyle: "dashed",
-	backgroundColor: "#fafafa",
-	color: "#bdbdbd",
-	outline: "none",
-	transition: "border .24s ease-in-out",
-};
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#bdbdbd',
+    outline: 'none',
+    transition: 'border .24s ease-in-out'
+  };
+  
+  const focusedStyle = {
+    borderColor: '#2196f3'
+  };
+  
+  const acceptStyle = {
+    borderColor: '#00e676'
+  };
+  
+  const rejectStyle = {
+    borderColor: '#ff1744'
+  };
 
-const focusedStyle = {
-	borderColor: "#2196f3",
-};
-
-const acceptStyle = {
-	borderColor: "#00e676",
-};
-
-const rejectStyle = {
-	borderColor: "#ff1744",
-};
-
-const MarkSheetUploadPage = () => {
-	// const [emails, setEmails] = useState([]);
+const LCUploadPage = () => {
 	const navigate = useNavigate();
-	const {
-		acceptedFiles,
-		getRootProps,
-		getInputProps,
-		isFocused,
-		isDragAccept,
-		isDragReject,
-	} = useDropzone();
+	const { acceptedFiles, getRootProps, getInputProps,  isFocused,
+        isDragAccept,
+        isDragReject } = useDropzone();
 	const [bulkEntries, setBulkEntries] = useState([]);
-	const [tokens, setTokens] = useState([]);
 	const templateImage = useRef();
 
 	const files = acceptedFiles.map((file) => (
@@ -76,49 +64,49 @@ const MarkSheetUploadPage = () => {
 		</li>
 	));
 
-	const style = useMemo(
-		() => ({
-			...baseStyle,
-			...(isFocused ? focusedStyle : {}),
-			...(isDragAccept ? acceptStyle : {}),
-			...(isDragReject ? rejectStyle : {}),
-		}),
-		[isFocused, isDragAccept, isDragReject]
-	);
+    const style = useMemo(() => ({
+        ...baseStyle,
+        ...(isFocused ? focusedStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+      }), [
+        isFocused,
+        isDragAccept,
+        isDragReject
+      ]);
 
-	const draw = async (context, entry, token) => {
-		console.log("dfsjkl");
+	const draw = (context, entry) => {
 		var img = document.getElementById("templateImage");
 		context.drawImage(img, 0, 0, 420, 594);
 		context.font = "14px Arial";
 		context.fillStyle = "black";
-		context.fillText(entry.Name, 95, 176);
-		context.fillText(entry.RegNum, 250, 176);
-		context.fillText("VII", 350, 176);
-		context.fillText(entry.CPI, 122, 543);
-		context.fillText(entry.SPI, 305, 543);
-		const qrCode = await QRCode.toCanvas(
-			`http://localhost:3000/verify/${token}`
-		);
-		context.drawImage(qrCode, 0, 0);
+		context.fillText(entry.ID, 66, 165);
+		context.fillText(entry.SrNo, 318, 165);
+		// context.fillText("VII", 350, 176);
+		context.fillText(entry.full_name, 156, 225);
+		context.fillText(entry.DOB, 156, 270);
+		context.fillText(entry.PlaceOfBirth, 156, 320);
+		context.fillText(entry.DateOfAdmission, 156, 365);
+		context.fillText(entry.GeneralConduct, 156, 421);
+		context.fillText(entry.Remarks, 114, 471);
 	};
 
 	const { getStaffMember, uploadFilesToIPFS, uploadBulkDocuments } =
 		useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
-	const downloadCanvasImage = () => {
-		var canvases = document.getElementsByClassName("templateCanvas");
-		console.log(canvases);
-
-		Array.from(canvases).forEach((canvas) => {
-			var url = canvas.toDataURL("image/png");
-			var link = document.createElement("a");
-			link.download = "filename.png";
-			link.href = url;
-			link.click();
-		});
-	};
+    const downloadCanvasImage = () => {
+        var canvases = document.getElementsByClassName("templateCanvas");
+        console.log(canvases);
+        
+        Array.from(canvases).forEach((canvas) => {
+            var url = canvas.toDataURL("image/png");
+            var link = document.createElement('a');
+            link.download = 'filename.png';
+            link.href = url;
+            link.click();
+        })
+    }
 	const [user, setUser] = useState([]);
 
 	useEffect(() => {
@@ -141,12 +129,13 @@ const MarkSheetUploadPage = () => {
 		if (currentAccount !== "") fetchStudent();
 	}, [currentAccount]);
 
+
 	const uploadRecord = useRef();
 	const [docFileName, setDocFileName] = useState("");
 	const [docFile, setDocFile] = useState("");
 
 	const [emailId, setEmailId] = useState("");
-	const [docName, setDocName] = useState("Marksheet");
+	const [docName, setDocName] = useState("Leaving Certificate");
 	const [description, setDescription] = useState("");
 
 	const handleDocUpload = (e) => {
@@ -205,7 +194,7 @@ const MarkSheetUploadPage = () => {
 		const pdf = await convertPdfToImages(docFile[0], qrCode);
 		console.log(pdf);
 
-		const files = [new File([pdf], "Marksheet.pdf")];
+		const files = [new File([pdf], "LC.pdf")];
 
 		const cid = await uploadFilesToIPFS(files);
 		console.log(cid);
@@ -215,70 +204,9 @@ const MarkSheetUploadPage = () => {
 			docName,
 			description,
 			[emailId],
-			["Marksheet.pdf"],
+			[docFileName],
 			currentAccount,
 			[token]
-		);
-	};
-
-	const issueDocuments = async (e) => {
-		e.preventDefault();
-		var canvases = document.getElementsByClassName("templateCanvas");
-		console.log(canvases);
-
-		var cids = [];
-		var fileNames = [];
-
-		for (let i = 0; i < canvases.length; i++) {
-			var url = canvases[i].toDataURL("image/png");
-			const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
-			pdf.addImage(url, "JPEG", 0, 0);
-
-			fileNames.push("Marksheet.pdf");
-
-			const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
-
-			const cid = await uploadFilesToIPFS(files);
-			console.log(cid);
-			cids.push(cid);
-		}
-		// Array.from(canvases)
-		// 	.forEach(async (canvas) => {
-		// 		var url = canvas.toDataURL("image/png");
-		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
-		// 		pdf.addImage(url, "JPEG", 0, 0);
-
-		// 		fileNames.push("Marksheet.pdf");
-
-		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
-
-		// 		const cid = await uploadFilesToIPFS(files);
-		// 		console.log(cid);
-		// 		cids.push(cid);
-		// 	})
-		// 	.then(() => {
-		// 		console.log("ehl");
-		// 	});
-
-		const emails = [bulkEntries.map((item) => item.EmailId)];
-
-		console.log(
-			cids,
-			docName,
-			description,
-			emails,
-			fileNames,
-			currentAccount,
-			tokens
-		);
-		await uploadBulkDocuments(
-			cids,
-			docName,
-			description,
-			emails,
-			fileNames,
-			currentAccount,
-			tokens
 		);
 	};
 
@@ -292,18 +220,6 @@ const MarkSheetUploadPage = () => {
 				const worksheet = workbook.Sheets[sheetName];
 				const json = xlsx.utils.sheet_to_json(worksheet);
 				setBulkEntries(json);
-
-				var temp = [];
-				for (let i = 0; i < json.length; i++) {
-					const token = uuidv4();
-
-					temp.push(token);
-				}
-
-				// console.log(temp);
-
-				setTokens(temp);
-				console.log(json);
 			};
 			reader.readAsArrayBuffer(acceptedFiles[0]);
 		}
@@ -313,26 +229,23 @@ const MarkSheetUploadPage = () => {
 		<div className={styles.marksheetUploadPageContainer}>
 			<div className={styles.marksheetUploadPageBodyContainer}>
 				<span className={styles.issueMarksheetHeader}>
-					Issue Marksheet
+					Issue Leaving Certificate
 				</span>
 				<div className={styles.issueMarksheetContainer}>
 					<div className={styles.bulkUploadSection}>
 						<div {...getRootProps({ style })}>
 							<input {...getInputProps()} />
-							<UploadIcon />
+                            <UploadIcon />
 							<p>Select Excel File for bulk upload</p>
 						</div>
 						{bulkEntries.length > 0 && (
 							<div>
 								<span>
-									Generating mark sheets for{" "}
+									Generating leaving certificates for{" "}
 									{bulkEntries.length} students
 								</span>
 								<button onClick={downloadCanvasImage}>
 									Download
-								</button>
-								<button onClick={issueDocuments}>
-									Issue documents
 								</button>
 							</div>
 						)}
@@ -371,7 +284,7 @@ const MarkSheetUploadPage = () => {
 								onChange={(e) => setDescription(e.target.value)}
 							/>
 							<span className={styles.inputLabel}>
-								Select Mark Sheet PDF
+								Select LC PDF
 							</span>
 
 							<div className="mt-1">
@@ -383,23 +296,18 @@ const MarkSheetUploadPage = () => {
 								/>
 							</div>
 						</div>
-						<button
-							className={styles.issueDocBtn}
-							onClick={handleSubmit}
-						>
-							<TaskAltIcon className={styles.tickIcon} /> Issue
-						</button>
+						<button className={styles.issueDocBtn} onClick={handleSubmit}>
+                            <TaskAltIcon className={styles.tickIcon}/> Issue</button>
 					</div>
 				</div>
 
 				<div className={styles.canvasContainer}>
-					{bulkEntries.map((entry, index) => {
+					{bulkEntries.map((entry) => {
+						// console.log(entry);
 						return (
 							<Canvas
-								key={index}
 								entry={entry}
 								draw={draw}
-								token={tokens[index]}
 								height={594}
 								width={420}
 							/>
@@ -418,4 +326,4 @@ const MarkSheetUploadPage = () => {
 	);
 };
 
-export default MarkSheetUploadPage;
+export default LCUploadPage;

@@ -9,12 +9,12 @@ sgMail.setApiKey(
 // Validators
 const { validationResult } = require("express-validator");
 const secret = "authenticator.generateSecret()";
-const token = authenticator.generate(secret);
-const isValid2 = authenticator.check(token, secret);
-console.log("isValidABOVE", isValid2);
+let token;
+// const isValid2 = authenticator.check(token, secret);
+// console.log("isValidABOVE", isValid2);
 
 exports.registerController = (req, res) => {
-//   console.log("yahoo");
+  //   console.log("yahoo");
   const { email } = req.body;
   const errors = validationResult(req);
 
@@ -28,6 +28,8 @@ exports.registerController = (req, res) => {
     // Note: .generateSecret() is only available for authenticator and not totp/hotp
     // console.log("secret", secret);
     // console.log("token", token);
+    token = authenticator.generate(secret);
+
     const temp = token;
     const emailData = {
       from: "appatil_b19@ce.vjti.ac.in",
