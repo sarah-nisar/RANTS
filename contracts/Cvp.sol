@@ -311,6 +311,33 @@ contract Cvp {
 
         return result;
     }
+    function fetchAllDocumentsForStudentByAdmin(
+        string memory emailId
+    )
+        public
+        view
+        returns (Document[] memory)
+    {
+        uint256 itemCount;
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+                itemCount += 1;
+            }
+        }
+
+        Document[] memory result = new Document[](itemCount);
+        itemCount = 0;
+
+        for (uint256 i = 0; i < documentsCount; i++) {
+            if (documentsMapping[i].studentAdd == studentsMapping[studentsEmailToIdMapping[emailId]].studentAdd) {
+                Document storage newItem = documentsMapping[i];
+                result[itemCount] = newItem;
+                itemCount += 1;
+            }
+        }
+
+        return result;
+    }
 
     function fetchIndividualDocumentForStudent(
         uint256 docID

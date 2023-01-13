@@ -12,6 +12,7 @@ import { useCVPContext } from "./Context/CVPContext";
 import { useAuth } from "./Context/AuthContext";
 import MainHome from "./pages/MainHome/MainHome";
 import RegisterStaff from "./pages/RegisterStaff/RegisterStaff";
+import ViewStudentDocs from "./pages/ViewStudentDocs/ViewStudentDocs";
 import { useLocation } from "react-router-dom";
 
 const App = () => {
@@ -48,6 +49,10 @@ const App = () => {
 	{
 		path:"/registerStaff",
 		element: <><Navbar /><RegisterStaff/></>
+	},
+	{
+		path:"/viewStudentDocs",
+		element: <><Navbar /><ViewStudentDocs/></>
 	}
   ]);
 
