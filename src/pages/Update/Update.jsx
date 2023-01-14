@@ -9,10 +9,14 @@ import QRCode from "qrcode";
 import jsPDF from "jspdf";
 import { PDFDocument } from "pdf-lib";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import * as PDFJS from "pdfjs-dist/webpack";
+import axios from "axios";
 
 const Update = () => {
+  const navigate = useNavigate();
+
   let [request, setRequest] = useState({});
   const {
     fetchIndividualRequest,
@@ -24,6 +28,7 @@ const Update = () => {
   const [inputFileName, setInputFileName] = useState("Select file");
   const [inputFile, setInputFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [url, setUrl] = useState("");
 
   const uploadFile = useRef(null);
 
@@ -93,7 +98,7 @@ const Update = () => {
           cid,
           inputFileName,
           token,
-          currentAccount,
+          currentAccount
         );
         toast.success("Document updated successfully");
       } catch (err) {
@@ -111,6 +116,35 @@ const Update = () => {
     setInputFileName(e.target.files[0].name);
     setInputFile(e.target.files);
   };
+
+  const navigateToUrl = (e) => {
+    e.preventDefault();
+    navigate(url);
+  };
+
+  const getRefDocument = useCallback(async (e) => {
+    e.preventDefault();
+    const docId = window.location.pathname.split("/")[2];
+    console.log("docId", docId);
+    try {
+      await axios
+        .post("http://localhost:5000/register/getDocument", { docId })
+        .then((res) => {
+          setUrl(res.data.data.Url);
+          console.log(res.data.data.Url);
+          console.log("res", res.data);
+          toast.success(res.data.message);
+        })
+        .catch((err) => {
+          console.log("Errrr", err);
+          toast.error(err);
+        });
+      // setUrl(URL);
+      console.log("urlll", url);
+    } catch (err) {
+      toast.error(err);
+    }
+  });
 
   useEffect(() => {
     checkIfWalletConnected();
@@ -181,6 +215,23 @@ const Update = () => {
             />
           </div>
 
+          <button
+            className={`${styles.modalIssueBtn}`}
+            onClick={getRefDocument}
+          >
+            {isLoading ? (
+              <MoonLoader className={styles.loader} color="white" size={20} />
+            ) : (
+              "Click to view Ref doc link"
+            )}
+          </button>
+          <button className={`${styles.modalIssueBtn}`} onClick={navigateToUrl}>
+            {isLoading ? (
+              <MoonLoader className={styles.loader} color="white" size={20} />
+            ) : (
+              "Click to view Ref doc link"
+            )}
+          </button>
           <button className={`${styles.modalIssueBtn}`} onClick={handleSubmit}>
             {isLoading ? (
               <MoonLoader className={styles.loader} color="white" size={20} />

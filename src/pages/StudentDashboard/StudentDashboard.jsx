@@ -8,6 +8,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { Description } from "@ethersproject/properties";
 import MoonLoader from "react-spinners/MoonLoader";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const StudentDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const uploadFile = useRef(null);
+
+  const [docIdList, setDocIdList] = useState([]);
 
   // Upload request states
   const [docType, setDocType] = useState("Transcripts");
@@ -79,6 +82,7 @@ const StudentDashboard = () => {
     fetchAllRequestsForStudent,
     requestDocument,
     fetchAllRequestsForCollegeStaff,
+    updateRequestDocument,
   } = useCVPContext();
   const { checkIfWalletConnected, currentAccount } = useAuth();
 
@@ -116,6 +120,11 @@ const StudentDashboard = () => {
     try {
       const data = await fetchAllDocumentsForStudent();
       setDocuments(data);
+      let list = [];
+      for (let i = 0; i < data.length; i++) {
+        list.append(data.reqId);
+      }
+      setDocIdList(list);
       console.log("data", data);
     } catch (err) {
       console.log(err);
@@ -152,6 +161,8 @@ const StudentDashboard = () => {
     }
   });
 
+  const [docId, setDocId] = useState(0);
+
   useEffect(() => {
     if (currentAccount) {
       fetchStudent();
@@ -172,23 +183,54 @@ const StudentDashboard = () => {
     ) {
       toast.error("Enter all details first");
       return;
-    }
-
-    try {
-      toast.warn("Please wait for a moment");
-      await requestDocument(
-        currentAccount,
-        docType,
-        docDetails,
-        requestType,
-        dept
-      );
-      toast.success("Document requested sucessfully");
-      console.log("Request doc created");
-      await fetchPendingRequests();
-    } catch (err) {
-      toast.error(err);
-      console.log(err);
+    } else {
+      if (inputFileName != "Select file") {
+        console.log("Input File", inputFile[0]);
+        const file = inputFile[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("docId", docId);
+        console.log("formdata", formData);
+        await axios
+          .post("http://localhost:5000/register/toFirestore", formData)
+          .then((res) => {
+            console.log("res", res);
+            toast.success(res.data.message);
+          })
+          .catch((err) => {
+            console.log("Errrr", err);
+            toast.error(err);
+          });
+      }
+      //   return;
+      try {
+        toast.warn("Please wait for a moment");
+        console.log(requestType);
+        if (requestType == "New") {
+          await requestDocument(
+            currentAccount,
+            docType,
+            docDetails,
+            requestType,
+            dept
+          );
+        } else {
+          await updateRequestDocument(
+            currentAccount,
+            docType,
+            docDetails,
+            requestType,
+            dept,
+            docId
+          );
+        }
+        toast.success("Document requested sucessfully");
+        console.log("Request doc created");
+        await fetchPendingRequests();
+      } catch (err) {
+        toast.error(err);
+        console.log(err);
+      }
     }
   };
 
@@ -202,6 +244,9 @@ const StudentDashboard = () => {
 
   const handleDeptChange = (e) => {
     setDept(e.target.value);
+  };
+  const handleDocIdChange = (e) => {
+    setDocId(e.target.value);
   };
 
   const openDocPage = (ipfsCID, docName) => {
@@ -356,6 +401,19 @@ const StudentDashboard = () => {
                 </div>
 
                 <div className={`${styles2.inputContainer}`}>
+                  <label className={`${styles2.inputLabel}`}>Doc Id</label>
+                  <select
+                    className={`${styles2.input}`}
+                    onChange={handleDocIdChange}
+                  >
+                    {/* {docIdList.map((id, index) => {
+                      return <option key={index}>{id}</option>;
+                    })} */}
+                    <option>1</option>
+                  </select>
+                </div>
+
+                <div className={`${styles2.inputContainer}`}>
                   <label className={`${styles2.inputLabel}`}>
                     Document details
                   </label>
@@ -369,7 +427,7 @@ const StudentDashboard = () => {
                 </div>
                 <div className={`${styles2.inputContainer}`}>
                   <label className={`${styles2.inputLabel}`}>
-                    Upload File
+                    Upload Ref File
                   </label>
                   <div className={styles.input}>
                     <button
@@ -391,7 +449,7 @@ const StudentDashboard = () => {
               </form>
             </div>
             <button className={styles.requestFileBtn} onClick={handleSubmit}>
-              Request File
+              {inputFileName == "Select file" ? "Request File" : "Update File"}
             </button>
           </div>
         </div>
