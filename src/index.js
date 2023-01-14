@@ -5,6 +5,7 @@ import App from "./App";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { AuthContextProvider } from "./Context/AuthContext";
 import { CVPProvider } from "./Context/CVPContext";
+import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

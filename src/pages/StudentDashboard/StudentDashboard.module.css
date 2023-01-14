@@ -183,9 +183,7 @@ white-space: nowrap;
     .docCard{
         font-size: 0.9rem;
     }
-}
 
-@media only screen and (max-width: 850px) {
     .inputContainer {
         width: 80%;
     }

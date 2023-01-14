@@ -13,26 +13,33 @@ const RegisterStaff = () => {
 	const [name, setName] = useState("");
 	const [department, setDepartment] = useState("Exam Section");
 
-	const { registerStudent, getStudent, RegisterStaff } = useCVPContext();
+	const { getStaffMember, isOwnerAddress, registerStaff } = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
 
-	// useEffect(() => {
-	// 	checkIfWalletConnected();
-	// }, []);
+	useEffect(() => {
+		checkIfWalletConnected();
+	}, []);
+	const [user, setUser] = useState([]);
+	const [isOwner, setIsOwner] = useState(false);
 
 	const fetchStudent = useCallback(async () => {
 		try {
-			const student = await getStudent();
-			if (student) {
-				navigate("/dashboard");
+			const staffMember = await getStaffMember();
+			console.log(staffMember);
+			const owner = await isOwnerAddress();
+			setIsOwner(owner);
+			setUser(staffMember);
+			if (!owner && staffMember.department !== "Academic Section") {
+				navigate("/admin");
 			}
 		} catch (err) {
-			// console.log(err);
+			console.log(err);
+			navigate("/register");
 		}
 	});
 
 	useEffect(() => {
-		// fetchStudent();
+		if (currentAccount !== "") fetchStudent();
 		setPubAddr(currentAccount);
 	}, [currentAccount]);
 
@@ -49,8 +56,8 @@ const RegisterStaff = () => {
 		}
 
 		try {
-			await RegisterStaff(name, email, department, 2);
-			// await registerStudent(name, email, pubAddr, mobileNo, sid);
+			console.log(pubAddr, name, department, email, 2);
+			await registerStaff(pubAddr, name, department, email, 2);
 			navigate("/admin");
 		} catch (err) {
 			console.log(err);
