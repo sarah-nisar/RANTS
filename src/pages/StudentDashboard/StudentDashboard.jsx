@@ -367,6 +367,27 @@ const StudentDashboard = () => {
                     value={docDetails}
                   />
                 </div>
+                <div className={`${styles2.inputContainer}`}>
+                  <label className={`${styles2.inputLabel}`}>
+                    Upload File
+                  </label>
+                  <div className={styles.input}>
+                    <button
+                      onClick={handleFile}
+                      className={styles.inputCombined}
+                    >
+                      {inputFileName}
+                    </button>
+                    <input
+                      onChange={handleFileChange}
+                      ref={uploadFile}
+                      // accept="pdf/*"
+                      className={` ${styles.fileInput}`}
+                      type="file"
+                      placeholder={""}
+                    />
+                  </div>
+                </div>
               </form>
             </div>
             <button className={styles.requestFileBtn} onClick={handleSubmit}>

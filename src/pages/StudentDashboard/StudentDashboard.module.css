@@ -122,7 +122,11 @@
     padding: 12px 0px;
     outline: none;
     border: none;
-    margin: 10px;
+    margin: 15px 0px;
+    font-size: 1.1rem;
+}
+.input{
+    width: 100%;
     font-size: 1.1rem;
 }
 .fileInput{

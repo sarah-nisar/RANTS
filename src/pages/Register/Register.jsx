@@ -106,7 +106,7 @@ const Register = () => {
       }
     } catch (err) {
       setIsLoading(false);
-      toast.error("OTP error on frontend");
+      toast.error("OTP invalid");
       console.log("OTP error on frontend", err);
     }
   };
