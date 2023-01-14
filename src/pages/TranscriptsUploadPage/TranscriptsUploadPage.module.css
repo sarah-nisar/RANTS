@@ -6,47 +6,24 @@
 }
 
 .marksheetUploadPageBodyContainer{
-    /* margin-top: 50%; */
     width: 80%;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
+    align-items: center;
 }
 
 .issueMarksheetHeader{
-    padding-left: 40%;
-    padding-bottom: 3%;
     font-weight: 700;
     font-size: 1.5rem;
     color: rgb(48, 48, 48);
     margin-bottom: 1rem;
+    text-align: center;
 }
 
-.issueMarksheetContainer{
-    width: 100%;
-    height: 70vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.bulkUploadSection{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.verticalDivider{
-    height: 300px;
-    width: 1px;
-    background-color: rgb(190, 190, 190);
-}
 
 .singleUploadSection{
-    flex: 1;
+    width: 40%;
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -55,7 +32,7 @@
 }
 
 .singleUploadForm{
-    width: 40%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -140,4 +117,24 @@
 
 .tickIcon{
     margin-right: 0.5rem;
+}
+
+
+@media only screen and (max-width: 800px) {
+    .issueMarksheetContainer{
+        flex-direction: column;
+    }
+
+    .singleUploadSection{
+        width: 80%;
+    }
+    .singleUploadForm{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .marksheetUploadPageBodyContainer{
+        width: 90%;
+    }
 }

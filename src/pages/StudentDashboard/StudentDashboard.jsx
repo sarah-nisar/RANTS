@@ -285,10 +285,10 @@ const StudentDashboard = () => {
             <div className={styles.detailsBox}>
               <span className={styles.detailsHeading}>Request a document</span>
               <form className={`${styles.formBox}`}>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>Document type</label>
+                <div className={`${styles.inputContainer}`}>
+                  <label className={`${styles.inputLabel}`}>Document type</label>
                   <select
-                    className={`${styles2.input}`}
+                    className={`${styles.input}`}
                     onChange={handleDocTypeChange}
                   >
                     <option>Marksheet</option>
@@ -296,10 +296,10 @@ const StudentDashboard = () => {
                     <option>Leaving Certificate</option>
                   </select>
                 </div>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>Request type</label>
+                <div className={`${styles.inputContainer}`}>
+                  <label className={`${styles.inputLabel}`}>Request type</label>
                   <select
-                    className={`${styles2.input}`}
+                    className={`${styles.input}`}
                     onChange={handleRequestTypeChange}
                   >
                     <option>New</option>
@@ -307,10 +307,10 @@ const StudentDashboard = () => {
                   </select>
                 </div>
 
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>Department</label>
+                <div className={`${styles.inputContainer}`}>
+                  <label className={`${styles.inputLabel}`}>Department</label>
                   <select
-                    className={`${styles2.input}`}
+                    className={`${styles.input}`}
                     onChange={handleDeptChange}
                   >
                     <option>Academic Section</option>
@@ -319,12 +319,12 @@ const StudentDashboard = () => {
                   </select>
                 </div>
 
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
+                <div className={`${styles.inputContainer}`}>
+                  <label className={`${styles.inputLabel}`}>
                     Document details
                   </label>
                   <input
-                    className={`${styles2.input}`}
+                    className={`${styles.input}`}
                     type="text"
                     placeholder="Enter document details"
                     onChange={(e) => setDocDetails(e.target.value)}

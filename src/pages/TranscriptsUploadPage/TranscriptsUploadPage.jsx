@@ -232,26 +232,6 @@ const TranscriptsUploadPage = () => {
 				<span className={styles.issueMarksheetHeader}>
 					Issue Transcripts
 				</span>
-				{/* <div className={styles.issueMarksheetContainer}>
-					<div className={styles.bulkUploadSection}>
-						<div {...getRootProps({ style })}>
-							<input {...getInputProps()} />
-                            <UploadIcon />
-							<p>Select Excel File for bulk upload</p>
-						</div>
-						{bulkEntries.length > 0 && (
-							<div>
-								<span>
-									Generating mark sheets for{" "}
-									{bulkEntries.length} students
-								</span>
-								<button onClick={downloadCanvasImage}>
-									Download
-								</button>
-							</div>
-						)}
-					</div> */}
-				{/* <div className={styles.verticalDivider}></div> */}
 				<div className={styles.singleUploadSection}>
 					<div className={styles.singleUploadForm}>
 						<span className={styles.inputLabel}>

@@ -34,6 +34,7 @@
     padding: 0.5rem 0;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .issueDocCard{
@@ -46,6 +47,7 @@
     background-color: #ECECEC;
     padding: 1rem;
     margin-right: 1rem;
+    margin-bottom: 1rem;
     font-size: 1.1rem;
     border-radius: 0.4rem;
     cursor: pointer;
@@ -76,6 +78,7 @@
     border-bottom: solid 3px #1363FD;
     padding: 1rem;
     margin-right: 1rem;
+    margin-bottom: 1rem;
     font-size: 1.1rem;
     border-radius: 0.4rem;
     cursor: pointer;
@@ -96,4 +99,10 @@
 .quickActionCardContent{
     display: flex;
     align-items: center;
+}
+
+@media only screen and (max-width: 500px) {
+    .homePageBodyContainer{
+        width: 90%;
+    }
 }
