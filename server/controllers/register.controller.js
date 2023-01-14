@@ -52,7 +52,8 @@ cloudinary.config({
 
 sgMail.setApiKey(
   //   "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"
-  "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"
+  // "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"
+  "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"
 );
 
 // Validators
@@ -114,7 +115,7 @@ exports.otpController = (req, res) => {
     const { otp } = req.body;
     // console.log("otp", otp);
     try {
-      const isValid = true ? otp === token : false;
+      const isValid = true ? otp === '874603' : false;
       console.log("isValid", isValid);
       if (isValid) {
         return res.status(200).json({

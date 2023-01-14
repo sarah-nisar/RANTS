@@ -138,7 +138,7 @@ export const CVPProvider = ({ children }) => {
 		const connection = await web3Modal.connect();
 		const provider = new ethers.providers.Web3Provider(connection);
 
-		if (docName === "Transcripts") {
+		if (docName !== "Transcripts") {
 			let smartAccount = new SmartAccount(provider, options);
 			smartAccount = await smartAccount.init();
 

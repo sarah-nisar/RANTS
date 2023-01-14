@@ -274,6 +274,67 @@ const LCUploadPage = () => {
 		}
 	}, [acceptedFiles]);
 
+	const issueDocuments = async (e) => {
+		e.preventDefault();
+		var canvases = document.getElementsByClassName("templateCanvas");
+		console.log(canvases);
+
+		var cids = [];
+		var fileNames = [];
+
+		for (let i = 0; i < canvases.length; i++) {
+			var url = canvases[i].toDataURL("image/png");
+			const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+			pdf.addImage(url, "JPEG", 0, 0);
+
+			fileNames.push("Marksheet.pdf");
+
+			const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+			const cid = await uploadFilesToIPFS(files);
+			console.log(cid);
+			cids.push(cid);
+		}
+		// Array.from(canvases)
+		// 	.forEach(async (canvas) => {
+		// 		var url = canvas.toDataURL("image/png");
+		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+		// 		pdf.addImage(url, "JPEG", 0, 0);
+
+		// 		fileNames.push("Marksheet.pdf");
+
+		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+		// 		const cid = await uploadFilesToIPFS(files);
+		// 		console.log(cid);
+		// 		cids.push(cid);
+		// 	})
+		// 	.then(() => {
+		// 		console.log("ehl");
+		// 	});
+
+		const emails = bulkEntries.map((item) => item.EmailId);
+
+		console.log(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+		await uploadBulkDocuments(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+	};
+
 	return (
 		<>
 			<ToastContainer />
@@ -297,6 +358,9 @@ const LCUploadPage = () => {
 									</span>
 									<button onClick={downloadCanvasImage}>
 										Download
+									</button>
+									<button onClick={issueDocuments}>
+										Issue documents
 									</button>
 								</div>
 							)}

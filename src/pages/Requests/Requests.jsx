@@ -22,9 +22,10 @@ const Requests = () => {
     getStudentByAddress,
     uploadFilesToIPFS,
     uploadBulkDocuments,
-    issueDocument,
+    issueDocument, isOwnerAddress
   } = useCVPContext();
   const { checkIfWalletConnected, currentAccount } = useAuth();
+  const [isOwner, setIsOwner] = useState(false);
 
   const [_reqId, set_ReqId] = useState(0);
   const [_email, set_Email] = useState("");
@@ -106,14 +107,18 @@ const Requests = () => {
       const cid = await uploadFilesToIPFS(files);
       console.log("cid", cid);
 
-      await uploadBulkDocuments(
-        [cid],
+      console.log([cid],
         inputFileName,
         description,
         [emailId],
         [docFileName],
         currentAccount,
-        [token]
+        [token])
+
+        console.log(pendingdescription[reqId])
+      // console.log([cid], inputFileName, [emailId], pendingdescription[reqId].)
+      await issueDocument(
+        _reqId, cid, inputFileName, token, currentAccount
       );
       toast.success("Document issued successfully");
     }
@@ -168,6 +173,10 @@ const Requests = () => {
   const fetchStudent = useCallback(async () => {
     try {
       const staffMember = await getStaffMember();
+      const owner = await isOwnerAddress();
+      console.log(staffMember);
+      console.log(owner);
+      setIsOwner(owner);
       console.log(staffMember);
       setUser(staffMember);
     } catch (err) {
