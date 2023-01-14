@@ -208,7 +208,7 @@ const TranscriptsUploadPage = () => {
 		const pdf = await convertPdfToImages(docFile[0], qrCode);
 		console.log(pdf);
 
-		const files = [new File([pdf], "Marksheet.pdf")];
+		const files = [new File([pdf], "Transcript.pdf")];
 
 		const cid = await uploadFilesToIPFS(files);
 		console.log(cid);
@@ -218,7 +218,7 @@ const TranscriptsUploadPage = () => {
 			docName,
 			description,
 			[emailId],
-			["Marksheet.pdf"],
+			["Transcript.pdf"],
 			currentAccount,
 			[token]
 		);

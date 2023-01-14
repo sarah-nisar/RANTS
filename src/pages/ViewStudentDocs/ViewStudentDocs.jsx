@@ -113,7 +113,7 @@ const ViewStudentDocs = () => {
 									<div
 										className={(index % 2 == 0) ? `${styles.docCard} ${styles.evenDocCard}` : `${styles.docCard} ${styles.oddDocCard}`}
 										onClick={() => {
-										openDocPage(item.file.cid, item.docName);
+										openDocPage(item.file.cid, item.file.fileName);
 										}}
 									>
 										<span className={styles.docCardContent}>{item.docName}</span>

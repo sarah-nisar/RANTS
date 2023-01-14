@@ -8,6 +8,7 @@ const collection = require("firebase/firestore").collection;
 const addDoc = require("firebase/firestore").addDoc;
 const doc = require("firebase/firestore").doc;
 const setDoc = require("firebase/firestore").setDoc;
+const getDoc = require("firebase/firestore").getDoc;
 
 const { authenticator } = require("otplib");
 var cloudinary = require("cloudinary").v2;
@@ -182,8 +183,8 @@ exports.documentUploadController = async (req, res) => {
           reject(error);
         }
       });
-      console.log(req.file.buffer);
-      streamifier.createReadStream(req.file.buffer).pipe(stream);
+      console.log(file.buffer);
+      streamifier.createReadStream(file.buffer).pipe(stream);
     });
   };
 
@@ -201,50 +202,56 @@ exports.documentUploadController = async (req, res) => {
 };
 
 exports.uploadToFirestoreController = async (req, res) => {
-  console.log(req.files[0]);
-  // if(!req.file) {
-  //   res.status(400).send("Error: No files found")
-  // }
+  console.log(req.files);
+  console.log(req.body.docId);
+  console.log(req.formData);
+  if (!req.files) {
+    res.status(400).send("Error: No files found");
+  }
+  const formData = req.files[0];
+  const storageRef = ref(storage, `files/${formData.originalname}`);
+  const uploadTask = uploadBytesResumable(storageRef, formData.buffer);
+  // console.log("req", storageRef);
 
-  const storageRef = ref(storage, `files/${req.files[0].originalname}`);
-  const uploadTask = uploadBytesResumable(storageRef, req.files[0].buffer);
+  try {
+    const downloadUrl = await getDownloadUrl(uploadTask.snapshot.ref);
+    console.log("-------------------------");
+    console.log(downloadUrl);
+    const docRef = doc(db, "Docs", req.body.docId);
+    console.log(docRef);
+    setDoc(docRef, { Url: downloadUrl });
 
-  uploadTask.on(
-    "state_changed",
-    (snapshot) => {
-      const progress = Math.round(
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      );
-      // setProgresspercent(progress);
-    },
-    (error) => {
-      alert(error);
-    }
-  );
+    console.log("Document written with ID: ", docRef.id);
 
-  const downloadUrl = await getDownloadUrl(uploadTask.snapshot.ref);
-  console.log(downloadUrl);
-  const docRef = doc(db, "Docs", req.ID);
-  setDoc(docRef, { Url: downloadUrl });
-
-  console.log("Document written with ID: ", docRef.id);
-
-  return res.status(200).json({
-    message: "Worked!",
-  });
+    return res.status(200).json({
+      message: "Reference document uploaded successfully",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      error: "Reference document could not be uploaded\n" + err,
+    });
+  }
 };
 
 exports.getDocumentController = async (req, res) => {
-  try {
-    const _res = await cloudinary.api.resource(req.docId);
-    console.log(_res);
-    return res.status(200).json({
-      message: "Done!",
-    });
-  } catch (error) {
+  // const downloadUrl = await getDownloadUrl(uploadTask.snapshot.ref);
+  //   console.log("-------------------------");
+  //   console.log(downloadUrl);
+  console.log("req.body.docId", req.body.docId);
+  const docRef = doc(db, "Docs", req.body.docId);
+  // console.log(docRef);
+  const docSnap = await getDoc(docRef);
+  console.log("docSnap", docSnap.exists());
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data());
+    return res.status(200).json({ data: docSnap.data() });
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
     return res.status(400).json({
-      message: "Error Occurred! " + error,
       success: false,
+      error: "No such document!",
     });
   }
 };

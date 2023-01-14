@@ -286,7 +286,7 @@ const MarkSheetUploadPage = () => {
 		// 		console.log("ehl");
 		// 	});
 
-		const emails = [bulkEntries.map((item) => item.EmailId)];
+		const emails = bulkEntries.map((item) => item.EmailId);
 
 		console.log(
 			cids,

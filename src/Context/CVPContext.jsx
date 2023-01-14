@@ -325,6 +325,12 @@ export const CVPProvider = ({ children }) => {
 		console.log(data);
 		return data;
 	};
+	const updateCurrentDoc = async (docId,  cid, docName, staffAddress) => {
+		const contract = await connectingWithSmartContract();
+		const data = await contract.updateCurrentDocument(docId,  cid, docName, staffAddress);
+		console.log(data);
+		return data;
+	};
 
 	const getAllStaffMembers = async () => {
 		const contract = await connectingWithSmartContract();
@@ -461,6 +467,7 @@ export const CVPProvider = ({ children }) => {
 				fetchAllDocumentsForStudentByAdmin,
 				fetchAllDocumentsForStudentByStaff,
 				isOwnerAddress,
+				updateCurrentDoc
 			}}
 		>
 			{children}

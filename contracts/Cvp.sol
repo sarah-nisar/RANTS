@@ -262,6 +262,11 @@ contract Cvp {
         return result;
     }
 
+    function updateCurrentDocument(uint256 docId, string memory cid, string memory docName, address staffAddress) public {
+        documentsMapping[docId].file = IPFSFile(cid, docName);
+        documentsMapping[docId].issuer2 = staffAddress;
+    }
+
     function fetchIndividualRequest(
         uint256 reqId
     ) public view returns (Request memory) {
