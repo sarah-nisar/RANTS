@@ -406,10 +406,10 @@ const StudentDashboard = () => {
                     className={`${styles2.input}`}
                     onChange={handleDocIdChange}
                   >
-                    {/* {docIdList.map((id, index) => {
+                    {docIdList.map((id, index) => {
                       return <option key={index}>{id}</option>;
-                    })} */}
-                    <option>1</option>
+                    })}
+                    {/* <option>1</option> */}
                   </select>
                 </div>
 

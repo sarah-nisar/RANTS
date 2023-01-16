@@ -52,7 +52,8 @@ cloudinary.config({
 
 sgMail.setApiKey(
   //   "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"
-  "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"
+  // "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"
+  // "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"
 );
 
 // Validators
