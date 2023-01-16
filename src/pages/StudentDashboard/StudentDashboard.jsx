@@ -359,12 +359,12 @@ const StudentDashboard = () => {
             <div className={styles.detailsBox}>
               <span className={styles.detailsHeading}>Request a document</span>
               <form className={`${styles.formBox}`}>
-              <div className={`${styles2.inputContainer}`}>
-								<label className={`${styles2.inputLabel}`}>
+              <div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
 									Department
 								</label>
 								<select
-									className={`${styles2.input}`}
+									className={`${styles.input}`}
 									onChange={(e) => {
 										setDept(e.target.value);
 										if (
@@ -385,12 +385,12 @@ const StudentDashboard = () => {
 									</option>
 									{/* <option>Scholarship Section</option> */}
 								</select>
-							</div><div className={`${styles2.inputContainer}`}>
-								<label className={`${styles2.inputLabel}`}>
+							</div><div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
 									Document type
 								</label>
 								<select
-									className={`${styles2.input}`}
+									className={`${styles.input}`}
 									onChange={(e) => setDocType(e.target.value)}
 								>
 									{dept === details[0].department ? (
@@ -424,12 +424,12 @@ const StudentDashboard = () => {
 									)}
 								</select>
 							</div>
-							<div className={`${styles2.inputContainer}`}>
-								<label className={`${styles2.inputLabel}`}>
+							<div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
 									Request type
 								</label>
 								<select
-									className={`${styles2.input}`}
+									className={`${styles.input}`}
 									onChange={(e) =>
 										setRequestType(e.target.value)
 									}
@@ -440,19 +440,7 @@ const StudentDashboard = () => {
 							</div>
 
 
-                <div className={`${styles.inputContainer}`}>
-                  <label className={`${styles.inputLabel}`}>Doc Id</label>
-                  <select
-                    className={`${styles.input}`}
-                    onChange={handleDocIdChange}
-                  >
-                    {docIdList.map((id, index) => {
-                      console.log(id)
-                      return <option key={index}>{id}</option>;
-                    })}
-                    {/* <option>1</option> */}
-                  </select>
-                </div>
+                
 
                 <div className={`${styles.inputContainer}`}>
                   <label className={`${styles.inputLabel}`}>
@@ -466,27 +454,45 @@ const StudentDashboard = () => {
                     value={docDetails}
                   />
                 </div>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
-                    Upload Ref File
-                  </label>
-                  <div className={styles.input}>
-                    <button
-                      onClick={handleFile}
-                      className={styles.inputCombined}
-                    >
-                      {inputFileName}
-                    </button>
-                    <input
-                      onChange={handleFileChange}
-                      ref={uploadFile}
-                      // accept="pdf/*"
-                      className={` ${styles.fileInput}`}
-                      type="file"
-                      placeholder={""}
-                    />
-                  </div>
-                </div>
+
+                {
+                  (requestType === "Update") && <>
+                    <div className={`${styles.inputContainer}`}>
+                      <label className={`${styles.inputLabel}`}>Doc Id</label>
+                      <select
+                        className={`${styles.input}`}
+                        onChange={handleDocIdChange}
+                      >
+                        {docIdList.map((id, index) => {
+                          return <option key={index}>{id}</option>;
+                        })}
+                      </select>
+                    </div>
+
+                    <div className={`${styles.inputContainer}`}>
+                      <label className={`${styles.inputLabel}`}>
+                        Upload Ref File
+                      </label>
+                      <div className={styles.inputUpload}>
+                        <button
+                          onClick={handleFile}
+                          className={styles.inputCombined}
+                        >
+                          {inputFileName}
+                        </button>
+                        <input
+                          onChange={handleFileChange}
+                          ref={uploadFile}
+                          // accept="pdf/*"
+                          className={` ${styles.fileInput}`}
+                          type="file"
+                          placeholder={""}
+                        />
+                      </div>
+                    </div>
+                  </>
+                }
+                
               </form>
             </div>
             <button className={styles.requestFileBtn} onClick={handleSubmit}>

@@ -18,10 +18,12 @@ const streamifier = require("streamifier");
 const sgMail = require("@sendgrid/mail");
 const nodemailer = require("nodemailer");
 
+require('dotenv').config()
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-	apiKey: "AIzaSyCrq2EpT_hNieQbs1GIgSkGXqGF-Fa7UQI",
+	apiKey: process.env.FIREBASE_API_KEY,
 	authDomain: "centenary-1ac4e.firebaseapp.com",
 	databaseURL: "https://centenary-1ac4e-default-rtdb.firebaseio.com",
 	projectId: "centenary-1ac4e",
@@ -47,8 +49,8 @@ const db = getFirestore(app);
 
 cloudinary.config({
 	cloud_name: "dwquo7ex8",
-	api_key: "536437728985795",
-	api_secret: "3XAmeZQ_bBFDvpt0Icq9Nk0QTlA",
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 const mailConfig = {
@@ -56,7 +58,7 @@ const mailConfig = {
 	port: 587,
 	auth: {
 		user: "sherwood41@ethereal.email",
-		pass: "XntCS13BNQ59jTZuhZ",
+		pass: process.env.MAIL_PASSWORD,
 	},
 };
 
@@ -214,9 +216,6 @@ exports.uploadToFirestoreController = async (req, res) => {
 };
 
 exports.getDocumentController = async (req, res) => {
-	// const downloadUrl = await getDownloadUrl(uploadTask.snapshot.ref);
-	//   console.log("-------------------------");
-	//   console.log(downloadUrl);
 	console.log("req.body.docId", req.body.docId);
 	const docRef = doc(db, "Docs", req.body.docId);
 	// console.log(docRef);

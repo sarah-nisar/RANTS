@@ -100,7 +100,7 @@ const LCUploadPage = () => {
 		const qrCode = await QRCode.toCanvas(
 			`http://localhost:3000/verify/${token}`
 		);
-		context.drawImage(qrCode, 0, 0);
+		context.drawImage(qrCode, 320, 430, 70, 70);
 	};
 	const [isOwner, setIsOwner] = useState(false);
 
@@ -351,17 +351,18 @@ const LCUploadPage = () => {
 								<p>Select Excel File for bulk upload</p>
 							</div>
 							{bulkEntries.length > 0 && (
-								<div>
-									<span>
-										Generating leaving certificates for{" "}
+								<div className={styles.bulkDetails}>
+									<span className={styles.bulkCount}>
 										{bulkEntries.length} students
 									</span>
-									<button onClick={downloadCanvasImage}>
-										Download
-									</button>
-									<button onClick={issueDocuments}>
-										Issue documents
-									</button>
+									<div className={styles.bulkButtonContainer}>
+										<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+											Download
+										</button>
+										<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+											Issue documents
+										</button>
+									</div>
 								</div>
 							)}
 						</div>

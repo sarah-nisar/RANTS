@@ -117,7 +117,7 @@ white-space: nowrap;
 .inputContainer {
     display: flex;
     flex-direction: row;
-    width: 50%;
+    width: 60%;
 }
 
 .inputLabel {
@@ -136,6 +136,13 @@ white-space: nowrap;
     margin: 10px;
     font-size: 1.1rem;
     border-bottom: 1px #525252 solid;
+}
+
+.inputUpload{
+    width: 100%;
+    outline: none;
+    border: none;
+    font-size: 1.1rem;
 }
 
 .inputCombined {

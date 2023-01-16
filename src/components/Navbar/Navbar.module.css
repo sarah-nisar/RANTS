@@ -40,6 +40,12 @@
     height: 2.5rem;
     background-color: #1363FD;
     border-radius: 50%;
+    transition: all 0.5s ease;
+}
+
+.avatar:hover{
+    transform: translateY(-3px) rotateZ(-5deg) scale(1.05);
+
 }
 
 @media only screen and (max-width: 500px) {
