@@ -3,22 +3,3 @@
   margin: 0;
   box-sizing: border-box;
 }
-
-.react-pdf__Page{
-  width: 100%;
-	/* margin: 1em; */
-}
-
-.react-pdf__Document{
-  width: 420px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* box-shadow: 0 0 8px rgba(120, 36, 36, 0.5); */
-}
-
-.react-pdf__Page__canvas {
-    margin: 0 auto;
-    width: 420px !important;
-    height: 594px !important;
-}

@@ -1,19 +1,15 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, memo } from "react";
 import { useState } from "react";
 import { useAuth } from "../../Context/AuthContext";
 import { useCVPContext } from "../../Context/CVPContext";
 import styles from "./Verify.module.css";
-import { Jwt } from "jsonwebtoken";
-import { useJwt, decodeToken } from "react-jwt";
 import { Web3Storage } from "web3.storage";
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 import { useDropzone } from "react-dropzone";
 import UploadIcon from '@mui/icons-material/Upload';
 import { sha256 } from 'crypto-hash';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import CustomPDFViewer from "./CustomPDFViewer";
 
 const baseStyle = {
 	flex: 1,
@@ -46,11 +42,9 @@ const rejectStyle = {
 
 const Verify = () => {
 	const token = window.location.pathname.split("/")[2];
-	const [document, setDocument] = useState([]);
 	const [isVerified, setIsVerified] = useState(false);
 	const { verifyDocument } = useCVPContext();
 	const { checkIfWalletConnected, currentAccount } = useAuth();
-	const [cid, setCID] = useState("");
 	const [isVerifiedCorrect, setIsVerifiedCorrect] = useState(0);
 	const [verifiedDocData, setVerifiedDocData] = useState({});
 
@@ -66,21 +60,6 @@ const Verify = () => {
 		if (currentAccount === "") checkIfWalletConnected();
 	}, [currentAccount]);
 
-	const verify = async () => {
-		try {
-			console.log("Hello");
-			// const data = await verifyDocument(token);
-			// setDocument(data);
-			// TODO: Decode using jwt
-			// setCID(cid);
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-
-	// const [numPages, setNumPages] = useState(null);
-	// const [pageNumber, setPageNumber] = useState(1);
 	const [pdfFile, setPdfFile] = useState(null);
 
 	
@@ -98,30 +77,18 @@ const Verify = () => {
 
 		const files = await res.files()
 		for (const file of files) {
-			// console.log(typeof(file))
-
 			console.log(`${file.cid} -- ${file.path} -- ${file.size}`)
 			const objectURL = global.URL.createObjectURL(file);
-			// setPdfFile(objectURL);
-			// const len = file.length;
-			// const bytes = new Uint8Array(len);
-			// for(let i = 0; i < len; i++){
-			// 	bytes[i] = file.charCodeAt(i);
-			// }
 			setPdfFile(file);
 			var link = global.document.createElement('a');
 			link.download = file.name; // this name is used when the user downloads the file
 			link.href = objectURL;
 			link.click();
 		}
-		console.log("ravi")
-		// request succeeded! do something with the response object here...
 	}
 
-	
 
 	const compareTwoDocs = async () => {
-		// console.log("comparing")
 		const file1array = await acceptedFiles[0].arrayBuffer();
 		const file2array = await pdfFile.arrayBuffer();
 		const file1hash = await sha256(file1array);
@@ -134,8 +101,6 @@ const Verify = () => {
 			setIsVerifiedCorrect(2);
 		}
 	}
-
-	const [bulkEntries, setBulkEntries] = useState([]);
 
 	const style = useMemo(() => ({
 		...baseStyle,
@@ -170,7 +135,7 @@ const Verify = () => {
 				</div> :
 					<div className={styles.docViewContainer}>
 
-						<PDFViewer pdfFile={pdfFile}/>
+						{(pdfFile !== null) ? <CustomPDFViewer pdfFile={pdfFile}/> : "Loading..."}
 
 						<div className={styles.uploadContainer}>
 							<div className={styles.bulkUploadSection}>
@@ -208,40 +173,5 @@ const Verify = () => {
 	);
 };
 
-
-const PDFViewer = ({pdfFile}) => {
-
-	const [numPages, setNumPages] = useState(null);
-	const [pageNumber, setPageNumber] = useState(1);
-
-	function onDocumentLoadSuccess({ numPages }) {
-		setNumPages(numPages);
-	}
-
-	const turnLeft = () => {
-		setPageNumber(Math.max(1, pageNumber - 1));
-		console.log(pageNumber);
-	}
-
-	const turnRight = () => {
-		setPageNumber(Math.min(numPages, pageNumber + 1));
-		console.log(pageNumber);
-	}
-
-	return (<div className={styles.docContainer}>
-		{(pdfFile) ?
-			<div className={styles.documentContainer}>
-				<Document file={window.URL.createObjectURL(pdfFile)} onLoadSuccess={onDocumentLoadSuccess}>
-					<Page className={styles.pdfPage} pageNumber={pageNumber} />
-				</Document>
-			</div>
-			: "Its nulll"}
-		<div className={styles.pageControllerContainer}>
-			<button className={styles.leftPageBtn} onClick={turnLeft}><ArrowBackIcon /></button>
-			<span className={styles.pageInfoContainer}>{pageNumber} of {numPages}</span>
-			<button className={styles.rightPageBtn} onClick={turnRight}><ArrowForwardIcon /></button>
-		</div>
-	</div>);
-}
 
 export default Verify;
