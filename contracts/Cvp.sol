@@ -484,6 +484,8 @@ contract Cvp {
             file: newFile
         });
 
+        documentsCount += 1;
+
         requestsMapping[reqId].issuer2 = staffAdd;
         requestsMapping[reqId].status = 0;
     }

@@ -99,3 +99,43 @@
     width: 200px;
     margin-bottom: 1rem;
 }
+
+@media only screen and (max-width: 850px) {
+    .logoSection{
+        font-size: 2rem;
+    }
+    
+    .logoImg{
+        width: 80px;
+        margin-right: 1rem;
+    }
+
+    .descSection{
+        font-size: 2rem;
+    }
+
+    .infoContainer{
+        flex-direction: column;
+
+    }
+
+    .infoCard{
+        margin-bottom: 2rem;
+    }
+
+}
+
+@media only screen and (max-width: 500px) {
+    .logoSection{
+        font-size: 2rem;
+    }
+    
+    .logoImg{
+        width: 80px;
+        margin-right: 1rem;
+    }
+
+    .descSection{
+        font-size: 1.2rem;
+    }
+}

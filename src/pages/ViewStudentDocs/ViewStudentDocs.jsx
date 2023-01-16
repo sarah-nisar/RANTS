@@ -95,21 +95,35 @@ const ViewStudentDocs = () => {
 				</form>
 				{/* {documents.length !== 0 ? ( */}
 				<div className={styles.detailsBox}>
-					<span className={styles.detailsHeading}>My Documents</span>
-					{documents.map((item, index) => {
-						return (
-							<div
-								className={styles.docCard}
-								onClick={() => {
-									openDocPage(item.ipfsCID, item.docName);
-								}}
-							>
-								<span>Document Name: {item.docName}</span>
-								<span>Description: {item.description}</span>
-								<span>Department: {item.department}</span>
-							</div>
-						);
-					})}
+							<span className={styles.detailsHeading}>
+								My Documents
+							</span>
+							{
+								(documents.length > 0) ? 
+								<>
+								<div
+									className={styles.docCardHeader}
+								>
+									<span className={styles.docCardContent}>Document Name</span>
+									<span className={styles.docCardContent}>Description</span>
+									<span className={styles.docCardContent}>Department</span>
+								</div>
+								{documents.map((item, index) => {
+									return (
+									<div
+										className={(index % 2 == 0) ? `${styles.docCard} ${styles.evenDocCard}` : `${styles.docCard} ${styles.oddDocCard}`}
+										onClick={() => {
+										openDocPage(item.file.cid, item.file.fileName);
+										}}
+									>
+										<span className={styles.docCardContent}>{item.docName}</span>
+										<span className={styles.docCardContent}>{item.description}</span>
+										<span className={styles.docCardContent}>{item.department}</span>
+									</div>
+									);
+								})}
+								</> : <span className={styles.emptyListMessage}>No documents found</span>
+							}
 				</div>
 				{/* ) : null} */}
 			</div>

@@ -30,7 +30,6 @@ const Navbar = () => {
                     <Avatar className={styles.avatar} {...config} />
                 </div>
             </div>
-            
         </div>
     );
 }

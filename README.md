@@ -1,13 +1,23 @@
-# Sample Hardhat Project
+# 📃 vjti.docs
+## Building a secure & efficient solution for Certificate Verification
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+## 👩‍💻 Team members
 
-Try running some of the following tasks:
+- **Sarah Tisekar**
+- **Ravi Maurya**
+- **Nikheel Indanoor**
+- **Ankit Jaiswal**
+- **Atharva Patil**
+- **Tanish Sawant**
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+![image](https://user-images.githubusercontent.com/59064326/212481499-f79ddb95-ea0c-49db-bcd5-633096e80c9e.png)
+
+## Architecture
+![flowchart](https://user-images.githubusercontent.com/59064326/212481527-3ca8d373-fb77-46fb-8518-52991ce82ec5.png)
+
+## Tech Stack
+- React
+- Solidity
+- Polygon MATIC
+- Biconomy
+- IPFS

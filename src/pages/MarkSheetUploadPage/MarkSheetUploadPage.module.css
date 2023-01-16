@@ -175,3 +175,22 @@
 .tickIcon{
     margin-right: 0.5rem;
 }
+
+@media only screen and (max-width: 800px) {
+    .issueMarksheetContainer{
+        flex-direction: column;
+    }
+
+    .singleUploadSection{
+        width: 80%;
+    }
+    .singleUploadForm{
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .marksheetUploadPageBodyContainer{
+        width: 90%;
+    }
+}

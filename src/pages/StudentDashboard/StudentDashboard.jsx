@@ -64,16 +64,6 @@ const StudentDashboard = () => {
   const [inputFile, setInputFile] = useState(null);
 
   const [pendingDocDetails, setPendingDocDetails] = useState([
-    {
-      docType: "Marksheet",
-      dept: "Academic",
-      docDetails: "Sem 1 Marksheet",
-    },
-    {
-      docType: "Leaving Certificate",
-      dept: "Academic",
-      docDetails: "12th Leaving Certificate",
-    },
   ]);
 
   const {
@@ -120,10 +110,12 @@ const StudentDashboard = () => {
     try {
       const data = await fetchAllDocumentsForStudent();
       setDocuments(data);
+      console.log(data)
       let list = [];
       for (let i = 0; i < data.length; i++) {
-        list.append(data.reqId);
+        list.push(data[i].docId.toNumber());
       }
+      console.log(list)
       setDocIdList(list);
       console.log("data", data);
     } catch (err) {
@@ -207,6 +199,11 @@ const StudentDashboard = () => {
         toast.warn("Please wait for a moment");
         console.log(requestType);
         if (requestType == "New") {
+          console.log( currentAccount,
+            docType,
+            docDetails,
+            requestType,
+            dept)
           await requestDocument(
             currentAccount,
             docType,
@@ -295,7 +292,7 @@ const StudentDashboard = () => {
                             : `${styles.docCard} ${styles.oddDocCard}`
                         }
                         onClick={() => {
-                          openDocPage(item.file.cid, item.docName);
+                          openDocPage(item.file.cid, item.file.fileName);
                         }}
                       >
                         <span className={styles.docCardContent}>
@@ -362,43 +359,86 @@ const StudentDashboard = () => {
             <div className={styles.detailsBox}>
               <span className={styles.detailsHeading}>Request a document</span>
               <form className={`${styles.formBox}`}>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
-                    Document type
-                  </label>
-                  <select
-                    className={`${styles2.input}`}
-                    onChange={handleDocTypeChange}
-                  >
-                    <option>Marksheet</option>
-                    <option>Transcripts</option>
-                    <option>Leaving Certificate</option>
-                  </select>
-                </div>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
-                    Request type
-                  </label>
-                  <select
-                    className={`${styles2.input}`}
-                    onChange={handleRequestTypeChange}
-                  >
-                    <option>New</option>
-                    <option>Update</option>
-                  </select>
-                </div>
+              <div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
+									Department
+								</label>
+								<select
+									className={`${styles.input}`}
+									onChange={(e) => {
+										setDept(e.target.value);
+										if (
+											e.target.value ===
+											"Academic Section"
+										) {
+											setDocType("Transcripts");
+										} else {
+											setDocType("Marksheet");
+										}
+									}}
+								>
+									<option value="Academic Section">
+										Academic Section
+									</option>
+									<option value={"Exam Section"}>
+										Examination Section
+									</option>
+									{/* <option>Scholarship Section</option> */}
+								</select>
+							</div><div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
+									Document type
+								</label>
+								<select
+									className={`${styles.input}`}
+									onChange={(e) => setDocType(e.target.value)}
+								>
+									{dept === details[0].department ? (
+										details[0].documents.map(
+											(item, val) => {
+												return (
+													<option
+														value={item.value}
+														key={item.name}
+													>
+														{item.name}
+													</option>
+												);
+											}
+										)
+									) : dept === details[1].department ? (
+										details[1].documents.map(
+											(item, val) => {
+												return (
+													<option
+														value={item.value}
+														key={item.name}
+													>
+														{item.name}
+													</option>
+												);
+											}
+										)
+									) : (
+										<option value="Select">Select</option>
+									)}
+								</select>
+							</div>
+							<div className={`${styles.inputContainer}`}>
+								<label className={`${styles.inputLabel}`}>
+									Request type
+								</label>
+								<select
+									className={`${styles.input}`}
+									onChange={(e) =>
+										setRequestType(e.target.value)
+									}
+								>
+									<option value={"New"}>New</option>
+									<option value={"Update"}>Update</option>
+								</select>
+							</div>
 
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>Department</label>
-                  <select
-                    className={`${styles2.input}`}
-                    onChange={handleDeptChange}
-                  >
-                    <option>Academic Section</option>
-                    <option>Examination Section</option>
-                    <option>Scholarship Section</option>
-                  </select>
-                </div>
 
                 <div className={`${styles2.inputContainer}`}>
                   <label className={`${styles2.inputLabel}`}>Doc Id</label>
@@ -412,40 +452,59 @@ const StudentDashboard = () => {
                     {/* <option>1</option> */}
                   </select>
                 </div>
+                
 
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
+                <div className={`${styles.inputContainer}`}>
+                  <label className={`${styles.inputLabel}`}>
                     Document details
                   </label>
                   <input
-                    className={`${styles2.input}`}
+                    className={`${styles.input}`}
                     type="text"
                     placeholder="Enter document details"
                     onChange={(e) => setDocDetails(e.target.value)}
                     value={docDetails}
                   />
                 </div>
-                <div className={`${styles2.inputContainer}`}>
-                  <label className={`${styles2.inputLabel}`}>
-                    Upload Ref File
-                  </label>
-                  <div className={styles.input}>
-                    <button
-                      onClick={handleFile}
-                      className={styles.inputCombined}
-                    >
-                      {inputFileName}
-                    </button>
-                    <input
-                      onChange={handleFileChange}
-                      ref={uploadFile}
-                      // accept="pdf/*"
-                      className={` ${styles.fileInput}`}
-                      type="file"
-                      placeholder={""}
-                    />
-                  </div>
-                </div>
+
+                {
+                  (requestType === "Update") && <>
+                    <div className={`${styles.inputContainer}`}>
+                      <label className={`${styles.inputLabel}`}>Doc Id</label>
+                      <select
+                        className={`${styles.input}`}
+                        onChange={handleDocIdChange}
+                      >
+                        {docIdList.map((id, index) => {
+                          return <option key={index}>{id}</option>;
+                        })}
+                      </select>
+                    </div>
+
+                    <div className={`${styles.inputContainer}`}>
+                      <label className={`${styles.inputLabel}`}>
+                        Upload Ref File
+                      </label>
+                      <div className={styles.inputUpload}>
+                        <button
+                          onClick={handleFile}
+                          className={styles.inputCombined}
+                        >
+                          {inputFileName}
+                        </button>
+                        <input
+                          onChange={handleFileChange}
+                          ref={uploadFile}
+                          // accept="pdf/*"
+                          className={` ${styles.fileInput}`}
+                          type="file"
+                          placeholder={""}
+                        />
+                      </div>
+                    </div>
+                  </>
+                }
+                
               </form>
             </div>
             <button className={styles.requestFileBtn} onClick={handleSubmit}>

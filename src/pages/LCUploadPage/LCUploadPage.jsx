@@ -100,7 +100,7 @@ const LCUploadPage = () => {
 		const qrCode = await QRCode.toCanvas(
 			`http://localhost:3000/verify/${token}`
 		);
-		context.drawImage(qrCode, 0, 0);
+		context.drawImage(qrCode, 320, 430, 70, 70);
 	};
 	const [isOwner, setIsOwner] = useState(false);
 
@@ -274,6 +274,67 @@ const LCUploadPage = () => {
 		}
 	}, [acceptedFiles]);
 
+	const issueDocuments = async (e) => {
+		e.preventDefault();
+		var canvases = document.getElementsByClassName("templateCanvas");
+		console.log(canvases);
+
+		var cids = [];
+		var fileNames = [];
+
+		for (let i = 0; i < canvases.length; i++) {
+			var url = canvases[i].toDataURL("image/png");
+			const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+			pdf.addImage(url, "JPEG", 0, 0);
+
+			fileNames.push("Marksheet.pdf");
+
+			const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+			const cid = await uploadFilesToIPFS(files);
+			console.log(cid);
+			cids.push(cid);
+		}
+		// Array.from(canvases)
+		// 	.forEach(async (canvas) => {
+		// 		var url = canvas.toDataURL("image/png");
+		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
+		// 		pdf.addImage(url, "JPEG", 0, 0);
+
+		// 		fileNames.push("Marksheet.pdf");
+
+		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
+
+		// 		const cid = await uploadFilesToIPFS(files);
+		// 		console.log(cid);
+		// 		cids.push(cid);
+		// 	})
+		// 	.then(() => {
+		// 		console.log("ehl");
+		// 	});
+
+		const emails = bulkEntries.map((item) => item.EmailId);
+
+		console.log(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+		await uploadBulkDocuments(
+			cids,
+			docName,
+			description,
+			emails,
+			fileNames,
+			currentAccount,
+			tokens
+		);
+	};
+
 	return (
 		<>
 			<ToastContainer />
@@ -290,14 +351,18 @@ const LCUploadPage = () => {
 								<p>Select Excel File for bulk upload</p>
 							</div>
 							{bulkEntries.length > 0 && (
-								<div>
-									<span>
-										Generating leaving certificates for{" "}
+								<div className={styles.bulkDetails}>
+									<span className={styles.bulkCount}>
 										{bulkEntries.length} students
 									</span>
-									<button onClick={downloadCanvasImage}>
-										Download
-									</button>
+									<div className={styles.bulkButtonContainer}>
+										<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+											Download
+										</button>
+										<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+											Issue documents
+										</button>
+									</div>
 								</div>
 							)}
 						</div>

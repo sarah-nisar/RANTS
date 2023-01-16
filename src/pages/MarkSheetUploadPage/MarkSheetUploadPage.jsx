@@ -98,7 +98,7 @@ const MarkSheetUploadPage = () => {
 		const qrCode = await QRCode.toCanvas(
 			`http://localhost:3000/verify/${token}`
 		);
-		context.drawImage(qrCode, 0, 0);
+		context.drawImage(qrCode, 320, 430, 70, 70);
 	};
 
 	const {
@@ -187,7 +187,7 @@ const MarkSheetUploadPage = () => {
 			await page.render({ canvasContext: context, viewport: viewport })
 				.promise;
 			if (i === 0) {
-				context.drawImage(qrCode, 50, 50);
+				context.drawImage(qrCode, 320, 430, 70, 70);
 			}
 			images.push(canvas.toDataURL("image/png"));
 			const pngImage = await pdfDoc.embedPng(images[i]);
@@ -268,25 +268,8 @@ const MarkSheetUploadPage = () => {
 			console.log(cid);
 			cids.push(cid);
 		}
-		// Array.from(canvases)
-		// 	.forEach(async (canvas) => {
-		// 		var url = canvas.toDataURL("image/png");
-		// 		const pdf = new jsPDF("p", "mm", [157.1625, 111.125]);
-		// 		pdf.addImage(url, "JPEG", 0, 0);
 
-		// 		fileNames.push("Marksheet.pdf");
-
-		// 		const files = [new File([pdf.output("blob")], "Marksheet.pdf")];
-
-		// 		const cid = await uploadFilesToIPFS(files);
-		// 		console.log(cid);
-		// 		cids.push(cid);
-		// 	})
-		// 	.then(() => {
-		// 		console.log("ehl");
-		// 	});
-
-		const emails = [bulkEntries.map((item) => item.EmailId)];
+		const emails = bulkEntries.map((item) => item.EmailId);
 
 		console.log(
 			cids,
@@ -351,17 +334,18 @@ const MarkSheetUploadPage = () => {
 								<p>Select Excel File for bulk upload</p>
 							</div>
 							{bulkEntries.length > 0 && (
-								<div>
-									<span>
-										Generating mark sheets for{" "}
+								<div className={styles.bulkDetails}>
+									<span className={styles.bulkCount}>
 										{bulkEntries.length} students
 									</span>
-									<button onClick={downloadCanvasImage}>
-										Download
-									</button>
-									<button onClick={issueDocuments}>
-										Issue documents
-									</button>
+									<div className={styles.bulkButtonContainer}>
+										<button className={styles.bulkDownloadBtn} onClick={downloadCanvasImage}>
+											Download
+										</button>
+										<button className={styles.bulkIssueBtn} onClick={issueDocuments}>
+											Issue documents
+										</button>
+									</div>
 								</div>
 							)}
 						</div>

@@ -196,54 +196,48 @@ const TranscriptsUploadPage = () => {
 		return pdfBytes;
 	};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      emailId === "" ||
-      docName === "" ||
-      description === "" ||
-      docFile === ""
-    ) {
-      toast.error("Enter all details first");
-      return;
-    } else {
-      if (emailId.slice(-10) === "vjti.ac.in") {
-        try {
-          toast.warn("Please wait for a moment");
-          const cid = await uploadFilesToIPFS(docFile);
-          console.log(cid);
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 
-          await uploadBulkDocuments(
-            [cid],
-            docFileName,
-            description,
-            [emailId],
-            currentAccount
-          );
-          toast.success("Transcript Uploaded");
-        } catch (err) {
-          toast.error("Some error occurred");
-        }
-      } else {
-        toast.error("Please enter VJTI email address");
-      }
-    }
-  };
+		const token = uuidv4();
+		console.log(docFile[0]);
+		const qrCode = await QRCode.toCanvas(
+			`http://localhost:3000/verify/${token}`
+		);
 
-  useEffect(() => {
-    if (acceptedFiles.length > 0) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = e.target.result;
-        const workbook = xlsx.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = xlsx.utils.sheet_to_json(worksheet);
-        setBulkEntries(json);
-      };
-      reader.readAsArrayBuffer(acceptedFiles[0]);
-    }
-  }, [acceptedFiles]);
+		const pdf = await convertPdfToImages(docFile[0], qrCode);
+		console.log(pdf);
+
+		const files = [new File([pdf], "Transcript.pdf")];
+
+		const cid = await uploadFilesToIPFS(files);
+		console.log(cid);
+
+		await uploadBulkDocuments(
+			[cid],
+			docName,
+			description,
+			[emailId],
+			["Transcript.pdf"],
+			currentAccount,
+			[token]
+		);
+	};
+
+	useEffect(() => {
+		if (acceptedFiles.length > 0) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const data = e.target.result;
+				const workbook = xlsx.read(data, { type: "array" });
+				const sheetName = workbook.SheetNames[0];
+				const worksheet = workbook.Sheets[sheetName];
+				const json = xlsx.utils.sheet_to_json(worksheet);
+				setBulkEntries(json);
+			};
+			reader.readAsArrayBuffer(acceptedFiles[0]);
+		}
+	}, [acceptedFiles]);
 
   return (
 	<>
@@ -334,27 +328,7 @@ const TranscriptsUploadPage = () => {
 			<div className={styles.marksheetUploadPageBodyContainer}>
 				<span className={styles.issueMarksheetHeader}>
 					Issue Transcripts
-				</span>
-				{/* <div className={styles.issueMarksheetContainer}>
-					<div className={styles.bulkUploadSection}>
-						<div {...getRootProps({ style })}>
-							<input {...getInputProps()} />
-                            <UploadIcon />
-							<p>Select Excel File for bulk upload</p>
-						</div>
-						{bulkEntries.length > 0 && (
-							<div>
-								<span>
-									Generating mark sheets for{" "}
-									{bulkEntries.length} students
-								</span>
-								<button onClick={downloadCanvasImage}>
-									Download
-								</button>
-							</div>
-						)}
-					</div> */}
-				{/* <div className={styles.verticalDivider}></div> */}
+	</span>*/}
 				<div className={styles.singleUploadSection}>
 					<div className={styles.singleUploadForm}>
 						<span className={styles.inputLabel}>
