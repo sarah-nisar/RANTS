@@ -357,7 +357,8 @@ const MarkSheetUploadPage = () => {
 								</span>
 								<input
 									className={styles.regNumInput}
-									type="text"
+									type="email"
+									name="email"
 									value={emailId}
 									placeholder="Email"
 									onChange={(e) => setEmailId(e.target.value)}
