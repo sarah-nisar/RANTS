@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "../../helpers/axios";
 import { ethers } from "ethers";
 import { off } from "process";
+import { int } from "hardhat/internal/core/params/argumentTypes";
 
 const Requests = () => {
   const {
@@ -44,6 +45,20 @@ const Requests = () => {
   const [description, setDescription] = useState("");
   const [emailId, setEmailId] = useState("");
   const [docFileName, setDocFileName] = useState("");
+  const [detailsList, setDetailsList] = useState([
+    "reqId",
+    "studentAdd",
+    "docName",
+    "department",
+    "description",
+    "reqType",
+    "studentId",
+    "emailId",
+    "mobileNo",
+    "none",
+  ]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchId, setSearchId] = useState("reqId");
 
   function closeModal() {
     setModalIsOpen(false);
@@ -171,6 +186,26 @@ const Requests = () => {
     setInputFile(e.target.files);
   };
 
+  const handleSearchInput = useCallback(async (e) => {
+    setPendingdescription(tempPendingdescription);
+    var result = [];
+
+    for (let i = 0; i < tempPendingdescription.length; i++) {
+      await console.log(
+        "pendingdescription[i][{ searchId }",
+        tempPendingdescription[i][`${searchId}`],
+        searchId,
+        searchInput
+      );
+      if (tempPendingdescription[i][`${searchId}`] == `${searchInput}`) {
+        result.push(tempPendingdescription[i]);
+      }
+    }
+    if (result.length != 0) setPendingdescription(result);
+
+    console.log("pending", tempPendingdescription);
+    console.log("searchInput", searchInput);
+  });
   const fetchStudent = useCallback(async () => {
     try {
       const staffMember = await getStaffMember();
@@ -193,7 +228,7 @@ const Requests = () => {
       console.log("daaaaataaaaaa", data.docId);
       navigate(`/update/${_reqId}`);
     } catch (err) {
-      toast.error(err)
+      toast.error(err);
     }
   });
 
@@ -228,6 +263,7 @@ const Requests = () => {
         console.log(err);
       }
       setPendingdescription(resData);
+      setTempPendingdescription(resData);
     } catch (err) {
       console.log(err);
     }
@@ -244,6 +280,7 @@ const Requests = () => {
   const navigate = useNavigate();
 
   const [pendingdescription, setPendingdescription] = useState([{}]);
+  const [tempPendingdescription, setTempPendingdescription] = useState([{}]);
   return (
     <>
       <ToastContainer />
@@ -372,14 +409,37 @@ const Requests = () => {
         <span className={styles.heading}>All Documents Requests</span>
         <div className={styles.eventPageBody}>
           <div className={styles.searchEventsContainer}>
-            <span className={styles.searchEventsTitle}>
-              Search Student by Address
-            </span>
-            <input
-              className={styles.eventSearchInput}
-              type="text"
-              placeholder="Student Address"
-            />
+            <div className={`${styles.inputContainer}`}>
+              <div className={styles.searchEventsTitle}>
+                Search Student by{" "}
+                <select
+                  onChange={(e) => setSearchId(e.target.value)}
+                  className={`${styles.input}`}
+                >
+                  {/* <option key={0}></option> */}
+                  {detailsList.map((value, id) => {
+                    return <option key={id}>{value}</option>;
+                  })}
+                </select>
+              </div>
+            </div>
+            <div className={`${styles.inputContainer2}`}>
+              <input
+                className={styles.eventSearchInput}
+                type="text"
+                placeholder={`Search ${searchId}`}
+                value={searchInput}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                }}
+              />
+              <button
+                className={styles.requestFileBtn}
+                onClick={(e) => handleSearchInput(e)}
+              >
+                Search
+              </button>
+            </div>
           </div>
           <div className={styles.exploreEventsContainer}>
             <div className={styles.eventsListGrid}>
@@ -461,9 +521,7 @@ const Requests = () => {
                         <div>
                           <button
                             onClick={() => {
-                              fetchDocForStudent(
-                                request.reqId
-                              );
+                              fetchDocForStudent(request.reqId);
                             }}
                             className={styles.issueBtn}
                           >
