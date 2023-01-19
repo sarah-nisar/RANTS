@@ -132,8 +132,8 @@ const Update = () => {
         .then((res) => {
           setUrl(res.data.data.Url);
           console.log(res.data.data.Url);
-          
-          console.log("res", res.data);
+
+          console.log("res", res.data.data.Url);
           toast.success(res.data.message);
         })
         .catch((err) => {
@@ -226,12 +226,9 @@ const Update = () => {
               "Click to fetch Ref doc link"
             )}
           </button>
-          <a
-            className={`${styles.modalIssueBtn}`}
-            href={url}
-          >
-              "Download Ref file"
-           </a>
+          <a className={`${styles.modalIssueBtn}`} href={url}>
+            "Download Ref file"
+          </a>
           <button className={`${styles.modalIssueBtn}`} onClick={handleSubmit}>
             {isLoading ? (
               <MoonLoader className={styles.loader} color="white" size={20} />

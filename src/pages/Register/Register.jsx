@@ -91,12 +91,12 @@ const Register = () => {
     try {
       setIsLoading(true);
       await axios.post("/register/otp", { otp }).then((res) => {
-        toast.warn("Please wait sometime")
+        toast.warn("Please wait sometime");
         console.log("res", res);
       });
       try {
         await registerStudent(name, email, pubAddr, mobileNo, sid);
-        toast.success("Registration successful")
+        toast.success("Registration successful");
         navigate("/dashboard");
       } catch (err) {
         console.log(err);
@@ -186,6 +186,7 @@ const Register = () => {
             <input
               className={`${styles.input}`}
               type="text"
+              name="name"
               placeholder="Enter your name"
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -197,6 +198,7 @@ const Register = () => {
             <input
               className={`${styles.input}`}
               type="text"
+              name="id"
               placeholder="Enter your VJTI Registration ID"
               onChange={(e) => setSid(e.target.value)}
               value={sid}
@@ -208,6 +210,7 @@ const Register = () => {
             <input
               className={`${styles.input}`}
               type="text"
+              name="mobile"
               placeholder="Enter your mobile number"
               onChange={(e) => setMobileNo(e.target.value)}
               value={mobileNo}
@@ -218,10 +221,11 @@ const Register = () => {
             <label className={`${styles.inputLabel}`}>VJTI Email ID</label>
             <input
               className={`${styles.input}`}
-              type="text"
+              type="email"
               placeholder="Enter your VJTI Email ID"
               onChange={(e) => setEmail(e.target.value)}
               value={email}
+              name="email"
             />
           </div>
 

@@ -14,6 +14,8 @@ import * as PDFJS from "pdfjs-dist/webpack";
 import { async } from "q";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "../../helpers/axios";
+import { ethers } from "ethers";
+import { off } from "process";
 
 const Requests = () => {
   const {
@@ -22,7 +24,9 @@ const Requests = () => {
     getStudentByAddress,
     uploadFilesToIPFS,
     uploadBulkDocuments,
-    issueDocument, isOwnerAddress
+    fetchIndividualRequest,
+    issueDocument,
+    isOwnerAddress,
   } = useCVPContext();
   const { checkIfWalletConnected, currentAccount } = useAuth();
   const [isOwner, setIsOwner] = useState(false);
@@ -46,10 +50,6 @@ const Requests = () => {
   }
   function closeModal2() {
     setModalIsOpen2(false);
-  }
-
-  function navigateToUpdate() {
-    navigate(`/update/${reqId}`);
   }
 
   const convertPdfToImages = async (file, qrCode) => {
@@ -107,19 +107,19 @@ const Requests = () => {
       const cid = await uploadFilesToIPFS(files);
       console.log("cid", cid);
 
-      console.log([cid],
+      console.log(
+        [cid],
         inputFileName,
         description,
         [emailId],
         [docFileName],
         currentAccount,
-        [token])
-
-        console.log(pendingdescription[reqId])
-      // console.log([cid], inputFileName, [emailId], pendingdescription[reqId].)
-      await issueDocument(
-        _reqId, cid, inputFileName, token, currentAccount
+        [token]
       );
+
+      console.log(pendingdescription[reqId]);
+      // console.log([cid], inputFileName, [emailId], pendingdescription[reqId].)
+      await issueDocument(_reqId, cid, inputFileName, token, currentAccount);
       toast.success("Document issued successfully");
     }
   };
@@ -146,6 +146,7 @@ const Requests = () => {
   //   const handleSubmit2
   const openModal = async (e) => {
     e.preventDefault();
+    console.log("_reqid", _reqId);
     setModalIsOpen(true);
   };
   const openModal2 = async (e) => {
@@ -181,6 +182,18 @@ const Requests = () => {
       setUser(staffMember);
     } catch (err) {
       navigate("/register");
+    }
+  });
+
+  const fetchDocForStudent = useCallback(async (_reqId) => {
+    try {
+      const data = await fetchIndividualRequest(_reqId);
+      var result = 0;
+      console.log("asdf", data);
+      console.log("daaaaataaaaaa", data.docId);
+      navigate(`/update/${_reqId}`);
+    } catch (err) {
+      toast.error(err)
     }
   });
 
@@ -431,7 +444,6 @@ const Requests = () => {
                         </span>
                       </span>
                     </div>
-
                     <div className={styles.buttonBox}>
                       {request.reqType === "New" ? (
                         <div>
@@ -448,7 +460,11 @@ const Requests = () => {
                       ) : (
                         <div>
                           <button
-                            onClick={navigateToUpdate}
+                            onClick={() => {
+                              fetchDocForStudent(
+                                request.reqId
+                              );
+                            }}
                             className={styles.issueBtn}
                           >
                             <span>Update</span>
