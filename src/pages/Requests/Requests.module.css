@@ -22,7 +22,7 @@
 .inputContainer2{
     display: flex;
 }
-.input {
+.input, .input2 {
     width: 10%;
     padding: 5px 0px;
     outline: none;
@@ -30,6 +30,12 @@
     margin: 10px 0px;
     font-size: 1.1rem;
     border-bottom: 1px #525252 solid;
+}
+.input2{
+    /* padding: 10px 0px; */
+    width: 16%;
+    margin: 0px;
+    margin-right: 15px;
 }
 .requestFileBtn{
     width: 10%;

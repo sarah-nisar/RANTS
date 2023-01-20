@@ -57,6 +57,7 @@ const Requests = () => {
     "mobileNo",
     "none",
   ]);
+  const [searchIdList, setSearchIdList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchId, setSearchId] = useState("reqId");
 
@@ -185,6 +186,17 @@ const Requests = () => {
     setInputFileName(e.target.files[0].name);
     setInputFile(e.target.files);
   };
+
+  const handleChangeSearchId2 = useCallback(async (e) => {
+    // setSearchId2(e.target.value);
+    setSearchId(e.target.value);
+    let temp = [];
+    for (let i = 0; i < tempPendingdescription.length; i++) {
+      if (temp.indexOf(tempPendingdescription[i][`${e.target.value}`]) === -1)
+        temp.push(tempPendingdescription[i][`${e.target.value}`]);
+    }
+    setSearchIdList(temp);
+  });
 
   const handleSearchInput = useCallback(async (e) => {
     setPendingdescription(tempPendingdescription);
@@ -413,7 +425,10 @@ const Requests = () => {
               <div className={styles.searchEventsTitle}>
                 Search Student by{" "}
                 <select
-                  onChange={(e) => setSearchId(e.target.value)}
+                  onChange={(e) => {
+                    setSearchId(e.target.value);
+                    handleChangeSearchId2(e);
+                  }}
                   className={`${styles.input}`}
                 >
                   {/* <option key={0}></option> */}
@@ -424,15 +439,30 @@ const Requests = () => {
               </div>
             </div>
             <div className={`${styles.inputContainer2}`}>
-              <input
-                className={styles.eventSearchInput}
-                type="text"
-                placeholder={`Search ${searchId}`}
-                value={searchInput}
-                onChange={(e) => {
-                  setSearchInput(e.target.value);
-                }}
-              />
+              {`${searchId}` == "docName" ||
+              `${searchId}` == "department" ||
+              `${searchId}` == "reqType" ? (
+                <select
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className={`${styles.input2}`}
+                >
+                  {/* <option key={0}></option> */}
+                  {searchIdList.map((value, id) => {
+                    return <option key={id}>{value}</option>;
+                  })}
+                </select>
+              ) : (
+                <input
+                  className={styles.eventSearchInput}
+                  type="text"
+                  placeholder={`Search ${searchId}`}
+                  value={searchInput}
+                  onChange={(e) => {
+                    setSearchInput(e.target.value);
+                  }}
+                />
+              )}
+
               <button
                 className={styles.requestFileBtn}
                 onClick={(e) => handleSearchInput(e)}
