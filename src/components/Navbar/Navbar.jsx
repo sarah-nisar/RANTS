@@ -24,7 +24,7 @@ const Navbar = () => {
             <div className={styles.navbarContainer}>
                 <div onClick={navigateToHome} className={styles.logoContainer}>
                     <img className={styles.logoImg} src={logo} alt="" />
-                    vjti.docs
+                    DeCerts
                 </div>
                 <div>
                     <Avatar className={styles.avatar} {...config} />

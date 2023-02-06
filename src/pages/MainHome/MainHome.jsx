@@ -56,7 +56,7 @@ const MainHome = () => {
       >
         <div className={styles.logoSection}>
           <img className={styles.logoImg} src={logo} alt="" />
-          vjti.docs
+          DeCerts
         </div>
         <div className={styles.descSection}>
           <span>Building a secure & efficient solution<br />

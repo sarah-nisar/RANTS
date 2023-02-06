@@ -1,6 +1,6 @@
-# 📃 vjti.docs
+# 📃 DeCerts
 ## A secure & efficient solution for Certificate Verification
-vjti.docs is a blockchain-based application that will store and verify documents issued by the college to the students. Before uploading the file on IPFS, a QR Code is generated which is then embedded in the document. Issuance of certain documents, for instance an academic transcript requires a fee of Rs. 400. Whenever a third party(University/Company) wants to verify the document, they can scan the QR Code and verify it. There is a small fee associated with the verification process.   
+DeCerts is a blockchain-based application that will store and verify documents issued by the college to the students. Before uploading the file on IPFS, a QR Code is generated which is then embedded in the document. Issuance of certain documents, for instance an academic transcript requires a fee of Rs. 400. Whenever a third party(University/Company) wants to verify the document, they can scan the QR Code and verify it. There is a small fee associated with the verification process.   
 Biconomy has been used to implement Gasless transactions and IPFS to store the documents.
 
 ## 👩‍💻 Team members
